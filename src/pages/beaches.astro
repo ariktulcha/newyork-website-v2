@@ -1,0 +1,406 @@
+---
+import Layout from '../components/Layout.astro'
+
+const title = 'חופים בדובאי — המדריך המלא לחופים הכי שווים | Yalla Dubai'
+const description = 'מדריך מפורט לחופים בדובאי: JBR Beach, Kite Beach, La Mer, Palm West Beach, Black Palace ועוד. מתקנים, שעות, מחירים, ואיך מגיעים — כל מה שצריך לדעת.'
+
+const beaches = [
+  {
+    id: 'jbr',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80&fit=crop',
+    name: 'JBR Beach',
+    nameHe: 'חוף JBR — ג\'ומיירה ביץ\' רזידנס',
+    area: 'דובאי מרינה',
+    description: 'JBR Beach הוא החוף הכי תוסס ומוכר בדובאי — ולא בכדי. נמשך לאורך 1.7 ק"מ לאורך The Walk הגדול, עם גישה ישירה לעשרות מסעדות, ברים, חנויות ובתי קפה. החול לבן ורך, המים בצבע טורקיז, והסכייליין של דובאי מרינה מאחוריכם יוצר תפאורה שלא תשכחו.\n\nהחוף מלא פעילויות: ג\'ט סקי, גלשנים, שיוט על בננה בוט, ספורט מים מכל הסוגים. יש גם פארק ספלאש לילדים הקטנים. בסוף שבוע האווירה כאן היא ה"הכי דובאי שיש" — מגוון אנשים מכל העולם, ביפים עם ספורטים, ואנרגיה שמדבקת.',
+    bestFor: 'כולם — משפחות, זוגות, קבוצות חברים',
+    facilities: ['מקלחות ושירותים', 'חדרי הלבשה', 'השכרת מיטות שיזוף', 'מגוון מסעדות', 'ספורט ימי', 'Splash Pad לילדים', 'WiFi חינם', 'חניה (בתשלום)'],
+    howToGetThere: 'מטרו: תחנת DMCC או JLT, ומשם 10 דקות הליכה. Uber/מונית: "JBR Beach" או "The Walk JBR". חניה: בקניון JBR ובמגדלי המרינה.',
+    tips: 'שישי-שבת זה עמוס עד גדות — הגיעו לפני 9:00 בבוקר או אחרי 17:00. בחורף (נוב-מרץ) האווירה הכי נעימה. The Walk מציע פופ-אפ ובידור חי ברוב ימי שישי בערב.',
+    freeEntry: true,
+    sunbedPrice: '50–150 AED ליום',
+    waterSports: true,
+    openHours: '24/7',
+    parking: 'בתשלום',
+  },
+  {
+    id: 'kite',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80&fit=crop&crop=center',
+    name: 'Kite Beach',
+    nameHe: 'חוף העפיפונים — Kite Beach',
+    area: 'ג\'ומיירה',
+    description: 'Kite Beach הוא החוף הכי ספורטיבי ונחשק בדובאי בקרב הדיירים המקומיים. שמו מגיע מהקייטסרפינג שפופולרי כאן, אבל זה הרבה יותר מסתם חוף: מסלול ריצה ואופניים לאורך הים, מגרשי כדורעף חוף, טרמפולינות, ופוד טראקים עם אוכל מצוין במחיר סביר.\n\nהנוף כאן הוא ה"money shot" של דובאי — בורג\' אל ערב מצטיירת ישירות מהמים, והשקיעה מכאן היא אחת הכי מרהיבות בעיר. אל תפספסו את ה-Skyline שמשתקף במים בזמן הזהב.',
+    bestFor: 'ספורטיביים, ריצה, שקיעות, צלמים',
+    facilities: ['מסלול ריצה 5 ק"מ', 'מגרשי ספורט', 'פוד טראקים מצוינים', 'מקלחות', 'חדרי הלבשה', 'קייטסרפינג', 'טרמפולינות', 'WiFi חינם', 'חניה חינם'],
+    howToGetThere: 'Uber/מונית: "Kite Beach Jumeirah". אין מטרו קרוב. חניה ציבורית חינם בשפע.',
+    tips: 'זה המקום הכי טוב לצפות בשקיעה מול בורג\' אל ערב — הגיעו שעה לפני. הפוד טראקים פתוחים רק אחה"צ וערב. יש WiFi חינם מהעירייה.',
+    freeEntry: true,
+    sunbedPrice: 'חינם (ראשון-שרת)',
+    waterSports: true,
+    openHours: '24/7',
+    parking: 'חינם',
+  },
+  {
+    id: 'palmwest',
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=1200&q=80&fit=crop',
+    name: 'Palm West Beach',
+    nameHe: 'פאלם וסט ביץ\' — Palm West Beach',
+    area: 'פאלם ג\'ומיירה',
+    description: 'Palm West Beach הוא החוף הטרנדי ביותר בדובאי ב-2025 — שזירה מושלמת של חוף פרטי-ציבורי, מסעדות ברמה גבוהה, ובר ספיקו מול הים. ממוקם על הגזע של הפאלם ג\'ומיירה, עם נוף ישיר לאינסופי שכולו מים וסקיילין.\n\nהחוף מושך קהל של צעירים ותיירים שרוצים "ה-אינסטגרם שוט" של דובאי — ולא בכדי. שביל הטיילות הדקלים, המסעדות הצבעוניות, והנגישות של המקום הופכים אותו להחוף הכי מוצלח בדובאי ב-2-3 השנים האחרונות.',
+    bestFor: 'צעירים, טרנדסטרים, אינסטגרם, אוכל + חוף',
+    facilities: ['מסעדות ובתי קפה', 'ברים', 'מקלחות', 'שביל טיילות', 'מוזיקה חיה (סופ"ש)', 'ספורט ימי', 'חניה'],
+    howToGetThere: 'Uber/מונית: "Palm West Beach". מטרו: תחנת Palm Jumeirah (מונורייל), ומשם Uber. חניה בתשלום באתר.',
+    tips: 'אחרי 17:00 האווירה מתחממת. בסופ"ש יש DJs ומוזיקה חיה. BarSol ו-Wavebreaker הם הבחירות הכי טובות לשתייה מול הים.',
+    freeEntry: true,
+    sunbedPrice: '80–200 AED',
+    waterSports: true,
+    openHours: '08:00–02:00',
+    parking: 'בתשלום',
+  },
+  {
+    id: 'lamer',
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80&fit=crop',
+    name: 'La Mer',
+    nameHe: 'לה מר — La Mer Beach',
+    area: 'ג\'ומיירה',
+    description: 'La Mer היא לא סתם חוף — זו חוויה שלמה. קומפלקס חוף עירוני מעוצב עם גרפיטי צבעוני, חנויות בוטיק, מסעדות מהרחבי העולם, ופארק המים Laguna. המקום מושך קהל מגוון: משפחות ביום, זוגות ותיירים אחה"צ.\n\nהחוף עצמו נקי ומסודר, עם גישה נוחה ממגרש החניה. מה שהופך את La Mer למיוחד הוא השילוב של חוף + בידור + קניות + אוכל — אפשר לבלות כאן 6-8 שעות ולא להשתעמם לרגע. פארק הלגונה שבפנים מושלם לילדים.',
+    bestFor: 'משפחות, זוגות, אינסטגרם, ילדים',
+    facilities: ['פארק מים Laguna', 'מסעדות בוטיק', 'חנויות', 'מקלחות', 'קולנוע חוץ (עונתי)', 'מגרש משחקים', 'חניה'],
+    howToGetThere: 'Uber/מונית: "La Mer Beach Jumeirah". חניה חינם בכניסה הצפונית. אין מטרו קרוב.',
+    tips: 'הגיעו אחרי 16:00 לאווירה הכי טובה. Laguna Waterpark שוות כניסה אם יש ילדים. ביום שישי בערב יש לעיתים מופעים ואירועים.',
+    freeEntry: true,
+    sunbedPrice: '50–120 AED',
+    waterSports: false,
+    openHours: '10:00–24:00',
+    parking: 'חינם',
+  },
+  {
+    id: 'blackpalace',
+    image: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1200&q=80&fit=crop',
+    name: 'Black Palace Beach',
+    nameHe: 'Black Palace Beach — החוף הסודי',
+    area: 'אל סופוח',
+    description: 'Black Palace Beach הוא הגן הסודי של דובאי — חוף טבעי ללא כל פיתוח מסחרי, ממש מתחת לאפם של המלונות הכי יוקרתיים בעיר. חול לבן נקי, מים שקטים וצלולים, ונוף מרהיב על בורג\' אל ערב, הפאלם, והסקיילין.\n\nהאירוניה הגדולה היא שרוב התיירים בדובאי לא יודעים שהמקום קיים. המקומיים מגיעים לכאן לשקט, לשקיעה, ולצילומים. אין כאן אפילו כיסא אחד למכירה — רק אתם, החול, והים. בגלל זה זה מושלם.',
+    bestFor: 'זוגות, שקט, צילומים, שקיעות',
+    facilities: ['ללא מתקנים — הביאו הכל אתכם'],
+    howToGetThere: 'Uber/מונית: "Black Palace Beach" או "Al Sufouh Beach". חניה ברחוב (חינם). הליכה של 3-5 דקות מהכביש.',
+    tips: 'הביאו: מים, אוכל, שמשייה, מגבת. אין שום דבר בחוף. השקיעות כאן הן אחת מה-TOP של דובאי — הגיעו שעה לפני השקיעה.',
+    freeEntry: true,
+    sunbedPrice: 'אין',
+    waterSports: false,
+    openHours: '24/7',
+    parking: 'חינם',
+  },
+  {
+    id: 'nikki',
+    image: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&q=80&fit=crop',
+    name: 'Nikki Beach Dubai',
+    nameHe: 'ניקי ביץ\' — חוף המועדון הכי מפורסם',
+    area: 'פאלם ג\'ומיירה',
+    description: 'Nikki Beach הוא חוף-מועדון בינלאומי שהגיע לדובאי, ומציע חוויה פרמיום שחצי מהאינסטגרם שלכם כבר ראה. לבן על לבן: תפאורה, כיסאות שיזוף, ויריעות. DJים עולמיים, שמפניה, ואנשים שנראים כמו יצאו ממגזין.\n\nהחוף עצמו ממוקם מול הים הפתוח, עם נוף לסקיילין של דובאי מרחוק. זה לא חוף לכולם — זה חוף לאלה שרוצים חוויה, לא רק שיזוף. כניסה לרוב כוללת מינימום הוצאה.',
+    bestFor: 'לילה חי, אוהבי קלאב, חוויה פרמיום',
+    facilities: ['מיטות שיזוף VIP', 'בר', 'מסעדה', 'DJs', 'בריכה', 'מקלחות'],
+    howToGetThere: 'Uber/מונית: "Nikki Beach Dubai, Pearl Jumeira". הגיעו עם Uber — אין חניה נוחה.',
+    tips: 'הזמינו שולחן מראש לסוף שבוע. מינימום הוצאה של 200-400 AED. אל תגיעו לפני 14:00.',
+    freeEntry: false,
+    sunbedPrice: '150–400 AED (מינימום)',
+    waterSports: false,
+    openHours: '11:00–23:00 (שישי-שבת עד 02:00)',
+    parking: 'מוגבל',
+  },
+  {
+    id: 'mamzar',
+    image: 'https://images.unsplash.com/photo-1583394293297-d0b2a9b37b6f?w=1200&q=80&fit=crop',
+    name: 'Al Mamzar Beach Park',
+    nameHe: 'פארק חוף אל-ממזר — המשפחתי ביותר',
+    area: 'דירה (צפון דובאי)',
+    description: 'אל-ממזר הוא הפארק-חוף הכי משפחתי בדובאי, ועם הכי הרבה מה שצריך ביום שלם. 5 חופים שונים, דשאים ירוקים ענקיים, בריכות שחייה מקוטות, בקתות מוצלות, ואזורי ברביקיו.\n\nמה שמייחד את אל-ממזר הוא הגודל — 106 דונם של טבע, ים ומתקנים. ילדים יכולים לשחק שעות לאין קץ. ההורים יכולים להיות עם ספר בצל הדקלים. הכניסה בתשלום סמלי (5 AED לאדם), אבל מה שמקבלים הוא שווה הרבה יותר.',
+    bestFor: 'משפחות עם ילדים, פיקניקים, קבוצות גדולות',
+    facilities: ['5 חופים שונים', 'בריכות שחייה', 'אזורי ברביקיו', 'מגרשי משחקים', 'בקתות מוצלות (200 AED/יום)', 'מסעדה', 'חניה ענקית', 'גלגל ענק'],
+    howToGetThere: 'מטרו: תחנת Al Qiyadah + Uber (10 דקות). Uber/מונית: "Al Mamzar Beach Park". כניסה: 5 AED לאדם, 30 AED לרכב.',
+    tips: 'שלישי הוא "יום נשים וילדים בלבד" — הגיעו ביום אחר אם אתם זוג. שכרו בקתה מוצלת ל-200 AED — שווה כל שקל. שקט ביותר בימי ב\'-ה\'.',
+    freeEntry: false,
+    sunbedPrice: 'כלול בכניסה',
+    waterSports: false,
+    openHours: '08:00–22:00 (שישי-שבת עד 23:00)',
+    parking: 'כלול',
+  },
+  {
+    id: 'jumeirah',
+    image: 'https://images.unsplash.com/photo-1504700610630-ac6aba3536d3?w=1200&q=80&fit=crop',
+    name: 'Jumeirah Public Beach',
+    nameHe: 'חוף ג\'ומיירה הציבורי — Open Beach',
+    area: 'ג\'ומיירה',
+    description: 'Jumeirah Public Beach (המוכר גם כ-Open Beach) הוא החוף הציבורי הוותיק ביותר בדובאי — ומהנגישים ביותר לתיירים שנשארים בלב העיר. ממוקם ישירות מול בורג\' אל ערב, מה שהופך אותו לאחד מנקודות הצילום הטובות ביותר בדובאי.\n\nהחוף ארוך, לבן ורגוע. אין כאן הרבה "אקשן" כמו ב-JBR, אבל זה בדיוק מה שאוהבים אותו — שקט, ים, ונוף מדהים. יש מתקנים בסיסיים ומספיקים.',
+    bestFor: 'צילומים, שקט, זוגות, מי שנשאר בג\'ומיירה',
+    facilities: ['מקלחות', 'חדרי הלבשה', 'כיסאות שיזוף', 'מסעדות בסמוך', 'חניה'],
+    howToGetThere: 'Uber/מונית: "Jumeirah Beach" או "Open Beach Dubai". חניה ציבורית בסמוך (2 AED לשעה).',
+    tips: 'בוקר מוקדם — לא עמוס בכלל. השעה הכי טובה לצילום של בורג\' אל ערב היא זריחה או שעה לפני שקיעה.',
+    freeEntry: true,
+    sunbedPrice: '30–80 AED',
+    waterSports: false,
+    openHours: '24/7',
+    parking: 'בתשלום קטן',
+  },
+]
+
+const faqs = [
+  {
+    q: 'מה החוף הכי מתאים למשפחות עם ילדים?',
+    a: 'Al Mamzar Beach Park הוא הכי משפחתי — עם בריכות, גינות, ואזורי ברביקיו. JBR גם מצוין עם ה-Splash Pad לילדים. La Mer שווה עם Laguna Waterpark שבפנים.'
+  },
+  {
+    q: 'כמה עולה כניסה לחופים בדובאי?',
+    a: 'רוב החופים הציבוריים (JBR, Kite Beach, Black Palace, Palm West Beach, La Mer, Jumeirah) הם חינם. Al Mamzar גובה 5 AED לאדם. חופי מועדונים כמו Nikki Beach דורשים מינימום הוצאה של 200-400 AED.'
+  },
+  {
+    q: 'מתי הכי כדאי לבקר בחוף בדובאי?',
+    a: 'בחורף (נובמבר–מרץ) — כל שעה ביום נפלאה. בקיץ (אפריל–אוקטובר) — רק בוקר מוקדם (עד 10:00) או אחה"צ מאוחר (אחרי 16:30). שקיעה בכל עונה היא חובה.'
+  },
+  {
+    q: 'מה מותר ללבוש בחוף בדובאי?',
+    a: 'בגד ים רגיל מותר בכל חופי דובאי. ביקיני מלא — בסדר. צינוק — בסדר. אבל: כשעוזבים את החוף חייבים להתכסות. לא הולכים ברחוב בבגד ים.'
+  },
+  {
+    q: 'איזה חוף הכי קרוב למרכז דובאי?',
+    a: 'JBR ו-Kite Beach הם הנגישים ביותר למרכז דובאי מרינה. Jumeirah Public Beach קרוב לבורג\' אל ערב ולמלונות ג\'ומיירה. La Mer ו-Black Palace נמצאים גם הם בג\'ומיירה.'
+  },
+  {
+    q: 'האם יש חוף עם WiFi חינם?',
+    a: 'כן — JBR Beach ו-Kite Beach מציעים WiFi עירוני חינם. La Mer ו-Palm West Beach יש WiFi מהמסעדות והעסקים הסמוכים.'
+  },
+]
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  author: { '@type': 'Organization', name: 'Yalla Dubai' },
+  publisher: { '@type': 'Organization', name: 'Yalla Dubai', url: 'https://yalla-dubai.co.il' },
+  mainEntityOfPage: 'https://yalla-dubai.co.il/beaches',
+  inLanguage: 'he',
+  datePublished: '2025-01-01',
+  dateModified: '2026-03-24',
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+}
+---
+
+<Layout {title} {description} canonical="https://yalla-dubai.co.il/beaches">
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- Hero -->
+  <section class="relative py-20 md:py-28 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-blue-900/30 via-[#0D0D0D]/80 to-[#0D0D0D]"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=70&fit=crop'); background-size: cover; background-position: center;" class="absolute inset-0 opacity-20"></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+      <nav class="text-sm text-white/40 mb-6">
+        <a href="/" class="hover:text-amber-400 transition-colors">דף הבית</a>
+        <span class="mx-2">/</span>
+        <span class="text-white/60">חופים</span>
+      </nav>
+      <h1 class="text-4xl md:text-6xl font-black text-white mb-6">חופים <span class="text-amber-400">בדובאי</span></h1>
+      <p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+        מ-JBR התוסס ועד Black Palace הסודי — 8 החופים הכי שווים בדובאי. חול לבן, מים חמים, ושקיעות שאי-אפשר לשכוח.
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3 text-sm text-white/50">
+        <span>⭐ 8 חופים</span>
+        <span>·</span>
+        <span>🆓 6 חינמיים</span>
+        <span>·</span>
+        <span>🌊 מים 21–34°C</span>
+        <span>·</span>
+        <span>☀️ 350 ימי שמש</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Stats -->
+  <section class="max-w-6xl mx-auto px-4 -mt-6 relative z-20 mb-14">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {[
+        { emoji: '🏖️', title: 'חופים ציבוריים', sub: 'כניסה חינם' },
+        { emoji: '🌡️', title: 'מים חמים', sub: '21–34°C כל השנה' },
+        { emoji: '⛱️', title: 'עונת שיא', sub: 'נוב–מרץ' },
+        { emoji: '🚿', title: 'מתקנים', sub: 'מקלחות + שירותים' },
+      ].map(s => (
+        <div class="bg-[#1A1208] border border-amber-500/15 rounded-2xl p-4 text-center">
+          <span class="text-2xl block mb-1">{s.emoji}</span>
+          <p class="text-white font-bold text-sm">{s.title}</p>
+          <p class="text-white/40 text-xs">{s.sub}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Beaches -->
+  <section class="max-w-6xl mx-auto px-4 pb-16">
+    <h2 class="text-3xl md:text-4xl font-black text-white mb-10 text-center">
+      8 החופים <span class="text-amber-400">הכי שווים</span>
+    </h2>
+
+    <div class="space-y-10">
+      {beaches.map((beach, i) => (
+        <article class="bg-[#1A1208] border border-amber-500/10 rounded-3xl overflow-hidden hover:border-amber-500/25 transition-all">
+          <!-- Image -->
+          <div class="aspect-[21/8] md:aspect-[21/6] overflow-hidden">
+            <img
+              src={beach.image}
+              alt={beach.nameHe}
+              loading="lazy"
+              decoding="async"
+              width="1200"
+              height="400"
+              class="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+          </div>
+
+          <div class="p-6 md:p-8">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
+              <div>
+                <div class="flex items-center gap-3 mb-2 flex-wrap">
+                  <span class="bg-amber-500 text-black font-black text-xs px-2.5 py-1 rounded-full">#{i + 1}</span>
+                  <h3 class="text-2xl font-black text-white">{beach.name}</h3>
+                </div>
+                <p class="text-amber-400/80 text-sm font-medium">{beach.nameHe}</p>
+                <p class="text-white/40 text-sm mt-1">📍 {beach.area}</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <span class={`text-xs font-semibold px-3 py-1.5 rounded-full border ${beach.freeEntry ? 'bg-green-500/15 text-green-400 border-green-500/20' : 'bg-amber-500/15 text-amber-400 border-amber-500/20'}`}>
+                  {beach.freeEntry ? '🆓 כניסה חינם' : '🎟️ כניסה בתשלום'}
+                </span>
+                {beach.waterSports && <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/20">🏄 ספורט ימי</span>}
+                <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-white/5 text-white/50 border border-white/10">🕐 {beach.openHours}</span>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="text-white/70 leading-relaxed mb-6 space-y-3">
+              {beach.description.split('\n\n').map(para => (
+                <p>{para}</p>
+              ))}
+            </div>
+
+            <!-- Grid Info -->
+            <div class="grid sm:grid-cols-2 gap-4 mb-5">
+              <!-- Best For -->
+              <div class="bg-white/3 rounded-xl p-4">
+                <p class="text-amber-400 font-bold text-xs uppercase tracking-wide mb-2">מתאים ל</p>
+                <p class="text-white/70 text-sm">{beach.bestFor}</p>
+              </div>
+              <!-- How to get there -->
+              <div class="bg-white/3 rounded-xl p-4">
+                <p class="text-amber-400 font-bold text-xs uppercase tracking-wide mb-2">🚗 הגעה</p>
+                <p class="text-white/70 text-sm">{beach.howToGetThere}</p>
+              </div>
+            </div>
+
+            <!-- Facilities -->
+            <div class="mb-5">
+              <p class="text-white font-bold text-sm mb-2">מתקנים:</p>
+              <div class="flex flex-wrap gap-2">
+                {beach.facilities.map(f => (
+                  <span class="text-xs bg-white/5 text-white/55 px-3 py-1 rounded-full border border-white/8">{f}</span>
+                ))}
+              </div>
+            </div>
+
+            <!-- Tip -->
+            <div class="bg-amber-500/8 border border-amber-500/15 rounded-xl p-4">
+              <p class="text-amber-400 font-bold text-sm mb-1">💡 הטיפ שלנו</p>
+              <p class="text-white/65 text-sm leading-relaxed">{beach.tips}</p>
+            </div>
+
+            {beach.sunbedPrice !== 'אין' && (
+              <p class="text-white/30 text-xs mt-3">⛱️ מיטות שיזוף: {beach.sunbedPrice} | 🅿️ חניה: {beach.parking}</p>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- General Tips -->
+  <section class="max-w-5xl mx-auto px-4 py-14 border-t border-white/5">
+    <h2 class="text-3xl md:text-4xl font-black text-white mb-10 text-center">
+      כל מה שצריך לדעת <span class="text-amber-400">לפני</span> שהולכים
+    </h2>
+    <div class="grid md:grid-cols-2 gap-5">
+      {[
+        {
+          title: '👙 כללי לבוש', 
+          text: 'בגד ים מלא מותר בכל חופי דובאי — ביקיני, צינוק, הכל בסדר. חשוב: כשעוזבים את שטח החוף, חייבים להתלבש. אסור לחלוטין לצעוד ברחוב בבגד ים.'
+        },
+        {
+          title: '⚠️ בטיחות ים', 
+          text: 'שימו לב לדגלי אזהרה — דגל אדום = כניסה אסורה. יש מצילים ברוב החופים הציבוריים. הזרמים בדרך כלל חלשים, אבל שמרו על ילדים קטנים בכל עת.'
+        },
+        {
+          title: '🕐 זמנים מומלצים', 
+          text: 'חורף (נוב–מרץ): כל שעה מעולה. קיץ (יוני–ספטמבר): רק בבוקר (עד 10:00) או אחה"צ (אחרי 16:30). שקיעה היא חובה בכל עונה — הגיעו שעה קודם.'
+        },
+        {
+          title: '🎒 מה לקחת',
+          text: 'קרם הגנה SPF 50+ (חובה — השמש עזה), מים מרובים, כובע, משקפי שמש, מגבת, סנדלים (החול רותח בקיץ). לחופים ללא מתקנים — הביאו הכל.'
+        },
+        {
+          title: '🅿️ חניה',
+          text: 'JBR — בתשלום (2–5 AED לשעה). Kite Beach — חינם. Black Palace — חינם. Al Mamzar — כלול בכניסה. Palm West Beach — בתשלום. La Mer — חינם.'
+        },
+        {
+          title: '🌡️ טמפרטורת הים',
+          text: 'החורף (נוב–מרץ): 20–24°C — מרענן ונעים. אביב/סתיו: 25–30°C — מושלם. קיץ (יוני–ספט): 31–34°C — חם מאוד אבל נעים בים יחסית.'
+        },
+      ].map(tip => (
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-5">
+          <h3 class="text-white font-bold text-base mb-2">{tip.title}</h3>
+          <p class="text-white/60 text-sm leading-relaxed">{tip.text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="max-w-3xl mx-auto px-4 py-10 border-t border-white/5">
+    <h2 class="text-3xl font-black text-white mb-8 text-center">שאלות נפוצות על <span class="text-amber-400">חופי דובאי</span></h2>
+    <div class="space-y-4">
+      {faqs.map(faq => (
+        <details class="group bg-[#1A1208] border border-amber-500/10 rounded-xl overflow-hidden">
+          <summary class="flex items-center justify-between p-5 cursor-pointer text-white font-bold hover:text-amber-400 transition-colors list-none">
+            <span>{faq.q}</span>
+            <span class="text-amber-500 text-xl transition-transform group-open:rotate-45">+</span>
+          </summary>
+          <p class="px-5 pb-5 text-white/60 text-sm leading-relaxed border-t border-white/5 pt-4">{faq.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 border-t border-white/5">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
+        לחוף גם — ולמדבר <span class="text-amber-400">גם?</span>
+      </h2>
+      <p class="text-white/60 text-lg mb-8 max-w-xl mx-auto">ספארי במדבר הוא הדבר השני שחייבים לעשות בדובאי אחרי החוף 🏜️</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/desert-safari" class="bg-amber-500 hover:bg-amber-400 text-black px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25">
+          הזמינו ספארי במדבר
+        </a>
+        <a href="/attractions" class="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all border border-white/10">
+          כל האטרקציות
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

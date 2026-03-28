@@ -1,0 +1,136 @@
+# ══════════════════════════════════════════════════════════════════
+# Yalla Dubai — Netlify Redirects
+# Old WordPress site (Hebrew slugs) → New Astro site (English slugs)
+# ══════════════════════════════════════════════════════════════════
+
+# ── MOST IMPORTANT: Desert Safari (main product) ─────────────────
+/attractions/%d7%a1%d7%a4%d7%90%d7%a8%d7%99-%d7%91%d7%9e%d7%93%d7%91%d7%a8-%d7%95%d7%98%d7%99%d7%95%d7%9c-%d7%92%d7%a4%d7%99%d7%9d/  /desert-safari/  301
+/attractions/ספארי-במדבר-וטיול-גפים/  /desert-safari/  301
+
+# ── Attractions (Hebrew slug → English slug) ─────────────────────
+/attractions/%d7%91%d7%95%d7%a8%d7%92-%d7%97%d7%9c%d7%99%d7%a4%d7%94/  /attractions/burj-khalifa-attraction/  301
+/attractions/בורג-חליפה/  /attractions/burj-khalifa-attraction/  301
+
+/attractions/%d7%91%d7%95%d7%a8%d7%92-%d7%90%d7%9c-%d7%a2%d7%a8%d7%91/  /attractions/burj-al-arab/  301
+/attractions/בורג-אל-ערב/  /attractions/burj-al-arab/  301
+
+/attractions/%d7%9e%d7%93%d7%99%d7%a0%d7%aa-%d7%92%d7%95%d7%9e%d7%99%d7%99%d7%a8%d7%94/  /attractions/madinat-jumeirah/  301
+/attractions/מדינת-גומיירה/  /attractions/madinat-jumeirah/  301
+
+/attractions/%d7%94%d7%9e%d7%a1%d7%92%d7%93-%d7%94%d7%92%d7%93%d7%95%d7%9c-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/grand-mosque-dubai/  301
+/attractions/המסגד-הגדול-בדובאי/  /attractions/grand-mosque-dubai/  301
+
+/attractions/%d7%9e%d7%a1%d7%9c%d7%95%d7%9c-%d7%9e%d7%a8%d7%95%d7%a6%d7%99-%d7%a1%d7%95%d7%a1%d7%99%d7%9d-%d7%9e%d7%99%d7%99%d7%93%d7%9f/  /attractions/meydan-racecourse/  301
+/attractions/מסלול-מרוצי-סוסים-מיידן/  /attractions/meydan-racecourse/  301
+
+/attractions/%d7%a7%d7%a0%d7%99%d7%95%d7%9f-%d7%91%d7%95%d7%a8%d7%92%d7%95%d7%9e%d7%90%d7%9f/  /attractions/bur-juman-mall/  301
+/attractions/קניון-בורגומאן/  /attractions/bur-juman-mall/  301
+
+/attractions/%d7%94%d7%90%d7%98%d7%94-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/hatta-dubai/  301
+/attractions/האטה-דובאי/  /attractions/hatta-dubai/  301
+
+/attractions/%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%a4%d7%a1%d7%98%d7%99%d7%91%d7%9c-%d7%a1%d7%99%d7%98%d7%99/  /attractions/dubai-festival-city/  301
+/attractions/דובאי-פסטיבל-סיטי/  /attractions/dubai-festival-city/  301
+
+/attractions/%d7%9e%d7%95%d7%a4%d7%a2-%d7%94%d7%90%d7%95%d7%a8%d7%95%d7%aa-%d7%91%d7%9e%d7%96%d7%a8%d7%a7%d7%94-%d7%a9%d7%9c-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/dubai-fountain-show/  301
+/attractions/מופע-האורות-במזרקה-של-דובאי/  /attractions/dubai-fountain-show/  301
+
+/attractions/%d7%9e%d7%96%d7%a8%d7%a7%d7%95%d7%aa-%d7%94%d7%9e%d7%99%d7%9d-%d7%a9%d7%9c-%d7%94%d7%a4%d7%90%d7%9c%d7%9d/  /attractions/palm-fountain-dubai/  301
+/attractions/מזרקות-המים-של-הפאלם/  /attractions/palm-fountain-dubai/  301
+
+/attractions/%d7%90%d7%99-%d7%91%d7%9c%d7%95-%d7%95%d7%95%d7%98%d7%a8%d7%a1/  /attractions/bluewaters-island/  301
+/attractions/אי-בלו-ווטרס/  /attractions/bluewaters-island/  301
+
+/attractions/%d7%94%d7%90%d7%95%d7%9e%d7%92%d7%94-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/omega-dubai/  301
+/attractions/האומגה-בדובאי/  /attractions/omega-dubai/  301
+
+/attractions/%d7%9e%d7%95%d7%96%d7%99%d7%90%d7%95%d7%9f-%d7%94%d7%90%d7%a9%d7%9c%d7%99%d7%95%d7%aa/  /attractions/museum-of-illusions-dubai/  301
+/attractions/מוזיאון-האשליות/  /attractions/museum-of-illusions-dubai/  301
+
+/attractions/%d7%9e%d7%95%d7%96%d7%99%d7%90%d7%95%d7%9f-%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%90%d7%97%d7%93-%d7%94%d7%9e%d7%95%d7%96%d7%99%d7%90%d7%95%d7%a0%d7%99%d7%9d-%d7%94%d7%9e%d7%99%d7%95%d7%97%d7%93%d7%99/  /attractions/dubai-museum/  301
+/attractions/מוזיאון-דובאי-אחד-המוזיאונים-המיוחד/  /attractions/dubai-museum/  301
+
+/attractions/%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%90%d7%90%d7%95%d7%98%d7%9c%d7%98/  /attractions/dubai-outlet-mall/  301
+/attractions/דובאי-אאוטלט/  /attractions/dubai-outlet-mall/  301
+
+/attractions/%d7%a6%d7%9c%d7%99%d7%9c%d7%95%d7%aa-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/diving-dubai/  301
+/attractions/צלילות-בדובאי/  /attractions/diving-dubai/  301
+
+/attractions/%d7%94%d7%90%d7%a7%d7%95%d7%95%d7%a8%d7%99%d7%95%d7%9d-%d7%a9%d7%9c-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/dubai-aquarium/  301
+/attractions/האקווריום-של-דובאי/  /attractions/dubai-aquarium/  301
+
+/attractions/%d7%9c%d7%92%d7%95%d7%9c%d7%a0%d7%93-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/legoland-dubai/  301
+/attractions/לגולנד-דובאי/  /attractions/legoland-dubai/  301
+
+/attractions/%d7%9b%d7%95%d7%9b%d7%91-%d7%94%d7%9c%d7%9b%d7%aa-%d7%94%d7%99%d7%a8%d7%95%d7%a7/  /attractions/green-planet-dubai/  301
+/attractions/כוכב-הלכת-הירוק/  /attractions/green-planet-dubai/  301
+
+/attractions/%d7%9e%d7%95%d7%96%d7%99%d7%90%d7%95%d7%9f-%d7%90%d7%98%d7%99%d7%94%d7%93/  /attractions/etihad-museum-dubai/  301
+/attractions/מוזיאון-אטיהד/  /attractions/etihad-museum-dubai/  301
+
+/attractions/%d7%a4%d7%90%d7%a8%d7%a7-%d7%9e%d7%99%d7%9d-%d7%95%d7%95%d7%99%d7%99%d7%9c%d7%93-%d7%95%d7%95%d7%90%d7%93%d7%99/  /attractions/wild-wadi-waterpark/  301
+/attractions/פארק-מים-וויילד-וואדי/  /attractions/wild-wadi-waterpark/  301
+
+/attractions/%d7%a4%d7%90%d7%a8%d7%a7-%d7%94%d7%9e%d7%99%d7%9d-%d7%9c%d7%92%d7%95%d7%9c%d7%a0%d7%93/  /attractions/legoland-waterpark/  301
+/attractions/פארק-המים-לגולנד/  /attractions/legoland-waterpark/  301
+
+/attractions/%d7%91%d7%95%d7%9c%d7%99%d7%95%d7%95%d7%93-%d7%a4%d7%90%d7%a8%d7%a7/  /attractions/bollywood-parks-dubai/  301
+/attractions/בוליווד-פארק/  /attractions/bollywood-parks-dubai/  301
+
+/attractions/%d7%a0%d7%97%d7%9c-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/dubai-creek/  301
+/attractions/נחל-דובאי/  /attractions/dubai-creek/  301
+
+/attractions/%d7%a4%d7%90%d7%a8%d7%a7-%d7%a9%d7%a2%d7%a9%d7%95%d7%a2%d7%99%d7%9d-%d7%9e%d7%95%d7%a9%d7%a0%d7%92%d7%99%d7%99%d7%98/  /attractions/motiongate-dubai/  301
+/attractions/פארק-שעשועים-מושנגייט/  /attractions/motiongate-dubai/  301
+
+/attractions/%d7%9e%d7%95%d7%a4%d7%a2-%d7%9c%d7%94-%d7%a4%d7%a8%d7%9c-%d7%94%d7%9e%d7%95%d7%a4%d7%a2-%d7%94%d7%9e%d7%98%d7%95%d7%a8%d7%a3-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/la-perle-dubai/  301
+/attractions/מופע-לה-פרל-המופע-המטורף-בדובאי/  /attractions/la-perle-dubai/  301
+
+/attractions/%d7%98%d7%99%d7%a1%d7%aa-%d7%9e%d7%a1%d7%95%d7%a7-%d7%91%d7%a9%d7%9e%d7%99%d7%99-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/helicopter-tour-dubai/  301
+/attractions/טיסת-מסוק-בשמיי-דובאי/  /attractions/helicopter-tour-dubai/  301
+
+/attractions/%d7%98%d7%99%d7%95%d7%9c-rzr-%d7%91%d7%93%d7%99%d7%95%d7%a0%d7%95%d7%aa-%d7%a9%d7%9c-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/rzr-dune-tour-dubai/  301
+/attractions/טיול-rzr-בדיונות-של-דובאי/  /attractions/rzr-dune-tour-dubai/  301
+
+/attractions/%d7%94%d7%9e%d7%a8%d7%99%d7%a0%d7%94-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/dubai-marina/  301
+/attractions/המרינה-בדובאי/  /attractions/dubai-marina/  301
+
+/attractions/%d7%94%d7%9b%d7%a4%d7%a8-%d7%94%d7%92%d7%9c%d7%95%d7%91%d7%90%d7%9c%d7%99-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/global-village-dubai/  301
+/attractions/הכפר-הגלובאלי-בדובאי/  /attractions/global-village-dubai/  301
+
+/attractions/%d7%9e%d7%a1%d7%92%d7%a8%d7%aa-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/dubai-frame/  301
+/attractions/מסגרת-דובאי/  /attractions/dubai-frame/  301
+
+/attractions/%d7%92%d7%9f-%d7%94%d7%a4%d7%a8%d7%97%d7%99%d7%9d-%d7%94%d7%a4%d7%9c%d7%90%d7%99/  /attractions/miracle-garden-dubai/  301
+/attractions/גן-הפרחים-הפלאי/  /attractions/miracle-garden-dubai/  301
+
+/attractions/%d7%a7%d7%a0%d7%99%d7%95%d7%9f-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/dubai-mall-attraction/  301
+/attractions/קניון-דובאי/  /attractions/dubai-mall-attraction/  301
+
+/attractions/%d7%a1%d7%a7%d7%99-%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/ski-dubai/  301
+/attractions/סקי-דובאי/  /attractions/ski-dubai/  301
+
+/attractions/%d7%a7%d7%99%d7%99%d7%98-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /attractions/kite-beach-dubai/  301
+/attractions/קייט-בדובאי/  /attractions/kite-beach-dubai/  301
+
+/attractions/%d7%90%d7%95%d7%98%d7%95%d7%93%d7%a8%d7%95%d7%9d-%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%9e%d7%a1%d7%9c%d7%95%d7%9c-%d7%9e%d7%99%d7%a8%d7%95%d7%a6%d7%99-%d7%9e%d7%9b%d7%95%d7%a0%d7%99%d7%95%d7%aa/  /attractions/dubai-autodrome/  301
+/attractions/אוטודרום-דובאי-מסלול-מירוצי-מכוניות/  /attractions/dubai-autodrome/  301
+
+# ── Blog Posts → Guides ───────────────────────────────────────────
+/%d7%94%d7%99%d7%9b%d7%9f-%d7%9c%d7%a9%d7%94%d7%95%d7%aa-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%95%d7%9c%d7%99%d7%94%d7%a0%d7%95%d7%aa-%d7%9e%d7%a0%d7%95%d7%a3-%d7%9e%d7%95%d7%a9%d7%9c%d7%9d/  /guides/where-to-stay-in-dubai/  301
+/%d7%a1%d7%9c%d7%99%d7%91%d7%a1%d7%98%d7%a8-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%94%d7%9e%d7%93%d7%a8%d7%99%d7%9a-%d7%94%d7%a9%d7%9c%d7%9d-%d7%9c%d7%97%d7%92%d7%99%d7%92%d7%95%d7%aa-%d7%a1%d7%99/  /guides/new-years-eve-dubai/  301
+/%d7%9b%d7%a8%d7%99%d7%a1%d7%9e%d7%a1-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /guides/christmas-in-dubai/  301
+/%d7%9e%d7%96%d7%92-%d7%94%d7%90%d7%95%d7%95%d7%99%d7%a8-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%91%d7%99%d7%a0%d7%95%d7%90%d7%a8/  /guides/dubai-weather-january/  301
+/%d7%9e%d7%96%d7%92-%d7%90%d7%95%d7%95%d7%99%d7%a8-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%91%d7%93%d7%a6%d7%9e%d7%91%d7%a8/  /guides/dubai-weather-december/  301
+/%d7%9b%d7%a0%d7%99%d7%a1%d7%94-%d7%9c%d7%93%d7%95%d7%91%d7%90%d7%99-%d7%a2%d7%9d-%d7%93%d7%a8%d7%9b%d7%95%d7%9f-%d7%96%d7%a8/  /guides/entry-dubai-foreign-passport/  301
+/%d7%90%d7%99%d7%96%d7%94-%d7%91%d7%92%d7%93%d7%99%d7%9d-%d7%9c%d7%95%d7%91%d7%a9%d7%99%d7%9d-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /guides/what-to-wear-in-dubai/  301
+/%d7%a7%d7%91%d7%95%d7%a6%d7%aa-%d7%94%d7%95%d7%95%d7%90%d7%98%d7%a1%d7%90%d7%a4-%d7%a9%d7%9c-%d7%93%d7%95%d7%91%d7%90%d7%99/  /  301
+/%d7%aa%d7%a2%d7%a8%d7%95%d7%9b%d7%aa-%d7%90%d7%a7%d7%a1%d7%a4%d7%95-2020-%d7%91%d7%93%d7%95%d7%91%d7%90%d7%99/  /guides/dubai-lametayel-2025/  301
+
+# ── Old homepage paths ────────────────────────────────────────────
+/home/  /  301
+/index.html  /  301
+
+# ── Catch-all: unknown old paths → home ──────────────────────────
+# (uncomment if needed — will catch ALL unmatched URLs)
+# /*  /  301

@@ -1,0 +1,162 @@
+---
+import Layout from '../components/Layout.astro'
+import SchemaOrg from '../components/SchemaOrg.astro'
+
+const souks = [
+  {
+    id: 'gold-souk', name: 'שוק הזהב (Gold Souk)', area: 'דירה — דובאי הישנה',
+    description: 'השוק הכי מפורסם בדובאי וכנראה בכל המזרח התיכון. רחוב מקורה עם למעלה מ-300 חנויות זהב, יהלומים ותכשיטים. הזהב כאן זול משמעותית מישראל ומאירופה כי אין מס על זהב.',
+    whatToBuy: ['שרשראות וצמידי זהב (18K-24K)', 'טבעות יהלום', 'שעוני יוקרה', 'עגילי זהב', 'תכשיטים בעיצוב ערבי מסורתי'],
+    tips: ['התמקחו תמיד! התחילו ב-50% מהמחיר על עלות העבודה', 'השוו מחירים ב-3-4 חנויות', 'בקשו תעודת אותנטיות (Certificate)', 'שלמו במזומן — הנחה נוספת של 5-10%'],
+    hours: 'שבת-חמישי: 10:00-22:00, שישי: 16:00-22:00',
+    howToGetThere: 'מטרו: תחנת Al Ras (קו ירוק). מונית: בקשו "Gold Souk Deira". אפשר גם Abra מבור דובאי.',
+    priceRange: 'בינוני-גבוה',
+  },
+  {
+    id: 'spice-souk', name: 'שוק התבלינים (Spice Souk)', area: 'דירה — דובאי הישנה',
+    description: 'ממש ליד שוק הזהב, שוק התבלינים הוא חגיגה לחושים. ריחות של זעפרן, קרדמום, כורכום וקינמון ממלאים את האוויר. השוק קטן אבל אותנטי.',
+    whatToBuy: ['זעפרן (הרבה יותר זול מישראל!)', 'תערובות תבלינים ערביות', 'תה ערבי עם קרדמום', 'עוד ערבי (בושם עץ)', 'פירות יבשים ואגוזים'],
+    tips: ['זעפרן — בדקו שזה אותנטי (חוטים שלמים, לא אבקה)', 'התמקחו! המחירים הראשוניים מנופחים ב-50-100%', 'קנו תערובת תבלינים מוכנה — מתנה מצוינת', 'טעמו לפני שקונים'],
+    hours: 'שבת-חמישי: 08:00-22:00, שישי: 16:00-22:00',
+    howToGetThere: 'צמוד לשוק הזהב — 2 דקות הליכה. מטרו: תחנת Al Ras (קו ירוק).',
+    priceRange: 'נמוך-בינוני',
+  },
+  {
+    id: 'textile-souk', name: 'שוק הבדים (Textile Souk)', area: 'בור דובאי — דובאי הישנה',
+    description: 'שוק צבעוני ומקורה ברובע בור דובאי. מאות חנויות עם בדים, פשמינות, עבאיות ובגדים מסורתיים. גם אם לא קונים — שווה לטייל כאן.',
+    whatToBuy: ['פשמינות וצעיפים (מתנה מושלמת!)', 'בדים לתפירה', 'עבאיות מעוצבות', 'ג\'לביות מסורתיות', 'כפיות ערביות'],
+    tips: ['פשמינה קשמיר "אמיתית" — בדקו שהיא רכה, קלה, ועוברת דרך טבעת', 'התמקחו בנחישות', 'קנו מספר פשמינות — ככל שקונים יותר, ההנחה גדולה', 'שלבו עם ביקור באזור אל פהידי ההיסטורי'],
+    hours: 'שבת-חמישי: 10:00-22:00, שישי: 16:00-22:00',
+    howToGetThere: 'מטרו: תחנת Al Fahidi (קו ירוק). אפשר להגיע ב-Abra מצד דירה (1 AED בלבד!).',
+    priceRange: 'נמוך-בינוני',
+  },
+  {
+    id: 'perfume-souk', name: 'שוק הבשמים (Perfume Souk)', area: 'דירה — דובאי הישנה',
+    description: 'שוק קטן ומרתק המתמחה בבשמים ערביים מסורתיים (עטר), עוד (בושם עץ), ובשמים מעורבבים. כאן תמצאו בשמים ייחודיים שלא תמצאו בשום מקום אחר.',
+    whatToBuy: ['עוד ערבי (Oud) — בושם עץ יקר ומיוחד', 'בשמים ערביים (Attar)', 'בחור (Bakhoor) — קטורת ערבית', 'מבער לקטורת', 'בשמים מותאמים אישית'],
+    tips: ['Oud — בדקו את האיכות ואל תקנו את הזול ביותר', 'בקשו לנסות על העור ותחכו 30 דקות', 'קנו "בחור" כמתנה — קטורת שמריחה מדהים', 'חנויות Ajmal ו-Arabian Oud בקניונים הן אופציה אמינה יותר'],
+    hours: 'שבת-חמישי: 10:00-22:00, שישי: 16:00-22:00',
+    howToGetThere: 'ליד שוק הזהב ושוק התבלינים. מטרו: תחנת Al Ras.',
+    priceRange: 'נמוך-גבוה',
+  },
+]
+
+const bargainingSteps = [
+  { step: 1, title: 'הסתובבו קודם', desc: 'אל תקנו בחנות הראשונה. הסתובבו, ראו מה יש, השוו מחירים.' },
+  { step: 2, title: 'שאלו את המחיר', desc: 'שאלו "כמה?" בלי להראות התלהבות יתר. המוכר ייתן מחיר מנופח.' },
+  { step: 3, title: 'הציעו 40-50%', desc: 'התחילו מ-40-50% מהמחיר שביקשו. זה לא חוצפה — זה מצופה.' },
+  { step: 4, title: 'התקדמו לאט', desc: 'עלו בהדרגה. המטרה: להגיע ל-60-70% מהמחיר המקורי.' },
+  { step: 5, title: 'טריק ה"הליכה"', desc: 'אמרו תודה והתחילו ללכת. ב-80% מהמקרים המוכר יקרא לכם חזרה.' },
+  { step: 6, title: 'שלמו במזומן', desc: 'מזומן = הנחה נוספת. המוכר חוסך עמלת כרטיס אשראי.' },
+]
+
+const articleSchema = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'שווקים בדובאי - שוק הזהב, התבלינים ועוד',
+  description: 'מדריך מפורט לשווקים בדובאי: שוק הזהב, שוק התבלינים, שוק הבדים ושוק הבשמים.',
+  author: { '@type': 'Organization', name: 'Yalla Dubai' },
+  publisher: { '@type': 'Organization', name: 'Yalla Dubai', url: 'https://yalla-dubai.co.il' },
+  mainEntityOfPage: 'https://yalla-dubai.co.il/markets', inLanguage: 'he',
+  datePublished: '2025-01-01', dateModified: '2026-03-01',
+}
+---
+
+<Layout
+  title="שווקים בדובאי - שוק הזהב, התבלינים ועוד"
+  description="מדריך מפורט לשווקים בדובאי: שוק הזהב (Gold Souk), שוק התבלינים (Spice Souk), שוק הבדים, שוק הבשמים. טיפים למיקוח, מה לקנות ואיך להגיע."
+  canonical="https://yalla-dubai.co.il/markets"
+>
+  <SchemaOrg schema={articleSchema} />
+
+  <section class="relative py-20 md:py-28 bg-gradient-to-b from-[#1A1208] to-[#0D0D0D]">
+    <div class="absolute inset-0 opacity-10"><div class="absolute inset-0 bg-gradient-to-br from-amber-900/20 to-transparent"></div></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">שווקים <span class="text-amber-400">בדובאי</span></h1>
+      <p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">חוויה אותנטית בלב דובאי הישנה. שוק הזהב, שוק התבלינים, שוק הבדים ושוק הבשמים — צבעים, ריחות, וקסם מזרחי אמיתי.</p>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 -mt-8 relative z-20 mb-12">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/20 rounded-2xl p-4 text-center"><span class="text-2xl block mb-2">💎</span><p class="text-white font-bold text-sm">שוק הזהב</p><p class="text-white/50 text-xs">300+ חנויות תכשיטים</p></div>
+      <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/20 rounded-2xl p-4 text-center"><span class="text-2xl block mb-2">✨</span><p class="text-white font-bold text-sm">תבלינים</p><p class="text-white/50 text-xs">זעפרן, קרדמום ועוד</p></div>
+      <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/20 rounded-2xl p-4 text-center"><span class="text-2xl block mb-2">💬</span><p class="text-white font-bold text-sm">מיקוח</p><p class="text-white/50 text-xs">חלק מהחוויה!</p></div>
+      <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/20 rounded-2xl p-4 text-center"><span class="text-2xl block mb-2">🛍️</span><p class="text-white font-bold text-sm">מתנות מיוחדות</p><p class="text-white/50 text-xs">בשמים, בדים, זהב</p></div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <h2 class="text-3xl md:text-4xl font-black text-white mb-10 text-center">השווקים <span class="text-amber-400">של דובאי</span></h2>
+    <div class="space-y-8">
+      {souks.map((souk, index) => (
+        <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/10 rounded-2xl overflow-hidden hover:border-amber-500/20 transition-all">
+          <div class="p-6 md:p-8">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
+              <div>
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="bg-amber-500/20 text-amber-400 font-bold text-sm px-3 py-1 rounded-full">#{index + 1}</span>
+                  <h3 class="text-2xl font-bold text-white">{souk.name}</h3>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-white/50">📍 {souk.area}</div>
+              </div>
+              <span class="text-xs font-medium px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 self-start">{souk.priceRange}</span>
+            </div>
+            <p class="text-white/70 leading-relaxed mb-5">{souk.description}</p>
+            <div class="mb-5">
+              <h4 class="text-white font-bold text-sm mb-2">מה לקנות:</h4>
+              <div class="flex flex-wrap gap-2">
+                {souk.whatToBuy.map((item) => (<span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/20">{item}</span>))}
+              </div>
+            </div>
+            <div class="mb-5">
+              <h4 class="text-white font-bold text-sm mb-2">טיפים:</h4>
+              <ul class="space-y-2">
+                {souk.tips.map((tip) => (<li class="flex items-start gap-2 text-sm text-white/60"><svg class="w-4 h-4 text-amber-400 mt-0.5 shrink-0 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>{tip}</span></li>))}
+              </ul>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm">
+              <div class="flex items-start gap-2 text-white/60">⏰ <span>{souk.hours}</span></div>
+              <div class="flex items-start gap-2 text-white/60">📍 <span>{souk.howToGetThere}</span></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-4 py-12">
+    <h2 class="text-3xl md:text-4xl font-black text-white mb-4 text-center">מדריך <span class="text-amber-400">למיקוח</span></h2>
+    <p class="text-white/60 text-center mb-10 max-w-2xl mx-auto">מיקוח הוא חלק בלתי נפרד מהתרבות בשווקים. הנה 6 שלבים לקנייה חכמה</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {bargainingSteps.map((item) => (
+        <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/10 rounded-2xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="bg-amber-500 text-[#0D0D0D] font-bold text-sm w-8 h-8 rounded-full flex items-center justify-center shrink-0">{item.step}</span>
+            <h3 class="text-white font-bold">{item.title}</h3>
+          </div>
+          <p class="text-white/60 text-sm leading-relaxed">{item.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-4 py-12">
+    <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/20 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-4">הגיעו ב-Abra — חוויה בפני עצמה</h2>
+      <p class="text-white/70 leading-relaxed mb-4">הדרך הכי מגניבה להגיע לשווקים היא ב-Abra — סירת עץ מסורתית שחוצה את דובאי קריק. הנסיעה לוקחת 5 דקות ועולה רק 1 AED (פחות מ-1 שקל!). הסירות יוצאות כל כמה דקות מתחנות לאורך הנחל.</p>
+      <p class="text-white/70 leading-relaxed mb-4">מסלול מומלץ: רדו בתחנת Al Fahidi (צד בור דובאי), סיירו בשוק הבדים ובאזור ההיסטורי, ואז קחו Abra לצד דירה — שם ממש ליד שוק הזהב, התבלינים והבשמים.</p>
+      <p class="text-white/50 text-sm">טיפ: ה-Abra פועלת גם בלילה. סיור ערב על הנחל עם אורות העיר — רומנטי ומרהיב.</p>
+    </div>
+  </section>
+
+  <section class="bg-gradient-to-b from-[#0D0D0D] to-[#1A1208] py-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-black text-white mb-6">רוצים <span class="text-amber-400">עוד שופינג?</span></h2>
+      <p class="text-white/70 text-lg mb-8 max-w-xl mx-auto">בנוסף לשווקים, דובאי מציעה קניונים ענקיים עם מותגים מכל העולם</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/shopping" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-[#0D0D0D] px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25">קניונים בדובאי</a>
+        <a href="/attractions" class="bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-[#F59E0B]/25">כל האטרקציות</a>
+      </div>
+    </div>
+  </section>
+</Layout>

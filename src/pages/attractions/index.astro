@@ -1,0 +1,175 @@
+---
+import Layout from '../../components/Layout.astro'
+import AttractionCard from '../../components/Cards/AttractionCard.astro'
+import { supabaseAdmin, DESTINATION_ID } from '../../lib/supabase'
+
+const { data: items } = await supabaseAdmin
+  .from('attractions')
+  .select('name_he, name_en, slug, image, area, excerpt, price_range, is_free, family_friendly, category')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('published', true)
+  .order('name_he')
+
+const attractions = items || []
+
+// Category pages (real URLs for SEO)
+const categoryLinks = [
+  { label: '🆓 חינם', href: '/attractions/free/' },
+  { label: '👧 לילדים', href: '/attractions/kids/' },
+]
+
+// Client-side filter categories (no dedicated pages)
+const attrCategories = [
+  { label: 'הכל', key: 'all' },
+  { label: '🏛️ תרבות', key: 'culture', match: ['מוזיאון', 'מסגד', 'Museum', 'Grand Mosque', 'Dubai Museum', 'Etihad Museum', 'Museum of the Future'] },
+  { label: '🎢 פארקים', key: 'parks', match: ['Park', 'Waterpark', 'LEGOLAND', 'Bollywood', 'Motiongate', 'IMG', 'Wild Wadi', 'Aquaventure'] },
+  { label: '🏖️ חופים', key: 'beach', match: ['Beach', 'Marina', 'Waterfront', 'Palm', 'Bluewaters', 'La Mer'] },
+  { label: '🏙️ סקיילין', key: 'skyline', match: ['Burj', 'Frame', 'Creek', 'Global Village', 'Downtown'] },
+  { label: '🛒 קניות', key: 'shopping', match: ['Mall', 'Souk', 'Market', 'Shopping'] },
+  { label: '🏜️ מדבר', key: 'desert', match: ['Desert', 'Safari', 'Dune', 'RZR', 'Hatta'] },
+]
+
+const title = 'אטרקציות בדובאי — המדריך המלא | Yalla Dubai'
+const description = 'כל האטרקציות בדובאי: בורג׳ ח׳ליפה, דובאי מול, אקוונצ׳ר, מדבר, חופים ועוד. מחירים, שעות פתיחה וטיפים.'
+
+const schemaItemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'אטרקציות בדובאי',
+  description,
+  numberOfItems: attractions.length,
+  itemListElement: attractions.map((a, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: a.name_he,
+    url: `https://yalla-dubai.co.il/attractions/${a.slug}`,
+  })),
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'דף הבית', item: 'https://yalla-dubai.co.il/' },
+    { '@type': 'ListItem', position: 2, name: 'אטרקציות' },
+  ],
+}
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaItemList)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <!-- Hero -->
+  <section class="relative py-16 px-4 bg-gradient-to-b from-amber-500/10 to-transparent">
+    <div class="max-w-6xl mx-auto text-center">
+      <nav class="text-sm text-white/40 mb-6">
+        <a href="/" class="hover:text-amber-400 transition-colors">דף הבית</a>
+        <span class="mx-2">/</span>
+        <span class="text-white/60">אטרקציות</span>
+      </nav>
+      <h1 class="text-4xl md:text-5xl font-black mb-4">אטרקציות בדובאי</h1>
+      <p class="text-lg text-white/60 max-w-2xl mx-auto">
+        דובאי מציעה יותר מ-100 אטרקציות עולמיות: בורג׳ חליפה (כמעלית בעולם), מוזיאון העתידות, גן הירוקים בדובאי וסקי במקום מקורה בדברת.
+        יש פעילויות לכל גיל — מפארקי שעשועים לילדים עד צלילה בים לתיירים אדוותורוסיים.
+        מצא את אטרקציות החינם בדובאי, קביעות משפחתיות, וחוויות בלתי נשכחות בכל תקציב.
+      </p>
+      <p class="mt-3 text-amber-400 font-medium" id="attr-count">{attractions.length} אטרקציות</p>
+    </div>
+  </section>
+
+  <!-- Category Links (SEO pages) + Filter Pills -->
+  <div class="sticky top-0 z-30 bg-[#0D0D0D]/95 backdrop-blur-sm border-b border-amber-500/10">
+    <div class="max-w-6xl mx-auto px-4 py-3 overflow-x-auto scrollbar-hide">
+      <div class="flex gap-2 min-w-max" dir="rtl">
+        <span class="px-4 py-2 rounded-full text-sm font-bold bg-amber-500 text-black">הכל</span>
+        {categoryLinks.map((cat) => (
+          <a
+            href={cat.href}
+            class="px-4 py-2 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap"
+          >
+            {cat.label}
+          </a>
+        ))}
+        {attrCategories.filter(c => c.key !== 'all').map((cat) => (
+          <button
+            class="attr-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+            data-category={cat.key}
+            data-match={JSON.stringify(cat.match)}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <section class="max-w-6xl mx-auto px-4 py-8 pb-20">
+    {attractions.length > 0 ? (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="attr-grid">
+        {attractions.map((attraction) => (
+          <div
+            class="attr-item"
+            data-name={attraction.name_en || ''}
+            data-free={attraction.is_free ? 'true' : 'false'}
+            data-kids={attraction.family_friendly ? 'true' : 'false'}
+          >
+            <AttractionCard {...attraction} />
+          </div>
+        ))}
+      </div>
+      <p class="text-center text-white/30 py-8 hidden" id="attr-no-results">לא נמצאו אטרקציות בקטגוריה זו</p>
+    ) : (
+      <p class="text-center text-white/40 py-12">לא נמצאו אטרקציות כרגע.</p>
+    )}
+  </section>
+</Layout>
+
+<style>
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const pills = document.querySelectorAll<HTMLButtonElement>('.attr-pill')
+    const items = document.querySelectorAll<HTMLElement>('.attr-item')
+    const countEl = document.getElementById('attr-count')
+    const noResults = document.getElementById('attr-no-results')
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => {
+          p.classList.remove('bg-amber-500', 'text-black')
+          p.classList.add('bg-white/5', 'text-white/60')
+        })
+        pill.classList.remove('bg-white/5', 'text-white/60')
+        pill.classList.add('bg-amber-500', 'text-black')
+
+        const category = pill.dataset.category
+        const matchRaw = pill.dataset.match
+        const matchTerms: string[] = matchRaw ? JSON.parse(matchRaw) : []
+
+        let visible = 0
+        items.forEach(item => {
+          const name = item.dataset.name || ''
+          const isFree = item.dataset.free === 'true'
+          const isKids = item.dataset.kids === 'true'
+
+          let show = false
+          if (category === 'all') show = true
+          else if (category === 'free') show = isFree
+          else if (category === 'kids') show = isKids
+          else show = matchTerms.some(term => name.toLowerCase().includes(term.toLowerCase()))
+
+          if (show) { item.style.display = ''; visible++ }
+          else item.style.display = 'none'
+        })
+
+        if (countEl) countEl.textContent = `${visible} אטרקציות`
+        if (noResults) noResults.classList.toggle('hidden', visible > 0)
+      })
+    })
+  })
+</script>

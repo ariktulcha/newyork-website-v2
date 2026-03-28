@@ -1,0 +1,145 @@
+---
+import Layout from '../../../components/Layout.astro'
+import SchemaOrg from '../../../components/SchemaOrg.astro'
+import Breadcrumb from '../../../components/Breadcrumb.astro'
+import HotelCard from '../../../components/Cards/HotelCard.astro'
+import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+
+const { data } = await supabaseAdmin
+  .from('hotels')
+  .select('*')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('published', true)
+
+// Luxury = 5-star hotels (all premium brands in Dubai are 5-star)
+const LUXURY_BRANDS = ['בורג', 'ארמאני', 'אטלנטיס', 'Four Seasons', 'Mandarin', 'Waldorf', 'Jumeirah', 'Raffles', 'One&Only', 'ואן אנד אונלי', 'קמפינסקי', 'Kempinski', 'ריץ', 'Ritz', 'Park Hyatt', 'Bulgari']
+const items = (data || []).filter(h =>
+  h.star_rating >= 5 ||
+  LUXURY_BRANDS.some(b => (h.name_he || '').includes(b) || (h.name_en || '').includes(b))
+)
+
+const pageTitle = 'מלונות יוקרה בדובאי | Yalla Dubai'
+const pageDescription = 'מלונות היוקרה המובילים בדובאי. חוויות אירוח ברמה הגבוהה ביותר — סוויטות מפוארות, ספא עולמי ושירות אישי.'
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'מלונות יוקרה בדובאי',
+  description: pageDescription,
+  numberOfItems: items.length,
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name_he,
+    url: new URL(`/hotels/${item.slug}`, 'https://yalla-dubai.co.il').toString(),
+  })),
+}
+
+const breadcrumbItems = [
+  { label: 'דף הבית', href: '/' },
+  { label: 'מלונות', href: '/hotels' },
+  { label: 'מלונות יוקרה' },
+]
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <SchemaOrg schema={itemListSchema} />
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <Breadcrumb items={breadcrumbItems} />
+
+    <!-- Category pills -->
+    <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
+      <a href="/hotels/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
+      <a href="/hotels/5-stars/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">⭐ 5 כוכבים</a>
+      <a href="/hotels/beach/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🏖️ חוף</a>
+      <a href="/hotels/family/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">👨‍👩‍👧 משפחתי</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">💎 יוקרה</span>
+    </nav>
+
+    <header class="mb-10 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מלונות יוקרה בדובאי</h1>
+      <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
+        דובאי מגדירה מחדש את מושג היוקרה. מלונות כמו בורג' אל ערב ואטלנטיס
+        מציעים חוויה שאין כמותה — סוויטות עם נוף פנורמי, ספא ברמה עולמית ושירות מושלם.
+      </p>
+    </header>
+
+    {items.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map(item => (
+          <HotelCard
+            name_he={item.name_he}
+            name_en={item.name_en}
+            slug={item.slug}
+            image={item.image}
+            area={item.area}
+            star_rating={item.star_rating}
+            price_range={item.price_range}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16">
+        <p class="text-white/40 text-lg">לא נמצאו מלונות יוקרה כרגע. חזרו בקרוב!</p>
+      </div>
+    )}
+
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — מלונות יוקרה בדובאי</h2>
+      <div class="space-y-4">
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה מלון היוקרה הכי טוב בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">בורג' אל ערב הוא מלון יוקרה בדובאי הדברי. מלונות יוקרה בדובאי אחרים: אטלנטיס, ארמאני, פור סיזנס. בחר מלון יוקרה בדובאי לפי העדפה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">כמה עולה לילה במלון יוקרה בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלון יוקרה בדובאי עולה מ-1,000 דירהם ללילה וקי. מלנות יוקרה בדובאי יכול להגיע ל-20,000 דירהם לסוויטה. מלון יוקרה בדובאי יקר במיוחד.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה כולל מלון יוקרה בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלון יוקרה בדובאי כולל: ספא, מסעדות, בריכות אינסוף, חוף פרטי. מלון יוקרה בדובאי מספק שירות באטלר וטרנספורט.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">אילו מלונות יוקרה בדובאי עם חוף פרטי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות יוקרה בדובאי על חוף: בורג' אל ערב, אטלנטיס, פור סיזנס. מלון יוקרה בדובאי עם חוף פרטי יקר יותר.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איזה משפחות טובות למלון יוקרה בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלון יוקרה בדובאי מתאים למשפחות עשירות או לחתן וכלה. מלונות יוקרה בדובאי מרוויחים מעמדות מיוחדים לאירועים.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">צריך להזמין מלון יוקרה בדובאי מראש?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, מלון יוקרה בדובאי צריך הזמנה לפחות חודשיים. מלונות יוקרה בדובאי מתמלאים במהירות בעונה גבוהה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה סוגי סוויטות במלונות יוקרה בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלון יוקרה בדובאי מציע: סוויטות מלכותיות, פנטהאוס, סוויטות עם מטבח. מלון יוקרה בדובאי עם סוויטות ממש מפוארות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה מסעדות בדובאי מלון יוקרה?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלון יוקרה בדובאי כולל מסעדות זכירי. מלון יוקרה בדובאי מציע מטבח צרפתי, איטלקי, אסייתי. כל מלון יוקרה בדובאי עם שפים מעולים.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה בורג' אל ערב מיוחד בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">בורג' אל ערב הוא סמל יוקרה בדובאי עם מלון יוקרה בדובאי במוצא. בורג' אל ערב סוויטה עם ברך לים ביל וגלריה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה ספא מצעה מלונות יוקרה בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות יוקרה בדובאי מציעים ספא עולמיים עם טיפולים פרימיום. ספא במלונות יוקרה בדובאי כולל עיסוי, טיפולי פנים וטיפולים גוניים.</p>
+        </details>
+      </div>
+    </section>
+
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">רוצים עזרה בבחירת מלון יוקרה בדובאי?</p>
+      <a
+        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מחפש מלון יוקרה בדובאי ✨')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+      >
+        דברו איתנו בווטסאפ
+      </a>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,141 @@
+---
+import Layout from '../../../components/Layout.astro'
+import SchemaOrg from '../../../components/SchemaOrg.astro'
+import Breadcrumb from '../../../components/Breadcrumb.astro'
+import NightlifeCard from '../../../components/Cards/NightlifeCard.astro'
+import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+
+const { data } = await supabaseAdmin
+  .from('nightlife')
+  .select('*')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('published', true)
+
+// Rooftop = bars/lounges with rooftop/sky/terrace keywords (no dedicated venue_type)
+const ROOFTOP_KEYWORDS = ['סקיי', 'sky', 'רוף', 'roof', 'טרסה', 'terrace', 'לאונג', 'lounge', 'תצפית']
+const items = (data || []).filter(n =>
+  ROOFTOP_KEYWORDS.some(kw =>
+    (n.name_he || '').toLowerCase().includes(kw.toLowerCase()) ||
+    (n.name_en || '').toLowerCase().includes(kw.toLowerCase())
+  )
+)
+
+const pageTitle = 'רופטופ בארים בדובאי | Yalla Dubai'
+const pageDescription = 'רופטופ בארים מובילים בדובאי. שתייה עם נוף פנורמי של קו הרקיע של דובאי — החוויה הכי יפה בעיר.'
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'רופטופ בארים בדובאי',
+  description: pageDescription,
+  numberOfItems: items.length,
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name_he,
+    url: new URL(`/nightlife/${item.slug}`, 'https://yalla-dubai.co.il').toString(),
+  })),
+}
+
+const breadcrumbItems = [
+  { label: 'דף הבית', href: '/' },
+  { label: 'חיי לילה', href: '/nightlife' },
+  { label: 'רופטופ' },
+]
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <SchemaOrg schema={itemListSchema} />
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <Breadcrumb items={breadcrumbItems} />
+
+    <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
+      <a href="/nightlife/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
+      <a href="/nightlife/bars/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🍸 ברים</a>
+      <a href="/nightlife/clubs/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🎵 מועדונים</a>
+      <a href="/nightlife/beach-clubs/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🏖️ ביץ׳ קלאב</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">🌇 רופטופ</span>
+    </nav>
+
+    <header class="mb-10 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">רופטופ בארים בדובאי</h1>
+      <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
+        דובאי, עם גורדי השחקים שלה, מציעה רופטופ בארים עם הנוף הכי מרשים בעולם.
+        קוקטיילים ברמה גבוהה, אווירה רומנטית ופנורמה עוצרת נשימה.
+      </p>
+    </header>
+
+    {items.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map(item => (
+          <NightlifeCard
+            name_he={item.name_he}
+            name_en={item.name_en}
+            slug={item.slug}
+            image={item.image}
+            area={item.area}
+            type={item.type}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16">
+        <p class="text-white/40 text-lg">לא נמצאו רופטופ בארים כרגע. חזרו בקרוב!</p>
+      </div>
+    )}
+
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — רופטופ בארים בדובאי</h2>
+      <div class="space-y-4">
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הרופטופ בר הכי גבוה בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">דובאי מתהדרת במספר רופטופ בארים בגבהים מרשימים. חלקם ממוקמים בקומות 40-70 של מלונות יוקרה, עם נוף פנורמי של כל העיר.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מתי הזמן הכי טוב לבקר ברופטופ בר?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">שעת השקיעה (17:00-19:00) היא הזמן המושלם — תוכלו ליהנות מהנוף באור יום ולראות את העיר נדלקת. מומלץ להגיע מוקדם לתפוס מקום טוב.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם צריך הזמנה לרופטופ בר בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מומלץ מאוד להזמין מראש, במיוחד בסופי שבוע ובעונת התיירות. רופטופ בארים פופולריים מתמלאים מהר.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה המחירים של משקאות ברופטופ בר בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">משקאות ברופטופ בר בדובאי עולים בין 60-150 דירהם לקוקטייל. רופטופ בארים ביוקרה בדובאי יכולים להיות יקרים יותר.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איזה רופטופ בר בדובאי טוב לתאריך?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">רופטופ בארים רומנטיים בדובאי: Atlantis Sky Lounge, At.mosphere, Nobu Lounge. אווירה רומנטית ונוף מדהים מעניקים לתאריך את השקיעה הבלתי נשכחת בדובאי.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הטובים ביותר רופטופ בארים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">רופטופ בארים מובילים בדובאי: Cé La Vi, Nobu Lounge, Skyview Bar. רופטופ בארים בדובאי המובילים מציעים קוקטיילים מעולים ונוף עוצר נשימה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם יש דרס קוד לרופטופ בר בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">קוד הלבוש הוא Smart Casual עד Dressy. רופטופ בארים בדובאי לא מקבלים שורטס, כפכפים או גופיות. חשוב להתלבש בהגינות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה אוכל מוגש ברופטופ בארים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">רופטופ בארים בדובאי מציעים בדרך כלל אפטיזרים ואוכל קל. חלק מהם גם יש מסעדות בתוך הרופטופ בר בדובאי.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איזו גיל מינימום לרופטופ בר בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">גיל מינימום הוא בדרך כלל 18-21 שנים. רופטופ בארים בדובאי דורשים תעודת זהות בתוקף. רופטופ בארים בדובאי עם אלכוהול דורשים גיל מוגבל.</p>
+        </details>
+      </div>
+    </section>
+
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">רוצים המלצה לרופטופ בר בדובאי?</p>
+      <a
+        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מחפש רופטופ בר בדובאי 🌃')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+      >
+        דברו איתנו בווטסאפ
+      </a>
+    </div>
+  </main>
+</Layout>

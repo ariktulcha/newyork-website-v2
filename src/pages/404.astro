@@ -1,0 +1,66 @@
+---
+import Layout from '../components/Layout.astro'
+---
+
+<Layout title="הדף לא נמצא | Yalla Dubai" description="הדף שחיפשתם לא נמצא בדובאי. חזרו לעמוד הבית או בחרו בטיול אחר.">
+  <div class="min-h-[70vh] flex items-center justify-center px-4">
+    <div class="max-w-2xl mx-auto text-center">
+      <!-- 404 Number -->
+      <div class="mb-8">
+        <h1 class="text-9xl md:text-[10rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-amber-500 to-amber-400">
+          404
+        </h1>
+      </div>
+
+      <!-- Heading -->
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-4">הדף לא נמצא</h2>
+
+      <!-- Subtext -->
+      <p class="text-xl text-white/70 mb-8 max-w-xl mx-auto leading-relaxed">
+        נראה שהתעיתם... אבל דובאי מחכה לכם! 🏜️
+      </p>
+
+      <!-- Navigation Links -->
+      <div class="grid sm:grid-cols-2 gap-4 mb-8">
+        <a
+          href="/"
+          class="bg-amber-500 hover:bg-amber-600 text-[#0D0D0D] font-bold py-3 px-6 rounded-lg transition-all"
+        >
+          🏠 חזרה לעמוד הבית
+        </a>
+        <a
+          href="/desert-safari"
+          class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-3 px-6 rounded-lg border border-amber-500/40 transition-all"
+        >
+          🏜️ ספארי במדבר
+        </a>
+        <a
+          href="/attractions"
+          class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-3 px-6 rounded-lg border border-amber-500/40 transition-all"
+        >
+          🎢 אטרקציות
+        </a>
+        <a
+          href="/hotels"
+          class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-3 px-6 rounded-lg border border-amber-500/40 transition-all"
+        >
+          🏨 מלונות
+        </a>
+      </div>
+
+      <!-- WhatsApp CTA -->
+      <div class="bg-[#1A1208] border border-amber-500/20 rounded-2xl p-8">
+        <p class="text-white/80 mb-4">צריכים עזרה בתכנון הטיול?</p>
+        <a
+          href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מחפש עזרה בתכנון טיול לדובאי 🏙️')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          dir="rtl"
+          class="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-8 py-3 rounded-full transition-all"
+        >
+          💬 דברו איתנו בווטסאפ
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

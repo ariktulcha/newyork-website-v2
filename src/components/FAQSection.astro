@@ -1,0 +1,48 @@
+---
+import SchemaOrg from './SchemaOrg.astro'
+
+interface Props {
+  items: { q: string; a: string }[]
+}
+
+const { items } = Astro.props
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map(item => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+}
+---
+<section class="mx-auto max-w-3xl">
+  <h2 class="mb-8 text-center text-3xl font-bold text-white">שאלות נפוצות</h2>
+  <div class="space-y-3">
+    {items.map((item) => (
+      <details class="group rounded-xl border border-amber-500/20 bg-[#1A1208] transition-all duration-300 hover:border-amber-500/40">
+        <summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-lg font-bold text-white transition-colors group-open:text-amber-400">
+          <span>{item.q}</span>
+          <svg
+            class="h-5 w-5 shrink-0 text-amber-500 transition-transform duration-300 group-open:rotate-180"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="px-6 pb-5 leading-relaxed text-white/70">
+          <p>{item.a}</p>
+        </div>
+      </details>
+    ))}
+  </div>
+  <SchemaOrg schema={faqSchema} />
+</section>

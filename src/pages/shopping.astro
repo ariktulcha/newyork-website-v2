@@ -1,0 +1,410 @@
+---
+import Layout from '../components/Layout.astro'
+
+const title = 'קניות בדובאי — המדריך המלא לקניונים, שווקים ומציאות | Yalla Dubai'
+const description = 'מדריך קניות בדובאי: Dubai Mall, Gold Souk, Mall of Emirates, Outlet ועוד. Tax Refund, מה לקנות, פסטיבלי קניות וטיפים לקנייה חכמה.'
+
+const malls = [
+  {
+    slug: 'dubai-mall',
+    attractionLink: '/attractions/dubai-mall-attraction',
+    image: 'https://images.unsplash.com/photo-1547637589-f54c34f5d7a4?w=1200&q=80&fit=crop',
+    name: 'The Dubai Mall',
+    nameHe: 'דובאי מול — הקניון הגדול בעולם',
+    area: 'דאונטאון דובאי',
+    stores: '1,200+',
+    tag: '🏆 הגדול בעולם',
+    tagColor: 'bg-amber-500 text-black',
+    description: 'לא סתם קניון — זו עיר שלמה תחת קורת גג אחת. דובאי מול מחזיק את הרשומה של הקניון הגדול בעולם עם למעלה מ-1,200 חנויות, ומשרת 80 מיליון מבקרים בשנה. אבל מה שהופך אותו לייחודי הוא לא הגודל — זה מה שיש בפנים.',
+    insideAttractions: [
+      { name: 'אקווריום דובאי', link: '/attractions/dubai-aquarium', emoji: '🦈' },
+      { name: 'מזרקות דובאי', link: '/attractions/dubai-fountain-show', emoji: '⛲' },
+      { name: 'בורג\' חליפה בחוץ', link: '/attractions/burj-khalifa-attraction', emoji: '🏙️' },
+    ],
+    highlights: ['Apple Store הגדול במזה"ת', 'מפל מים בגובה 4 קומות', 'VR Park', 'KidZania', 'Galeries Lafayette', 'משטח החלקה על קרח'],
+    brands: 'Louis Vuitton, Gucci, Chanel, Apple, Zara, H&M, Galeries Lafayette',
+    metro: 'Burj Khalifa/Dubai Mall',
+    hours: 'א-ד: 10:00–00:00 | ה-ש: 10:00–01:00',
+    tip: 'הגיעו ב-10:00 לפני ההמון. השתמשו באפליקציה לניווט. מופע המזרקות — כל שעה מ-18:00, חינם.',
+  },
+  {
+    slug: 'mall-of-emirates',
+    attractionLink: '/attractions/ski-dubai',
+    image: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=1200&q=80&fit=crop',
+    name: 'Mall of the Emirates',
+    nameHe: 'מול אוף דה אמירייטס — קניון עם סקי',
+    area: 'אל בארשה',
+    stores: '630+',
+    tag: '⛷️ יש כאן שלג',
+    tagColor: 'bg-blue-500 text-white',
+    description: 'הקניון הזה עשה היסטוריה — הם שמו סקי בתוך קניון, בלב המדבר. Ski Dubai הוא ההפתעה שמחכה לכם בפנים: מדרון אמיתי עם שלג אמיתי ב-30 מעלות בחוץ. מלבד זה, תמצאו כאן חנויות יוקרה ומסעדות ברמה גבוהה.',
+    insideAttractions: [
+      { name: 'סקי דובאי', link: '/attractions/ski-dubai', emoji: '⛷️' },
+    ],
+    highlights: ['Ski Dubai + Snow Park', 'Harvey Nichols', 'Magic Planet', 'Dreamscape VR', 'VOX Cinemas'],
+    brands: 'Harvey Nichols, Cartier, Tiffany, Dior, Rolex, Nike, Adidas, Zara',
+    metro: 'Mall of the Emirates',
+    hours: 'א-ד: 10:00–00:00 | ה-ש: 10:00–01:00',
+    tip: 'כרטיסים לסקי דובאי מ-200 AED. כדאי לשלב ביום אחד: קניות + סקי.',
+  },
+  {
+    slug: 'city-walk',
+    attractionLink: '/attractions/green-planet-dubai',
+    image: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=1200&q=80&fit=crop',
+    name: 'City Walk',
+    nameHe: 'סיטי ווק — הקומפלקס הטרנדי',
+    area: 'ג\'ומיירה / אל וואסל',
+    stores: '150+',
+    tag: '🌿 בחוץ + בפנים',
+    tagColor: 'bg-green-600 text-white',
+    description: 'City Walk הוא הקניון שמרגיש כמו רחוב אירופאי — פתוח לשמיים, מעוצב, עם גרפיטי על הקירות ומסעדות שפים בכל פינה. כאן מגיעים לא רק לקנות, אלא לבלות. ה-Green Planet שבפנים הוא יער טרופי מקורה עם 3,000 בעלי חיים.',
+    insideAttractions: [
+      { name: 'The Green Planet', link: '/attractions/green-planet-dubai', emoji: '🌿' },
+    ],
+    highlights: ['Green Planet — יער טרופי מקורה', 'Hub Zero Gaming', 'Roxy Cinema', 'מסעדות שף', 'אמנות רחוב ייחודית'],
+    brands: 'COS, & Other Stories, Maison Kitsuné, Sephora, KIKO Milano',
+    metro: 'Business Bay (10 דק\' ברגל)',
+    hours: 'ש-ד: 10:00–22:00 | ה-ו: 10:00–00:00',
+    tip: 'הכי כיף בערב אחרי 18:00. שלבו ארוחת ערב שם — המסעדות ממש טובות.',
+  },
+  {
+    slug: 'ibn-battuta',
+    attractionLink: null,
+    image: 'https://images.unsplash.com/photo-1583394293297-d0b2a9b37b6f?w=1200&q=80&fit=crop',
+    name: 'Ibn Battuta Mall',
+    nameHe: 'אבן בטוטה מול — קניון הנוסע',
+    area: 'ג\'בל עלי',
+    stores: '270+',
+    tag: '🌍 נושאי ומיוחד',
+    tagColor: 'bg-purple-600 text-white',
+    description: 'הקניון הכי מיוחד בדובאי מבחינה ויזואלית — 6 אולמות מרהיבים בהשראת מדינות שאבן בטוטה ביקר בהן: סין, הודו, פרס, מצרים, תוניסיה ואנדלוסיה. תקרות מצויירות, קשתות מעוטרות, ועיצוב שגורם לך לשכוח שאתה בקניון. פחות תיירותי, פחות צפוף, מחירים נוחים יותר.',
+    insideAttractions: [],
+    highlights: ['6 אולמות נושאיים מרהיבים', 'IMAX Cinema', 'Carrefour ענק', 'פחות עמוס מ-Dubai Mall'],
+    brands: 'Carrefour, H&M, LC Waikiki, Marks & Spencer, Debenhams',
+    metro: 'Ibn Battuta',
+    hours: 'א-ד: 10:00–22:00 | ה-ש: 10:00–00:00',
+    tip: 'מושלם אם נוסעים מ/ל-אבו דאבי. שלבו עם ביקור ב-Ibn Battuta — הנסיעה כדאית.',
+  },
+  {
+    slug: 'dubai-outlet',
+    attractionLink: '/attractions/dubai-outlet-mall',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80&fit=crop',
+    name: 'Dubai Outlet Mall',
+    nameHe: 'דובאי אאוטלט מול — מציאות שנה',
+    area: 'דרך דובאי-אל עין',
+    stores: '240+',
+    tag: '🏷️ עד 90% הנחה',
+    tagColor: 'bg-red-600 text-white',
+    description: 'זה המקום לאלה שרוצים מותגים במחיר שפוי. הנחות של 30-90% על קולקציות עבר של מותגים בינלאומיים — Nike, Adidas, Tommy Hilfiger, Coach, Michael Kors, Calvin Klein ועוד. לא ממש "מרכז דובאי" אבל שווה כל ק"מ.',
+    insideAttractions: [],
+    highlights: ['הנחות 30-90% כל השנה', 'מותגי ספורט וסגנון', 'פחות צפוף', 'Carrefour'],
+    brands: 'Nike, Adidas, Puma, Levi\'s, Tommy Hilfiger, Coach, Michael Kors, Calvin Klein, Gap',
+    metro: 'אין — Uber/מונית (30 דק\' ממרכז)',
+    hours: 'כל יום: 10:00–22:00',
+    tip: 'שלבו עם ספארי במדבר — האאוטלט נמצא על הכביש לעבר המדבר. בדקו מחירים באונליין לפני.',
+  },
+]
+
+const souks = [
+  {
+    name: 'שוק הזהב — Gold Souk',
+    area: 'דירה, דובאי העתיקה',
+    emoji: '🥇',
+    description: 'הכניסו לרחוב קצר וכסה בתים ישנים, ותגלו אחד המראות המדהימים בדובאי: חלונות ראווה שנוצצים מזהב לכל עבר. שוק הזהב בדובאי הוא אחד הגדולים בעולם, עם למעלה מ-380 חנויות תכשיטים. המחיר נקבע לפי משקל + עמלת אומן.',
+    tips: ['ניהול מחירים הוא נורמה — אל תקבלו מחיר ראשון', 'הגיעו בבוקר (09:00-12:00) לפני ההמון', 'בדקו מחיר זהב יומי (Gold Price Dubai) לפני'],
+    link: '/attractions/dubai-gold-souk',
+    howTo: 'מטרו: Union Station + מים-כלכלה (Abra) → Gold Souk',
+  },
+  {
+    name: 'שוק התבלינים — Spice Souk',
+    area: 'דירה (ליד Gold Souk)',
+    emoji: '🌶️',
+    description: 'ממש ליד שוק הזהב, שוק התבלינים מציע חוויה חושנית מרהיבה: שקי תבלינים בצבעים עזים, ריחות מזרחיים שממלאים את האוויר, ומוכרים שקוראים לכם בעברית. כורכום, זעפרן, לימון כבוש, קינמון, עוד. מחירים נמוכים פי 3-5 מישראל.',
+    tips: ['זעפרן אמיתי עולה יקר — אם זול מדי, זה מזויף', 'קנו בכמויות — משלמים פחות', 'אחסנו בשקיות אטומות לטיסה'],
+    link: null,
+    howTo: 'ממש לצד Gold Souk — הליכה 2 דקות',
+  },
+  {
+    name: 'Global Village — קניות מהעולם',
+    area: 'שייח זאיד בן חמדאן ה-1',
+    emoji: '🌍',
+    description: 'פארק בידור עונתי (אוקטובר-אפריל) עם 90+ ביתנים מארצות שונות. כאן ממש קונים גבינה מהולנד, שטיחים מאיראן, בגדים מהפקיסטן, ועוד — ישירות מהיצרן. מגיע גם עם אטרקציות, מופעים, ואוכל רחוב מכל העולם.',
+    tips: ['פתוח רק אוקטובר-אפריל', 'ימי חול פחות עמוסים', 'הגיעו עם סבלנות — יש כאן שעות'],
+    link: '/attractions/global-village-dubai',
+    howTo: 'Uber/מונית: "Global Village Dubai"',
+  },
+]
+
+const whatToBuy = [
+  { emoji: '🥇', item: 'זהב ותכשיטים', why: 'מחיר לפי משקל + אפס מע"מ = בין הזולים בעולם. Gold Souk הוא המקום.' },
+  { emoji: '🌶️', item: 'תבלינים ועשבי תיבול', why: 'Spice Souk — כורכום, זעפרן, קינמון, ועוד. מחיר 3-5× זול מישראל.' },
+  { emoji: '📱', item: 'אלקטרוניקה', why: 'מחירי אפל ואנדרואיד לפעמים זולים ב-10-20%. Carrefour ו-Sharaf DG.' },
+  { emoji: '👜', item: 'מוצרי יוקרה', why: 'אין מס על מוצרי יוקרה. Tax Refund מ-5% VAT על כל קנייה. Louis Vuitton, Gucci, Chanel.' },
+  { emoji: '🧴', item: 'בשמים', why: 'דובאי ידועה בעולם הבשמים. Arabic Oud הוא unique. Duty Free בשדה = מחיר אטרקטיבי.' },
+  { emoji: '🍫', item: 'שוקולד ומתנות', why: 'Patchi, Bateel (תמרים שוקולד), ועוד. מושלם כמתנות. Duty Free בשדה.' },
+  { emoji: '🏺', item: 'מוצרי עיצוב ערביים', why: 'פנסים, שטיחים, כלי נחושת — קנו בשוק הישן (Al Fahidi) ב-Old Dubai.' },
+]
+
+const taxRefundSteps = [
+  { step: '1', title: 'קנו בחנות מורשית', desc: 'בחנות המשתתפת בתוכנית Planet Tax Free/Global Blue. סכום מינימלי: 250 AED לקנייה.' },
+  { step: '2', title: 'בקשו טופס TAX FREE', desc: 'הקופאי יצור טופס. תצטרכו דרכון. הטופס קשור לקנייה שלכם.' },
+  { step: '3', title: 'בשדה התעופה', desc: 'לפני הצ\'ק-אין (לפעמים אחריו) — עמדות Tax Refund של Planet/Global Blue. הציגו טפסים + קבלות + קניות.' },
+  { step: '4', title: 'קבלו את ה-5%', desc: 'מזומן (AED) או זיכוי לכרטיס. מינוס עמלה קטנה. בממוצע 3.5-4% על הקנייה.' },
+]
+
+const relatedLinks = [
+  { href: '/attractions/dubai-mall-attraction', emoji: '🏬', title: 'Dubai Mall', desc: 'אקווריום, VR Park, ועוד', color: 'border-amber-500/20' },
+  { href: '/attractions/ski-dubai', emoji: '⛷️', title: 'סקי דובאי', desc: 'שלג בלב המדבר', color: 'border-blue-500/20' },
+  { href: '/attractions/global-village-dubai', emoji: '🌍', title: 'Global Village', desc: 'קניות + אטרקציות', color: 'border-green-500/20' },
+  { href: '/attractions/dubai-fountain-show', emoji: '⛲', title: 'מזרקות דובאי', desc: 'ליד ה-Dubai Mall', color: 'border-cyan-500/20' },
+  { href: '/attractions/dubai-aquarium', emoji: '🦈', title: 'אקווריום דובאי', desc: 'בתוך Dubai Mall', color: 'border-blue-500/20' },
+  { href: '/attractions/burj-khalifa-attraction', emoji: '🏙️', title: 'בורג\' חליפה', desc: '20 דק\' מה-Mall', color: 'border-amber-500/20' },
+  { href: '/guides', emoji: '📖', title: 'מדריכי דובאי', desc: 'כל המדריכים', color: 'border-white/10' },
+  { href: '/desert-safari', emoji: '🏜️', title: 'ספארי במדבר', desc: 'על הדרך לאאוטלט', color: 'border-orange-500/20' },
+]
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  author: { '@type': 'Organization', name: 'Yalla Dubai' },
+  publisher: { '@type': 'Organization', name: 'Yalla Dubai', url: 'https://yalla-dubai.co.il' },
+  mainEntityOfPage: 'https://yalla-dubai.co.il/shopping',
+  inLanguage: 'he',
+  datePublished: '2025-01-01',
+  dateModified: '2026-03-24',
+}
+---
+
+<Layout {title} {description} canonical="https://yalla-dubai.co.il/shopping">
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <!-- Hero -->
+  <section class="relative py-20 md:py-28 overflow-hidden">
+    <div style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=60&fit=crop'); background-size:cover; background-position:center;" class="absolute inset-0 opacity-15"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0D0D0D]/70 via-[#0D0D0D]/50 to-[#0D0D0D]"></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+      <nav class="text-sm text-white/40 mb-6">
+        <a href="/" class="hover:text-amber-400 transition-colors">דף הבית</a>
+        <span class="mx-2">/</span>
+        <span class="text-white/60">קניות</span>
+      </nav>
+      <h1 class="text-4xl md:text-6xl font-black text-white mb-5">קניות <span class="text-amber-400">בדובאי</span></h1>
+      <p class="text-lg md:text-xl text-white/65 max-w-2xl mx-auto leading-relaxed">
+        גן עדן לשופינג. מהקניון הגדול בעולם ועד שוק הזהב העתיק — ומכל מה שביניהם.
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center gap-4 text-sm">
+        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">🏬 80+ קניונים</span>
+        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">🏷️ Tax Refund 5%</span>
+        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">✈️ Duty Free בשדה</span>
+        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">🥇 שוק הזהב הגדול</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- What to buy (above the fold) -->
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <h2 class="text-2xl md:text-3xl font-black text-white mb-6 text-center">מה <span class="text-amber-400">כדאי לקנות</span> בדובאי?</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      {whatToBuy.map(w => (
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-xl p-4 text-center hover:border-amber-500/25 transition-all">
+          <span class="text-2xl block mb-2">{w.emoji}</span>
+          <p class="text-white font-bold text-sm mb-1">{w.item}</p>
+          <p class="text-white/40 text-xs leading-relaxed">{w.why}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Malls -->
+  <section class="max-w-6xl mx-auto px-4 py-4 pb-16">
+    <h2 class="text-3xl md:text-4xl font-black text-white mb-10 text-center">
+      הקניונים <span class="text-amber-400">הכי שווים</span>
+    </h2>
+    <div class="space-y-8">
+      {malls.map((mall, i) => (
+        <article class="bg-[#1A1208] border border-white/5 rounded-3xl overflow-hidden hover:border-amber-500/20 transition-all group">
+          <!-- Image -->
+          <div class="aspect-[21/7] overflow-hidden relative">
+            <img src={mall.image} alt={mall.nameHe} loading="lazy" decoding="async" width="1200" height="400"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute top-4 right-4 flex gap-2 flex-wrap">
+              <span class={`text-xs font-bold px-3 py-1.5 rounded-full ${mall.tagColor}`}>{mall.tag}</span>
+              <span class="bg-black/60 text-white/70 text-xs px-3 py-1.5 rounded-full">{mall.stores} חנויות</span>
+            </div>
+          </div>
+
+          <div class="p-6 md:p-8">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+              <div>
+                <h3 class="text-2xl font-black text-white">{mall.name}</h3>
+                <p class="text-amber-400/70 text-sm">{mall.nameHe}</p>
+                <p class="text-white/40 text-sm">📍 {mall.area} · 🕐 {mall.hours}</p>
+              </div>
+              {mall.attractionLink && (
+                <a href={mall.attractionLink}
+                  class="flex items-center gap-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-sm px-4 py-2 rounded-xl transition-all whitespace-nowrap self-start">
+                  → עמוד האטרקציה
+                </a>
+              )}
+            </div>
+
+            <p class="text-white/65 leading-relaxed mb-5">{mall.description}</p>
+
+            <!-- Inside attractions (cross-links) -->
+            {mall.insideAttractions.length > 0 && (
+              <div class="mb-5">
+                <p class="text-white/50 text-xs font-bold uppercase tracking-wide mb-2">🎯 מה עוד יש שם</p>
+                <div class="flex flex-wrap gap-2">
+                  {mall.insideAttractions.map(a => (
+                    <a href={a.link}
+                      class="bg-white/5 hover:bg-amber-500/10 border border-white/8 hover:border-amber-500/20 text-white/60 hover:text-amber-400 text-sm px-3 py-1.5 rounded-lg transition-all">
+                      {a.emoji} {a.name}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div class="bg-white/3 rounded-xl p-3">
+                <p class="text-white/40 text-xs mb-1 uppercase tracking-wide">מותגים בולטים</p>
+                <p class="text-white/65 text-sm">{mall.brands}</p>
+              </div>
+              <div class="bg-white/3 rounded-xl p-3">
+                <p class="text-white/40 text-xs mb-1 uppercase tracking-wide">🚇 הגעה</p>
+                <p class="text-white/65 text-sm">{mall.metro}</p>
+              </div>
+            </div>
+
+            <div class="mb-4 flex flex-wrap gap-2">
+              {mall.highlights.map(h => (
+                <span class="text-xs bg-white/5 text-white/50 px-3 py-1 rounded-full border border-white/8">{h}</span>
+              ))}
+            </div>
+
+            <div class="bg-amber-500/5 border border-amber-500/10 rounded-xl p-3">
+              <span class="text-amber-400 font-bold text-xs">💡 </span>
+              <span class="text-white/60 text-sm">{mall.tip}</span>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Souks -->
+  <section class="max-w-6xl mx-auto px-4 py-12 border-t border-white/5">
+    <h2 class="text-3xl md:text-4xl font-black text-white mb-4 text-center">
+      שווקים <span class="text-amber-400">מסורתיים</span>
+    </h2>
+    <p class="text-white/50 text-center mb-10">לא תחוו קניות אמיתיות בדובאי בלי לבקר בשווקים העתיקים</p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      {souks.map(souk => (
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 hover:border-amber-500/25 transition-all">
+          <div class="text-4xl mb-4">{souk.emoji}</div>
+          <h3 class="text-xl font-black text-white mb-1">{souk.name}</h3>
+          <p class="text-white/40 text-sm mb-3">📍 {souk.area}</p>
+          <p class="text-white/65 text-sm leading-relaxed mb-4">{souk.description}</p>
+          <ul class="space-y-1 mb-4">
+            {souk.tips.map(t => (
+              <li class="text-white/50 text-xs flex items-start gap-1.5">
+                <span class="text-amber-400 mt-0.5">›</span>{t}
+              </li>
+            ))}
+          </ul>
+          <p class="text-white/35 text-xs mb-3">🚗 {souk.howTo}</p>
+          {souk.link && (
+            <a href={souk.link} class="block text-center bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-sm py-2 rounded-xl transition-all">
+              → לעמוד המלא
+            </a>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tax Refund -->
+  <section class="max-w-5xl mx-auto px-4 py-12 border-t border-white/5">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-black text-white mb-2">
+        💳 Tax Refund — <span class="text-amber-400">איך מחזירים 5%</span>
+      </h2>
+      <p class="text-white/50">דובאי גובה 5% VAT — תיירים זכאים להחזר. כך עושים את זה נכון:</p>
+    </div>
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+      {taxRefundSteps.map(s => (
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-5">
+          <div class="w-8 h-8 bg-amber-500 text-black font-black text-sm rounded-full flex items-center justify-center mb-3">{s.step}</div>
+          <h4 class="text-white font-bold text-sm mb-2">{s.title}</h4>
+          <p class="text-white/55 text-xs leading-relaxed">{s.desc}</p>
+        </div>
+      ))}
+    </div>
+    <p class="text-white/30 text-xs text-center mt-4">* מינימום 250 AED לקנייה · החזר ממוצע ~3.5-4% אחרי עמלה · Planet Tax Free ו-Global Blue</p>
+  </section>
+
+  <!-- Shopping Festivals -->
+  <section class="max-w-5xl mx-auto px-4 py-10 border-t border-white/5">
+    <h2 class="text-2xl md:text-3xl font-black text-white mb-6 text-center">
+      🎉 מתי כדאי לבוא <span class="text-amber-400">לקניות</span>?
+    </h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      {[
+        { name: 'Dubai Shopping Festival (DSF)', period: '🗓 דצמבר – ינואר', desc: 'הפסטיבל הגדול ביותר. הנחות 25-75% בכל הקניונים, הגרלות רכבים וזהב, מופעים וזיקוקים. זה הזמן לקנות.' },
+        { name: 'Dubai Summer Surprises', period: '🗓 יוני – אוגוסט', desc: 'הנחות + מזג אוויר לא מושך = פחות תיירים + מחירי מלונות נמוכים. שילוב מנצח לשופינג בתקציב.' },
+        { name: 'Ramadan Sales', period: '🗓 לפי לוח הירח', desc: 'חודש הרמדאן מגיע עם מבצעי ענק, במיוחד בלילה. האווירה ייחודית + מחירים מוזלים.' },
+        { name: 'שנה-עגולה', period: '🗓 כל השנה', desc: 'שוק הזהב, Outlet Mall ו-Duty Free בשדה פתוחים כל השנה. לא צריך לחכות לפסטיבל.' },
+      ].map(f => (
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-white font-bold">{f.name}</h3>
+            <span class="text-amber-400 text-xs font-medium">{f.period}</span>
+          </div>
+          <p class="text-white/60 text-sm leading-relaxed">{f.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Related Links -->
+  <section class="max-w-6xl mx-auto px-4 py-12 border-t border-white/5">
+    <h2 class="text-2xl md:text-3xl font-black text-white mb-2 text-center">
+      מה עוד לעשות <span class="text-amber-400">כשאתם שם</span>?
+    </h2>
+    <p class="text-white/40 text-center text-sm mb-8">הקניונים הם רק חלק מהחוויה — כל אחד מהם סמוך לאטרקציות מדהימות</p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      {relatedLinks.map(link => (
+        <a href={link.href}
+          class={`bg-[#1A1208] border ${link.color} rounded-2xl p-4 hover:border-amber-500/30 transition-all group`}>
+          <span class="text-2xl block mb-2">{link.emoji}</span>
+          <p class="text-white font-bold text-sm group-hover:text-amber-400 transition-colors">{link.title}</p>
+          <p class="text-white/40 text-xs">{link.desc}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 border-t border-white/5">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-black text-white mb-4">
+        לא רק קניות — <span class="text-amber-400">גם הרפתקה</span>
+      </h2>
+      <p class="text-white/55 text-lg mb-8 max-w-xl mx-auto">
+        על הדרך לאאוטלט? תוסיפו ספארי במדבר — הקניות + המדבר ביום אחד
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/desert-safari" class="bg-amber-500 hover:bg-amber-400 text-black px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25">
+          הזמינו ספארי במדבר
+        </a>
+        <a href="/attractions" class="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-xl font-bold text-lg border border-white/10 transition-all">
+          כל האטרקציות
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

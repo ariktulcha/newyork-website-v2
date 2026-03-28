@@ -1,0 +1,134 @@
+---
+import Layout from '../../../components/Layout.astro'
+import SchemaOrg from '../../../components/SchemaOrg.astro'
+import Breadcrumb from '../../../components/Breadcrumb.astro'
+import AttractionCard from '../../../components/Cards/AttractionCard.astro'
+import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+
+const { data } = await supabaseAdmin
+  .from('attractions')
+  .select('*')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('published', true)
+
+const items = (data || []).filter(a => a.is_free === true || a.price_range === 'חינם' || a.price_range === 'free')
+
+const pageTitle = 'אטרקציות חינם בדובאי | Yalla Dubai'
+const pageDescription = 'אטרקציות חינם בדובאי שאפשר ליהנות מהן ללא תשלום. חופים, גנים, מזרקות, שווקים ועוד — חוויות בחינם בדובאי.'
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'אטרקציות חינם בדובאי',
+  description: pageDescription,
+  numberOfItems: items.length,
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name_he,
+    url: new URL(`/attractions/${item.slug}`, 'https://yalla-dubai.co.il').toString(),
+  })),
+}
+
+const breadcrumbItems = [
+  { label: 'דף הבית', href: '/' },
+  { label: 'אטרקציות', href: '/attractions' },
+  { label: 'חינם' },
+]
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <SchemaOrg schema={itemListSchema} />
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <Breadcrumb items={breadcrumbItems} />
+
+    <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
+      <a href="/attractions/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">🆓 חינם</span>
+      <a href="/attractions/kids/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">👧 לילדים</a>
+    </nav>
+
+    <header class="mb-10 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">אטרקציות חינם בדובאי</h1>
+      <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
+        דובאי לא חייבת להיות יקרה. יש המון אטרקציות חינמיות מדהימות —
+        ממזרקת דובאי דרך חופים יפהפיים ועד שווקים מסורתיים ומופעי אור.
+      </p>
+    </header>
+
+    {items.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map(item => (
+          <AttractionCard
+            name_he={item.name_he}
+            name_en={item.name_en}
+            slug={item.slug}
+            image={item.image}
+            area={item.area}
+            price={item.price}
+            rating={item.rating}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16">
+        <p class="text-white/40 text-lg">לא נמצאו אטרקציות חינם כרגע. חזרו בקרוב!</p>
+      </div>
+    )}
+
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — אטרקציות חינם בדובאי</h2>
+      <div class="space-y-4">
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה אפשר לעשות בדובאי בחינם?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">דובאי מציעה הרבה חוויות חינם: מזרקת דובאי, חופים ציבוריים, שוק הזהב ושוק התבלינים, הליכה לאורך מרינה דובאי, גן הפרפרים (לילדים מתחת לגיל 3), ועוד.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם החופים בדובאי בחינם?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, רוב החופים הציבוריים בדובאי הם בחינם — כולל JBR Beach, Kite Beach ו-La Mer Beach. חופים פרטיים של מלונות דורשים תשלום.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מתי מופע מזרקת דובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מזרקת דובאי פועלת כל יום מ-18:00 עד 23:00, עם מופע כל 30 דקות. הצפייה חינמית לגמרי ומומלצת מאוד.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה השווקים החינם בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בדובאי כוללות שווקים מסורתיים: שוק הזהב, שוק התבלינים, שוק דבי וסוק אל-בהار. סיור באטרקציות חינם בדובאי הוא חוויה תרבותית עמוקה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה פארקים חינם בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בדובאי כוללות פארקים: Zabeel Park (חינם ביום מסוים), Al Mamzar Beach Park (עם דמי כניסה זעומים). פארקים בדובאי מציעים שדות ירוקים ובריכות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה מוזיאונים חינם בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בדובאי כוללות מוזיאונים: דובאי מוזיאום (ימים מסוימים), בניין הירה (ללא תשלום להיכנס). אטרקציות חינם בדובאי תרבותיות מעניקות הבנה של ההיסטוריה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה אירועים חינם בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בדובאי כוללות אירועים תרבותיים במשך השנה. קונצרטים בחינם, מופעי אור וארוע חורף בדובאי מקדמים תיירות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הזמן הטוב ביותר לבקר באטרקציות חינם בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בדובאי טובות במיוחד בחורף (נובמבר-מרץ) כשהמזג אוויר נעים. אטרקציות חינם בדובאי בקיץ חמות מאוד אך פחות עמוסות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איך להגיע לאטרקציות חינם בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בדובאי נגישות בתחבורה ציבורית, מוניות וקרנה שכרה. הרכבת מטרו בדובאי מגיעה למרבית אטרקציות חינם בדובאי בעלות נמוכה.</p>
+        </details>
+      </div>
+    </section>
+
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">רוצים לדעת עוד על אטרקציות חינם בדובאי?</p>
+      <a
+        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מחפש אטרקציות חינם בדובאי 🎡')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        dir="rtl"
+        class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+      >
+        דברו איתנו בווטסאפ
+      </a>
+    </div>
+  </main>
+</Layout>

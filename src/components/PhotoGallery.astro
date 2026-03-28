@@ -1,0 +1,167 @@
+---
+/**
+ * PhotoGallery.astro
+ * Airbnb-style: 1 large main image + 2×2 grid of 4 additional photos
+ * Falls back gracefully when gallery_urls is empty
+ */
+import { optimizedImageUrl } from '../lib/image'
+interface Props {
+  mainImage?: string
+  galleryUrls?: string[]
+  name: string
+}
+
+const { mainImage, galleryUrls = [], name } = Astro.props
+
+// Show at most 4 gallery photos beyond main
+const photos = galleryUrls.slice(0, 4)
+const hasGallery = photos.length >= 2
+const totalPhotos = (mainImage ? 1 : 0) + photos.length
+---
+
+{hasGallery ? (
+  <!-- Full Airbnb-style gallery -->
+  <div class="photo-gallery relative">
+    <div class="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden h-[420px] md:h-[500px]">
+      <!-- Main large image (left) -->
+      <div class="relative overflow-hidden group cursor-pointer" onclick="openGallery(0)">
+        {mainImage ? (
+          <img
+            src={optimizedImageUrl(mainImage, 800)}
+            alt={`${name} — תמונה ראשית`}
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="eager"
+            fetchpriority="high"
+            width="800"
+            height="500"
+          />
+        ) : (
+          <div class="w-full h-full bg-amber-500/10 flex items-center justify-center">
+            <span class="text-6xl">🏙️</span>
+          </div>
+        )}
+      </div>
+
+      <!-- Right: 2×2 grid -->
+      <div class="grid grid-cols-2 grid-rows-2 gap-2">
+        {photos.slice(0, 4).map((url, i) => (
+          <div class="relative overflow-hidden group cursor-pointer" onclick={`openGallery(${i + 1})`}>
+            <img
+              src={optimizedImageUrl(url, 400)}
+              alt={`${name} — תמונה ${i + 2}`}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+              width="400"
+              height="250"
+            />
+            <!-- Show "all photos" button on last image -->
+            {i === 3 && totalPhotos > 5 && (
+              <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <button class="bg-white text-black font-bold px-4 py-2 rounded-xl text-sm hover:bg-white/90 transition-colors">
+                  📷 כל {totalPhotos} התמונות
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Mobile: show count badge -->
+    <button
+      onclick="openGallery(0)"
+      class="absolute bottom-4 left-4 bg-black/70 backdrop-blur-sm text-white text-sm font-medium px-3 py-1.5 rounded-lg border border-white/20 hover:bg-black/90 transition-colors md:hidden"
+    >
+      📷 {totalPhotos} תמונות
+    </button>
+  </div>
+
+) : mainImage ? (
+  <!-- Single image fallback -->
+  <div class="rounded-2xl overflow-hidden h-[300px] md:h-[420px]">
+    <img
+      src={optimizedImageUrl(mainImage, 800)}
+      alt={name}
+      class="w-full h-full object-cover"
+      loading="eager"
+      fetchpriority="high"
+      width="800"
+      height="500"
+    />
+  </div>
+) : null}
+
+<!-- Lightbox -->
+{hasGallery && (
+  <dialog
+    id="photo-lightbox"
+    class="fixed inset-0 z-50 bg-black/95 w-full h-full max-w-full max-h-full m-0 p-0 open:flex items-center justify-center"
+  >
+    <button
+      onclick="document.getElementById('photo-lightbox').close()"
+      class="absolute top-4 right-4 text-white/70 hover:text-white text-3xl font-light z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+    >
+      ✕
+    </button>
+
+    <!-- Prev -->
+    <button
+      onclick="changePhoto(-1)"
+      class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-4xl z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+    >
+      ›
+    </button>
+
+    <!-- Next -->
+    <button
+      onclick="changePhoto(1)"
+      class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-4xl z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+    >
+      ‹
+    </button>
+
+    <!-- Image -->
+    <img
+      id="lightbox-img"
+      src=""
+      alt={`${name} — תמונה`}
+      class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg"
+    />
+
+    <!-- Counter -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm" id="lightbox-counter"></div>
+  </dialog>
+)}
+
+<script define:vars={{ mainImage, photos, totalPhotos }}>
+  const allPhotos = [mainImage, ...photos].filter(Boolean)
+  let currentIndex = 0
+
+  window.openGallery = function(index) {
+    currentIndex = index
+    updateLightbox()
+    document.getElementById('photo-lightbox')?.showModal()
+  }
+
+  window.changePhoto = function(dir) {
+    currentIndex = (currentIndex + dir + allPhotos.length) % allPhotos.length
+    updateLightbox()
+  }
+
+  function updateLightbox() {
+    const img = document.getElementById('lightbox-img')
+    const counter = document.getElementById('lightbox-counter')
+    if (img) img.src = allPhotos[currentIndex]
+    if (counter) counter.textContent = `${currentIndex + 1} / ${allPhotos.length}`
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    const dialog = document.getElementById('photo-lightbox')
+    if (!dialog?.open) return
+    if (e.key === 'ArrowRight') changePhoto(-1)
+    if (e.key === 'ArrowLeft') changePhoto(1)
+    if (e.key === 'Escape') dialog.close()
+  })
+</script>

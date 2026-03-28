@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yalla-dubai.co.il/sitemap-index.xml

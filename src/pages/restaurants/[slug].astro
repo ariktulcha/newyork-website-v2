@@ -1,0 +1,167 @@
+---
+import { supabaseAdmin, DESTINATION_ID } from '../../lib/supabase'
+import Layout from '../../components/Layout.astro'
+import PhotoGallery from '../../components/PhotoGallery.astro'
+import Breadcrumb from '../../components/Breadcrumb.astro'
+import { marked } from 'marked'
+
+export async function getStaticPaths() {
+  const { data: restaurants } = await supabaseAdmin
+    .from('restaurants')
+    .select('*')
+    .eq('destination_id', DESTINATION_ID)
+    .eq('published', true)
+
+  return (restaurants ?? []).map((restaurant) => ({
+    params: { slug: restaurant.slug },
+    props: { restaurant },
+  }))
+}
+
+const { restaurant } = Astro.props
+
+const cuisineTypes = restaurant.cuisine_types ?? restaurant.metadata?.cuisine_types ?? []
+const openingHours = restaurant.opening_hours ?? restaurant.metadata?.opening_hours
+const priceRange = restaurant.price_range ?? restaurant.metadata?.price_range
+const rating = restaurant.rating ?? restaurant.metadata?.rating
+const reviewCount = restaurant.review_count ?? restaurant.metadata?.review_count ?? 10
+const address = restaurant.address ?? restaurant.metadata?.address
+
+let hoursArray: string[] = []
+if (openingHours) {
+  try {
+    const parsed = typeof openingHours === 'string' ? JSON.parse(openingHours) : openingHours
+    hoursArray = Array.isArray(parsed) ? parsed : [String(openingHours)]
+  } catch {
+    hoursArray = [String(openingHours)]
+  }
+}
+
+const contentHtml = restaurant.full_content ? await marked(restaurant.full_content) : ''
+
+const pageTitle = `${restaurant.name_he}${restaurant.name_en ? ` — ${restaurant.name_en}` : ''} | מסעדות דובאי | Yalla Dubai`
+const pageDescription = restaurant.excerpt || restaurant.description || `${restaurant.name_he} — מסעדה בדובאי`
+
+const restaurantSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: restaurant.name_he,
+  alternateName: restaurant.name_en || undefined,
+  description: restaurant.description || restaurant.excerpt,
+  image: restaurant.image ? (restaurant.image.startsWith('http') ? restaurant.image : new URL(restaurant.image, Astro.site).toString()) : undefined,
+  url: new URL(`/restaurants/${restaurant.slug}`, Astro.site).toString(),
+  ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address } } : {}),
+  ...(cuisineTypes.length > 0 ? { servesCuisine: cuisineTypes } : {}),
+  ...(priceRange ? { priceRange } : {}),
+  ...(rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: rating, ratingCount: reviewCount, bestRating: 5 } } : {}),
+}
+
+const breadcrumbItems = [
+  { label: 'דף הבית', href: '/' },
+  { label: 'מסעדות', href: '/restaurants' },
+  { label: restaurant.name_he },
+]
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`https://yalla-dubai.co.il/restaurants/${restaurant.slug}`}
+  ogImage={restaurant.image}
+  ogType="article"
+  schema={restaurantSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <Breadcrumb items={breadcrumbItems} />
+
+    <div class="mb-8">
+      <PhotoGallery
+        mainImage={restaurant.image}
+        galleryUrls={restaurant.gallery_urls || []}
+        name={restaurant.name_he}
+      />
+    </div>
+
+    <header class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{restaurant.name_he}</h1>
+      {restaurant.name_en && (
+        <p class="text-lg text-white/50">{restaurant.name_en}</p>
+      )}
+    </header>
+
+    <div class="flex flex-wrap items-center gap-4 mb-8 text-sm">
+      {(restaurant.area || address) && (
+        <a
+          href={`https://maps.google.com/?q=${encodeURIComponent((address || restaurant.area || restaurant.name_he) + ', Dubai')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-white/70 hover:text-amber-400 transition-colors"
+        >
+          <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+          {address || restaurant.area} ↗
+        </a>
+      )}
+      {priceRange && (
+        <span class="text-amber-400 font-medium">{priceRange}</span>
+      )}
+      {rating && (
+        <span class="inline-flex items-center gap-1 text-amber-400">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          {rating.toFixed?.(1) ?? rating}
+        </span>
+      )}
+    </div>
+
+    {cuisineTypes.length > 0 && (
+      <div class="flex flex-wrap gap-2 mb-8">
+        {cuisineTypes.map((cuisine: string) => (
+          <span class="text-sm px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            {cuisine}
+          </span>
+        ))}
+      </div>
+    )}
+
+    {restaurant.description && (
+      <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 mb-8">
+        <p class="text-white/80 leading-relaxed">{restaurant.description}</p>
+      </div>
+    )}
+
+    {hoursArray.length > 0 && (
+      <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 mb-8">
+        <h2 class="text-xl font-bold text-amber-400 mb-3">שעות פתיחה — {restaurant.name_he}</h2>
+        {hoursArray.map((h) => (
+          <p class="text-white/70">{h}</p>
+        ))}
+      </div>
+    )}
+
+    {contentHtml && (
+      <div class="prose prose-invert prose-amber max-w-none mb-8 [&_h2]:text-amber-400 [&_h2]:text-2xl [&_h2]:font-black [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:border-r-4 [&_h2]:border-amber-500 [&_h2]:pr-3 [&_h3]:text-amber-300 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_a]:text-amber-400 [&_strong]:text-white" set:html={contentHtml} />
+    )}
+
+    <div class="bg-gradient-to-br from-amber-900/20 to-amber-800/10 border border-amber-500/30 rounded-2xl p-8 text-center">
+      <h3 class="text-2xl font-black text-amber-400 mb-3">גם לטיול במדבר דובאי? 🏜️</h3>
+      <p class="text-white/70 mb-6">הספארי במדבר הוא החוויה המרכזית שלנו בדובאי — נסיעת ג׳יפים על דיונות, רכיבה על גמלים, שקיעה מדהימה וארוחת BBQ על תל הם.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          href="/desert-safari"
+          class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-[#0D0D0D] font-bold px-8 py-3 rounded-full transition-colors"
+        >
+          ⛺ ספארי במדבר
+        </a>
+        <a
+          href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מעוניין בספארי במדבר דובאי 🏜️')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          dir="rtl"
+          class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          הזמינו בווטסאפ
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

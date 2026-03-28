@@ -1,0 +1,41 @@
+---
+import SchemaOrg from './SchemaOrg.astro'
+
+interface Props {
+  items: { label: string; href?: string }[]
+}
+
+const { items } = Astro.props
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    ...(item.href ? { item: new URL(item.href, Astro.site).toString() } : {}),
+  })),
+}
+---
+<nav aria-label="Breadcrumb" class="mb-6">
+  <ol class="flex flex-wrap items-center gap-2 text-sm text-white/40">
+    {items.map((item, index) => (
+      <li class="flex items-center gap-2">
+        {index > 0 && (
+          <svg class="h-3 w-3 rotate-180 text-white/20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        )}
+        {item.href ? (
+          <a href={item.href} class="transition-colors hover:text-amber-400">
+            {item.label}
+          </a>
+        ) : (
+          <span class="text-white/60">{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+  <SchemaOrg schema={breadcrumbSchema} />
+</nav>

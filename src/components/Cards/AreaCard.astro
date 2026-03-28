@@ -1,0 +1,42 @@
+---
+import { optimizedImageUrl } from '../../lib/image'
+interface Props {
+  name_he: string;
+  name_en?: string;
+  slug: string;
+  image?: string;
+  excerpt?: string;
+}
+
+const { name_he, name_en, slug, image, excerpt } = Astro.props;
+---
+
+<a href={`/areas/${slug}`} class="group block bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 rounded-2xl overflow-hidden transition-all card-lift">
+  <div class="aspect-[16/10] overflow-hidden relative">
+    {image ? (
+      <img
+        src={optimizedImageUrl(image, 400)}
+        alt={name_he}
+        loading="lazy"
+        decoding="async"
+        width="400"
+        height="250"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    ) : (
+      <div class="w-full h-full bg-gradient-to-br from-amber-500/20 to-amber-900/20 flex items-center justify-center">
+        <span class="text-4xl">📍</span>
+      </div>
+    )}
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+    <div class="absolute bottom-3 start-4 end-4">
+      <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition-colors">{name_he}</h3>
+      {name_en && <p class="text-sm text-white/50">{name_en}</p>}
+    </div>
+  </div>
+  {excerpt && (
+    <div class="p-4">
+      <p class="text-sm text-white/60 line-clamp-2 leading-relaxed">{excerpt}</p>
+    </div>
+  )}
+</a>

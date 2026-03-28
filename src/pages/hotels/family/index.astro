@@ -1,0 +1,147 @@
+---
+import Layout from '../../../components/Layout.astro'
+import SchemaOrg from '../../../components/SchemaOrg.astro'
+import Breadcrumb from '../../../components/Breadcrumb.astro'
+import HotelCard from '../../../components/Cards/HotelCard.astro'
+import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+
+const { data } = await supabaseAdmin
+  .from('hotels')
+  .select('*')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('published', true)
+
+// Family hotels = resorts, Atlantis, larger/themed hotels known for families
+const FAMILY_KEYWORDS = ['ריזורט', 'resort', 'אטלנטיס', 'atlantis', 'holiday', 'הולידיי', 'מריוט', 'marriott', 'hilton', 'הילטון', 'intercontinental', 'hyatt', 'radisson', 'חוף']
+const items = (data || []).filter(h =>
+  FAMILY_KEYWORDS.some(kw =>
+    (h.name_he || '').toLowerCase().includes(kw.toLowerCase()) ||
+    (h.name_en || '').toLowerCase().includes(kw.toLowerCase())
+  )
+)
+
+const pageTitle = 'מלונות משפחתיים בדובאי | Yalla Dubai'
+const pageDescription = 'מלונות משפחתיים מומלצים בדובאי. מלונות עם מועדוני ילדים, בריכות, חדרים מרווחים ופעילויות לכל המשפחה.'
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'מלונות משפחתיים בדובאי',
+  description: pageDescription,
+  numberOfItems: items.length,
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name_he,
+    url: new URL(`/hotels/${item.slug}`, 'https://yalla-dubai.co.il').toString(),
+  })),
+}
+
+const breadcrumbItems = [
+  { label: 'דף הבית', href: '/' },
+  { label: 'מלונות', href: '/hotels' },
+  { label: 'מלונות משפחתיים' },
+]
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <SchemaOrg schema={itemListSchema} />
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <Breadcrumb items={breadcrumbItems} />
+
+    <!-- Category pills -->
+    <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
+      <a href="/hotels/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
+      <a href="/hotels/5-stars/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">⭐ 5 כוכבים</a>
+      <a href="/hotels/beach/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🏖️ חוף</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">👨‍👩‍👧 משפחתי</span>
+      <a href="/hotels/luxury/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">💎 יוקרה</a>
+    </nav>
+
+    <header class="mb-10 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מלונות משפחתיים בדובאי</h1>
+      <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
+        מתכננים טיול משפחתי לדובאי? בחרנו עבורכם את המלונות המתאימים ביותר למשפחות —
+        עם מועדוני ילדים, בריכות שחייה, סוויטות מרווחות ופעילויות לכל הגילאים.
+      </p>
+    </header>
+
+    {items.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map(item => (
+          <HotelCard
+            name_he={item.name_he}
+            name_en={item.name_en}
+            slug={item.slug}
+            image={item.image}
+            area={item.area}
+            star_rating={item.star_rating}
+            price_range={item.price_range}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16">
+        <p class="text-white/40 text-lg">לא נמצאו מלונות משפחתיים כרגע. חזרו בקרוב!</p>
+      </div>
+    )}
+
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — מלונות משפחתיים בדובאי</h2>
+      <div class="space-y-4">
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה האזור הכי טוב למשפחות בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בדובאי נמצאים בJBR ופאלם ג'ומיירה. אזורי מלונות משפחתיים בדובאי קרובים לחוף וקל. דאונטאון דובאי טוב למשפחות שרוצות אטרקציות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם ילדים מתקבלים בכל מלונות משפחתיים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, מלונות משפחתיים בדובאי מקבלים ילדים בשמחה. מלונות משפחתיים בדובאי מציעים מועדוני ילדים ופעילויות משפחתיות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">יש מלונות משפחתיים עם פארקי מים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, מלונות משפחתיים בדובאי כמו אטלנטיס כוללים פארקי מים. מלונות משפחתיים בדובאי עם פארקים טובים לילדים.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה המחירים של מלונות משפחתיים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בדובאי עולים בין 250-2,000 דירהם ללילה. מלון משפחתי בדובאי משתנה בעונה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איזה סוגי חדרים יש במלונות משפחתיים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בדובאי מציעים: חדרים משפחתיים, סוויטות עם חדרי ישון נפרדים. מלון משפחתי בדובאי מרווח לעולם.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הפעילויות למשפחות בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בדובאי מציעים: מועדוני ילדים, בריכות, אטרקציות קרובות. מלון משפחתי בדובאי עשוי להיות עם אנימציה.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">צריך להזמין מלון משפחתי בדובאי מראש?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, מומלץ להזמין מלון משפחתי בדובאי מוקדם כדי לקבל חדר טוב. מלונות משפחתיים בדובאי פופולריים במהלך חגים וחופשות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה שירותים נוספים של מלונות משפחתיים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בדובאי מציעים: בייביסיטר, אתיקט משפחתי, מסעדות בחירה. שירותי מלון משפחתי בדובאי מתוכננים לנוחות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה מלונות משפחתיים הטובים ביותר בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים מובילים בדובאי: אטלנטיס, פור סיזנס, מריוט. כל מלון משפחתי בדובאי זה מעולה עבור משפחות.</p>
+        </details>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה אטרקציות קרובות למלונות משפחתיים בדובאי?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בדובאי קרובים לדובאי מול, פארק קבוצה, אסטוריק מלוני. מלונות משפחתיים בדובאי ממוקומים ליד אטרקציות צעירים.</p>
+        </details>
+      </div>
+    </section>
+
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">צריכים עזרה בבחירת מלון למשפחה בדובאי?</p>
+      <a
+        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מחפש מלון משפחתי בדובאי 👨‍👩‍👧‍👦')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+      >
+        דברו איתנו בווטסאפ
+      </a>
+    </div>
+  </main>
+</Layout>
