@@ -14,7 +14,7 @@ const faqItems = [
   { q: 'איזה מטבע משתמשים בדובאי?', a: 'דירהם של אמירויות (AED). שער: 1 AED = כ-1 ש"ח (בערך). כרטיסי אשראי מתקבלים בכל מקום. מומלץ: החליפו מעט מזומן בשדה התעופה (לטאקסי ושווקים), והשתמשו בכרטיס בקניונים ומסעדות.' },
   { q: 'איך מסתובבים בדובאי?', a: 'מטרו — מהיר, נקי וזול. Uber/Careem — נפוצים מאוד וזולים (נסיעה בעיר 20-50 AED). מונית — זמינות בכל מקום. השכרת רכב — אפשרי עם רישיון בינלאומי. המלצה: מטרו + Uber = שילוב מושלם.' },
   { q: 'האם יש אוכל כשר בדובאי?', a: 'כן! יש מסעדות כשרות בדובאי, בעיקר באזורי JBR, דובאי מרינה ודאונטאון. בסופרמרקטים כמו Spinneys ו-Carrefour יש מדור מוצרים כשרים. רוב האוכל בדובאי הוא חלאל. לפרטים נוספים — עמוד הכשרות שלנו.' },
-  { q: 'כמה עולה ספארי במדבר?', a: 'ספארי במדבר מתחיל מ-₪199 לאדם (ספארי בוקר). ספארי ערב כולל ארוחת ערב: ₪249. ספארי פרטי VIP: ₪499. המחירים כוללים איסוף והחזרה מהמלון ועשויים להשתנות — לפרטים מדויקים ועדכניים ראו את <a href="/tours" class="text-amber-400 underline">דף הטיולים</a> שלנו.' },
+  { q: 'כמה עולה ספארי במדבר?', a: 'ספארי במדבר מתחיל מ-₪199 לאדם (ספארי בוקר). ספארי ערב כולל ארוחת ערב: ₪249. ספארי פרטי VIP: ₪499. המחירים כוללים איסוף והחזרה מהמלון ועשויים להשתנות — לפרטים מדויקים ועדכניים ראו את <a href="/tours" class="text-teal-400 underline">דף הטיולים</a> שלנו.' },
   { q: 'מה לגבי WiFi ותקשורת?', a: 'WiFi חינם זמין בכמעט כל מלון, קניון, מסעדה ובית קפה. אם צריכים אינטרנט בדרכים: קנו כרטיס SIM מקומי של du או Etisalat (50-100 AED לשבוע). שימו לב: שיחות WhatsApp ו-FaceTime חסומות — השתמשו ב-Botim או VPN.' },
   { q: 'מה לגבי חשמל ושקעים?', a: 'דובאי משתמשת בשקע בריטי (Type G — 3 פינים). מתח: 220V. צריך מתאם שקע! קנו מתאם בריטי לפני הטיסה או בשדה התעופה. רוב המלונות מספקים מתאמים בחינם.' },
   { q: 'איך מזמינים ספארי במדבר?', a: 'הכי קל — דרך וואטסאפ. שלחו לנו הודעה עם התאריך, מספר אנשים, וסוג הספארי הרצוי. אנחנו נחזור עם אישור ומחיר תוך דקות. ההזמנה כוללת איסוף מהמלון, הספארי עצמו, והחזרה למלון.' },
@@ -43,19 +43,19 @@ const relatedPages = [
 >
 
   <section class="relative py-20 md:py-28 bg-gradient-to-b from-[#1A1208] to-[#0D0D0D]">
-    <div class="absolute inset-0 opacity-10"><div class="absolute inset-0 bg-gradient-to-br from-amber-900/20 to-transparent"></div></div>
+    <div class="absolute inset-0 opacity-10"><div class="absolute inset-0 bg-gradient-to-br from-teal-900/20 to-transparent"></div></div>
     <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">שאלות <span class="text-amber-400">ותשובות</span></h1>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">שאלות <span class="text-teal-400">ותשובות</span></h1>
       <p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">כל מה שרציתם לדעת על טיול לדובאי — ויזה, בטיחות, כסף, תחבורה, לבוש ועוד. {faqItems.length} שאלות עם תשובות מפורטות.</p>
     </div>
   </section>
 
   <section class="max-w-4xl mx-auto px-4 -mt-6 relative z-20 mb-8">
-    <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/20 rounded-2xl p-4 md:p-6">
+    <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-teal-500/20 rounded-2xl p-4 md:p-6">
       <h2 class="text-white font-bold mb-3">נושאים מכוסים:</h2>
       <div class="flex flex-wrap gap-2">
         {topics.map((topic) => (
-          <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/20">{topic}</span>
+          <span class="text-xs bg-teal-500/10 text-teal-400 px-3 py-1 rounded-full border border-teal-500/20">{topic}</span>
         ))}
       </div>
     </div>
@@ -66,7 +66,7 @@ const relatedPages = [
   </section>
 
   <section class="max-w-4xl mx-auto px-4 py-12">
-    <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/20 rounded-2xl p-6 md:p-8 text-center">
+    <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-teal-500/20 rounded-2xl p-6 md:p-8 text-center">
       <span class="text-4xl block mb-4">❓</span>
       <h2 class="text-2xl font-bold text-white mb-3">עדיין יש שאלות?</h2>
       <p class="text-white/60 mb-6 max-w-md mx-auto">לא מצאתם את התשובה? שלחו לנו הודעה בווטסאפ ונחזור אליכם תוך דקות</p>
@@ -75,10 +75,10 @@ const relatedPages = [
   </section>
 
   <section class="max-w-4xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold text-white mb-6 text-center">עמודים <span class="text-amber-400">שימושיים</span></h2>
+    <h2 class="text-2xl font-bold text-white mb-6 text-center">עמודים <span class="text-teal-400">שימושיים</span></h2>
     <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
       {relatedPages.map((page) => (
-        <a href={page.href} class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/10 hover:border-amber-500/30 rounded-xl p-4 text-center transition-all">
+        <a href={page.href} class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-teal-500/10 hover:border-teal-500/30 rounded-xl p-4 text-center transition-all">
           <p class="text-white font-bold">{page.title}</p>
           <p class="text-white/50 text-sm">{page.desc}</p>
         </a>

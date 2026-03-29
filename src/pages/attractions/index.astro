@@ -61,10 +61,10 @@ const breadcrumbSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 
   <!-- Hero -->
-  <section class="relative py-16 px-4 bg-gradient-to-b from-amber-500/10 to-transparent">
+  <section class="relative py-16 px-4 bg-gradient-to-b from-teal-500/10 to-transparent">
     <div class="max-w-6xl mx-auto text-center">
       <nav class="text-sm text-white/40 mb-6">
-        <a href="/" class="hover:text-amber-400 transition-colors">דף הבית</a>
+        <a href="/" class="hover:text-teal-400 transition-colors">דף הבית</a>
         <span class="mx-2">/</span>
         <span class="text-white/60">אטרקציות</span>
       </nav>
@@ -74,15 +74,15 @@ const breadcrumbSchema = {
         יש פעילויות לכל גיל — מפארקי שעשועים לילדים עד צלילה בים לתיירים אדוותורוסיים.
         מצא את אטרקציות החינם בדובאי, קביעות משפחתיות, וחוויות בלתי נשכחות בכל תקציב.
       </p>
-      <p class="mt-3 text-amber-400 font-medium" id="attr-count">{attractions.length} אטרקציות</p>
+      <p class="mt-3 text-teal-400 font-medium" id="attr-count">{attractions.length} אטרקציות</p>
     </div>
   </section>
 
   <!-- Category Links (SEO pages) + Filter Pills -->
-  <div class="sticky top-0 z-30 bg-[#0D0D0D]/95 backdrop-blur-sm border-b border-amber-500/10">
+  <div class="sticky top-0 z-30 bg-[#0D0D0D]/95 backdrop-blur-sm border-b border-teal-500/10">
     <div class="max-w-6xl mx-auto px-4 py-3 overflow-x-auto scrollbar-hide">
       <div class="flex gap-2 min-w-max" dir="rtl">
-        <span class="px-4 py-2 rounded-full text-sm font-bold bg-amber-500 text-black">הכל</span>
+        <span class="px-4 py-2 rounded-full text-sm font-bold bg-teal-500 text-black">הכל</span>
         {categoryLinks.map((cat) => (
           <a
             href={cat.href}
@@ -141,11 +141,11 @@ const breadcrumbSchema = {
     pills.forEach(pill => {
       pill.addEventListener('click', () => {
         pills.forEach(p => {
-          p.classList.remove('bg-amber-500', 'text-black')
+          p.classList.remove('bg-teal-500', 'text-black')
           p.classList.add('bg-white/5', 'text-white/60')
         })
         pill.classList.remove('bg-white/5', 'text-white/60')
-        pill.classList.add('bg-amber-500', 'text-black')
+        pill.classList.add('bg-teal-500', 'text-black')
 
         const category = pill.dataset.category
         const matchRaw = pill.dataset.match

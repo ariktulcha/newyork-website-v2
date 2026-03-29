@@ -95,17 +95,17 @@ const breadcrumbItems = [
           href={`https://maps.google.com/?q=${encodeURIComponent((address || restaurant.area || restaurant.name_he) + ', Dubai')}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 text-white/70 hover:text-amber-400 transition-colors"
+          class="inline-flex items-center gap-1.5 text-white/70 hover:text-teal-400 transition-colors"
         >
-          <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+          <svg class="w-4 h-4 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
           {address || restaurant.area} ↗
         </a>
       )}
       {priceRange && (
-        <span class="text-amber-400 font-medium">{priceRange}</span>
+        <span class="text-teal-400 font-medium">{priceRange}</span>
       )}
       {rating && (
-        <span class="inline-flex items-center gap-1 text-amber-400">
+        <span class="inline-flex items-center gap-1 text-teal-400">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
           {rating.toFixed?.(1) ?? rating}
         </span>
@@ -115,7 +115,7 @@ const breadcrumbItems = [
     {cuisineTypes.length > 0 && (
       <div class="flex flex-wrap gap-2 mb-8">
         {cuisineTypes.map((cuisine: string) => (
-          <span class="text-sm px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <span class="text-sm px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
             {cuisine}
           </span>
         ))}
@@ -123,14 +123,14 @@ const breadcrumbItems = [
     )}
 
     {restaurant.description && (
-      <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 mb-8">
+      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 mb-8">
         <p class="text-white/80 leading-relaxed">{restaurant.description}</p>
       </div>
     )}
 
     {hoursArray.length > 0 && (
-      <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-amber-400 mb-3">שעות פתיחה — {restaurant.name_he}</h2>
+      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 mb-8">
+        <h2 class="text-xl font-bold text-teal-400 mb-3">שעות פתיחה — {restaurant.name_he}</h2>
         {hoursArray.map((h) => (
           <p class="text-white/70">{h}</p>
         ))}
@@ -138,16 +138,16 @@ const breadcrumbItems = [
     )}
 
     {contentHtml && (
-      <div class="prose prose-invert prose-amber max-w-none mb-8 [&_h2]:text-amber-400 [&_h2]:text-2xl [&_h2]:font-black [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:border-r-4 [&_h2]:border-amber-500 [&_h2]:pr-3 [&_h3]:text-amber-300 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_a]:text-amber-400 [&_strong]:text-white" set:html={contentHtml} />
+      <div class="prose prose-invert prose-teal max-w-none mb-8 [&_h2]:text-teal-400 [&_h2]:text-2xl [&_h2]:font-black [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:border-r-4 [&_h2]:border-teal-500 [&_h2]:pr-3 [&_h3]:text-teal-300 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_a]:text-teal-400 [&_strong]:text-white" set:html={contentHtml} />
     )}
 
-    <div class="bg-gradient-to-br from-amber-900/20 to-amber-800/10 border border-amber-500/30 rounded-2xl p-8 text-center">
-      <h3 class="text-2xl font-black text-amber-400 mb-3">גם לטיול במדבר דובאי? 🏜️</h3>
+    <div class="bg-gradient-to-br from-teal-900/20 to-teal-800/10 border border-teal-500/30 rounded-2xl p-8 text-center">
+      <h3 class="text-2xl font-black text-teal-400 mb-3">גם לטיול במדבר דובאי? 🏜️</h3>
       <p class="text-white/70 mb-6">הספארי במדבר הוא החוויה המרכזית שלנו בדובאי — נסיעת ג׳יפים על דיונות, רכיבה על גמלים, שקיעה מדהימה וארוחת BBQ על תל הם.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
         <a
           href="/desert-safari"
-          class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-[#0D0D0D] font-bold px-8 py-3 rounded-full transition-colors"
+          class="inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-[#0D0D0D] font-bold px-8 py-3 rounded-full transition-colors"
         >
           ⛺ ספארי במדבר
         </a>

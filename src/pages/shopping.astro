@@ -14,7 +14,7 @@ const malls = [
     area: 'דאונטאון דובאי',
     stores: '1,200+',
     tag: '🏆 הגדול בעולם',
-    tagColor: 'bg-amber-500 text-black',
+    tagColor: 'bg-teal-500 text-black',
     description: 'לא סתם קניון — זו עיר שלמה תחת קורת גג אחת. דובאי מול מחזיק את הרשומה של הקניון הגדול בעולם עם למעלה מ-1,200 חנויות, ומשרת 80 מיליון מבקרים בשנה. אבל מה שהופך אותו לייחודי הוא לא הגודל — זה מה שיש בפנים.',
     insideAttractions: [
       { name: 'אקווריום דובאי', link: '/attractions/dubai-aquarium', emoji: '🦈' },
@@ -153,12 +153,12 @@ const taxRefundSteps = [
 ]
 
 const relatedLinks = [
-  { href: '/attractions/dubai-mall-attraction', emoji: '🏬', title: 'Dubai Mall', desc: 'אקווריום, VR Park, ועוד', color: 'border-amber-500/20' },
+  { href: '/attractions/dubai-mall-attraction', emoji: '🏬', title: 'Dubai Mall', desc: 'אקווריום, VR Park, ועוד', color: 'border-teal-500/20' },
   { href: '/attractions/ski-dubai', emoji: '⛷️', title: 'סקי דובאי', desc: 'שלג בלב המדבר', color: 'border-blue-500/20' },
   { href: '/attractions/global-village-dubai', emoji: '🌍', title: 'Global Village', desc: 'קניות + אטרקציות', color: 'border-green-500/20' },
   { href: '/attractions/dubai-fountain-show', emoji: '⛲', title: 'מזרקות דובאי', desc: 'ליד ה-Dubai Mall', color: 'border-cyan-500/20' },
   { href: '/attractions/dubai-aquarium', emoji: '🦈', title: 'אקווריום דובאי', desc: 'בתוך Dubai Mall', color: 'border-blue-500/20' },
-  { href: '/attractions/burj-khalifa-attraction', emoji: '🏙️', title: 'בורג\' חליפה', desc: '20 דק\' מה-Mall', color: 'border-amber-500/20' },
+  { href: '/attractions/burj-khalifa-attraction', emoji: '🏙️', title: 'בורג\' חליפה', desc: '20 דק\' מה-Mall', color: 'border-teal-500/20' },
   { href: '/guides', emoji: '📖', title: 'מדריכי דובאי', desc: 'כל המדריכים', color: 'border-white/10' },
   { href: '/desert-safari', emoji: '🏜️', title: 'ספארי במדבר', desc: 'על הדרך לאאוטלט', color: 'border-orange-500/20' },
 ]
@@ -186,29 +186,29 @@ const schema = {
     <div class="absolute inset-0 bg-gradient-to-b from-[#0D0D0D]/70 via-[#0D0D0D]/50 to-[#0D0D0D]"></div>
     <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
       <nav class="text-sm text-white/40 mb-6">
-        <a href="/" class="hover:text-amber-400 transition-colors">דף הבית</a>
+        <a href="/" class="hover:text-teal-400 transition-colors">דף הבית</a>
         <span class="mx-2">/</span>
         <span class="text-white/60">קניות</span>
       </nav>
-      <h1 class="text-4xl md:text-6xl font-black text-white mb-5">קניות <span class="text-amber-400">בדובאי</span></h1>
+      <h1 class="text-4xl md:text-6xl font-black text-white mb-5">קניות <span class="text-teal-400">בדובאי</span></h1>
       <p class="text-lg md:text-xl text-white/65 max-w-2xl mx-auto leading-relaxed">
         גן עדן לשופינג. מהקניון הגדול בעולם ועד שוק הזהב העתיק — ומכל מה שביניהם.
       </p>
       <div class="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">🏬 80+ קניונים</span>
-        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">🏷️ Tax Refund 5%</span>
-        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">✈️ Duty Free בשדה</span>
-        <span class="bg-amber-500/15 text-amber-400 px-3 py-1 rounded-full">🥇 שוק הזהב הגדול</span>
+        <span class="bg-teal-500/15 text-teal-400 px-3 py-1 rounded-full">🏬 80+ קניונים</span>
+        <span class="bg-teal-500/15 text-teal-400 px-3 py-1 rounded-full">🏷️ Tax Refund 5%</span>
+        <span class="bg-teal-500/15 text-teal-400 px-3 py-1 rounded-full">✈️ Duty Free בשדה</span>
+        <span class="bg-teal-500/15 text-teal-400 px-3 py-1 rounded-full">🥇 שוק הזהב הגדול</span>
       </div>
     </div>
   </section>
 
   <!-- What to buy (above the fold) -->
   <section class="max-w-6xl mx-auto px-4 py-12">
-    <h2 class="text-2xl md:text-3xl font-black text-white mb-6 text-center">מה <span class="text-amber-400">כדאי לקנות</span> בדובאי?</h2>
+    <h2 class="text-2xl md:text-3xl font-black text-white mb-6 text-center">מה <span class="text-teal-400">כדאי לקנות</span> בדובאי?</h2>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {whatToBuy.map(w => (
-        <div class="bg-[#1A1208] border border-amber-500/10 rounded-xl p-4 text-center hover:border-amber-500/25 transition-all">
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-4 text-center hover:border-teal-500/25 transition-all">
           <span class="text-2xl block mb-2">{w.emoji}</span>
           <p class="text-white font-bold text-sm mb-1">{w.item}</p>
           <p class="text-white/40 text-xs leading-relaxed">{w.why}</p>
@@ -220,11 +220,11 @@ const schema = {
   <!-- Malls -->
   <section class="max-w-6xl mx-auto px-4 py-4 pb-16">
     <h2 class="text-3xl md:text-4xl font-black text-white mb-10 text-center">
-      הקניונים <span class="text-amber-400">הכי שווים</span>
+      הקניונים <span class="text-teal-400">הכי שווים</span>
     </h2>
     <div class="space-y-8">
       {malls.map((mall, i) => (
-        <article class="bg-[#1A1208] border border-white/5 rounded-3xl overflow-hidden hover:border-amber-500/20 transition-all group">
+        <article class="bg-[#1A1208] border border-white/5 rounded-3xl overflow-hidden hover:border-teal-500/20 transition-all group">
           <!-- Image -->
           <div class="aspect-[21/7] overflow-hidden relative">
             <img src={mall.image} alt={mall.nameHe} loading="lazy" decoding="async" width="1200" height="400"
@@ -240,12 +240,12 @@ const schema = {
             <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
               <div>
                 <h3 class="text-2xl font-black text-white">{mall.name}</h3>
-                <p class="text-amber-400/70 text-sm">{mall.nameHe}</p>
+                <p class="text-teal-400/70 text-sm">{mall.nameHe}</p>
                 <p class="text-white/40 text-sm">📍 {mall.area} · 🕐 {mall.hours}</p>
               </div>
               {mall.attractionLink && (
                 <a href={mall.attractionLink}
-                  class="flex items-center gap-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-sm px-4 py-2 rounded-xl transition-all whitespace-nowrap self-start">
+                  class="flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 text-teal-400 text-sm px-4 py-2 rounded-xl transition-all whitespace-nowrap self-start">
                   → עמוד האטרקציה
                 </a>
               )}
@@ -260,7 +260,7 @@ const schema = {
                 <div class="flex flex-wrap gap-2">
                   {mall.insideAttractions.map(a => (
                     <a href={a.link}
-                      class="bg-white/5 hover:bg-amber-500/10 border border-white/8 hover:border-amber-500/20 text-white/60 hover:text-amber-400 text-sm px-3 py-1.5 rounded-lg transition-all">
+                      class="bg-white/5 hover:bg-teal-500/10 border border-white/8 hover:border-teal-500/20 text-white/60 hover:text-teal-400 text-sm px-3 py-1.5 rounded-lg transition-all">
                       {a.emoji} {a.name}
                     </a>
                   ))}
@@ -285,8 +285,8 @@ const schema = {
               ))}
             </div>
 
-            <div class="bg-amber-500/5 border border-amber-500/10 rounded-xl p-3">
-              <span class="text-amber-400 font-bold text-xs">💡 </span>
+            <div class="bg-teal-500/5 border border-teal-500/10 rounded-xl p-3">
+              <span class="text-teal-400 font-bold text-xs">💡 </span>
               <span class="text-white/60 text-sm">{mall.tip}</span>
             </div>
           </div>
@@ -298,13 +298,13 @@ const schema = {
   <!-- Souks -->
   <section class="max-w-6xl mx-auto px-4 py-12 border-t border-white/5">
     <h2 class="text-3xl md:text-4xl font-black text-white mb-4 text-center">
-      שווקים <span class="text-amber-400">מסורתיים</span>
+      שווקים <span class="text-teal-400">מסורתיים</span>
     </h2>
     <p class="text-white/50 text-center mb-10">לא תחוו קניות אמיתיות בדובאי בלי לבקר בשווקים העתיקים</p>
 
     <div class="grid md:grid-cols-3 gap-6">
       {souks.map(souk => (
-        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 hover:border-amber-500/25 transition-all">
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 hover:border-teal-500/25 transition-all">
           <div class="text-4xl mb-4">{souk.emoji}</div>
           <h3 class="text-xl font-black text-white mb-1">{souk.name}</h3>
           <p class="text-white/40 text-sm mb-3">📍 {souk.area}</p>
@@ -312,13 +312,13 @@ const schema = {
           <ul class="space-y-1 mb-4">
             {souk.tips.map(t => (
               <li class="text-white/50 text-xs flex items-start gap-1.5">
-                <span class="text-amber-400 mt-0.5">›</span>{t}
+                <span class="text-teal-400 mt-0.5">›</span>{t}
               </li>
             ))}
           </ul>
           <p class="text-white/35 text-xs mb-3">🚗 {souk.howTo}</p>
           {souk.link && (
-            <a href={souk.link} class="block text-center bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 text-sm py-2 rounded-xl transition-all">
+            <a href={souk.link} class="block text-center bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 text-teal-400 text-sm py-2 rounded-xl transition-all">
               → לעמוד המלא
             </a>
           )}
@@ -331,14 +331,14 @@ const schema = {
   <section class="max-w-5xl mx-auto px-4 py-12 border-t border-white/5">
     <div class="text-center mb-8">
       <h2 class="text-3xl font-black text-white mb-2">
-        💳 Tax Refund — <span class="text-amber-400">איך מחזירים 5%</span>
+        💳 Tax Refund — <span class="text-teal-400">איך מחזירים 5%</span>
       </h2>
       <p class="text-white/50">דובאי גובה 5% VAT — תיירים זכאים להחזר. כך עושים את זה נכון:</p>
     </div>
     <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
       {taxRefundSteps.map(s => (
-        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-5">
-          <div class="w-8 h-8 bg-amber-500 text-black font-black text-sm rounded-full flex items-center justify-center mb-3">{s.step}</div>
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-5">
+          <div class="w-8 h-8 bg-teal-500 text-black font-black text-sm rounded-full flex items-center justify-center mb-3">{s.step}</div>
           <h4 class="text-white font-bold text-sm mb-2">{s.title}</h4>
           <p class="text-white/55 text-xs leading-relaxed">{s.desc}</p>
         </div>
@@ -350,7 +350,7 @@ const schema = {
   <!-- Shopping Festivals -->
   <section class="max-w-5xl mx-auto px-4 py-10 border-t border-white/5">
     <h2 class="text-2xl md:text-3xl font-black text-white mb-6 text-center">
-      🎉 מתי כדאי לבוא <span class="text-amber-400">לקניות</span>?
+      🎉 מתי כדאי לבוא <span class="text-teal-400">לקניות</span>?
     </h2>
     <div class="grid sm:grid-cols-2 gap-4">
       {[
@@ -359,10 +359,10 @@ const schema = {
         { name: 'Ramadan Sales', period: '🗓 לפי לוח הירח', desc: 'חודש הרמדאן מגיע עם מבצעי ענק, במיוחד בלילה. האווירה ייחודית + מחירים מוזלים.' },
         { name: 'שנה-עגולה', period: '🗓 כל השנה', desc: 'שוק הזהב, Outlet Mall ו-Duty Free בשדה פתוחים כל השנה. לא צריך לחכות לפסטיבל.' },
       ].map(f => (
-        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-5">
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-5">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-white font-bold">{f.name}</h3>
-            <span class="text-amber-400 text-xs font-medium">{f.period}</span>
+            <span class="text-teal-400 text-xs font-medium">{f.period}</span>
           </div>
           <p class="text-white/60 text-sm leading-relaxed">{f.desc}</p>
         </div>
@@ -373,15 +373,15 @@ const schema = {
   <!-- Related Links -->
   <section class="max-w-6xl mx-auto px-4 py-12 border-t border-white/5">
     <h2 class="text-2xl md:text-3xl font-black text-white mb-2 text-center">
-      מה עוד לעשות <span class="text-amber-400">כשאתם שם</span>?
+      מה עוד לעשות <span class="text-teal-400">כשאתם שם</span>?
     </h2>
     <p class="text-white/40 text-center text-sm mb-8">הקניונים הם רק חלק מהחוויה — כל אחד מהם סמוך לאטרקציות מדהימות</p>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
       {relatedLinks.map(link => (
         <a href={link.href}
-          class={`bg-[#1A1208] border ${link.color} rounded-2xl p-4 hover:border-amber-500/30 transition-all group`}>
+          class={`bg-[#1A1208] border ${link.color} rounded-2xl p-4 hover:border-teal-500/30 transition-all group`}>
           <span class="text-2xl block mb-2">{link.emoji}</span>
-          <p class="text-white font-bold text-sm group-hover:text-amber-400 transition-colors">{link.title}</p>
+          <p class="text-white font-bold text-sm group-hover:text-teal-400 transition-colors">{link.title}</p>
           <p class="text-white/40 text-xs">{link.desc}</p>
         </a>
       ))}
@@ -392,13 +392,13 @@ const schema = {
   <section class="py-16 border-t border-white/5">
     <div class="max-w-4xl mx-auto px-4 text-center">
       <h2 class="text-3xl font-black text-white mb-4">
-        לא רק קניות — <span class="text-amber-400">גם הרפתקה</span>
+        לא רק קניות — <span class="text-teal-400">גם הרפתקה</span>
       </h2>
       <p class="text-white/55 text-lg mb-8 max-w-xl mx-auto">
         על הדרך לאאוטלט? תוסיפו ספארי במדבר — הקניות + המדבר ביום אחד
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/desert-safari" class="bg-amber-500 hover:bg-amber-400 text-black px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25">
+        <a href="/desert-safari" class="bg-teal-500 hover:bg-teal-400 text-black px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-teal-500/25">
           הזמינו ספארי במדבר
         </a>
         <a href="/attractions" class="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-xl font-bold text-lg border border-white/10 transition-all">

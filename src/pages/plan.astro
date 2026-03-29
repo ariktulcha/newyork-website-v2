@@ -1,284 +1,150 @@
 ---
 import Layout from '../components/Layout.astro'
-import SchemaOrg from '../components/SchemaOrg.astro'
-
-const durations = [
-  { days: 2, label: '2 ימים', desc: 'סוף שבוע ארוך' },
-  { days: 3, label: '3 ימים', desc: 'טעימה מדובאי' },
-  { days: 4, label: '4 ימים', desc: 'טיול קלאסי' },
-  { days: 5, label: '5 ימים', desc: 'מומלץ ביותר', recommended: true },
-  { days: 7, label: '7 ימים', desc: 'הטיול המושלם' },
-]
-
-const travelStyles = [
-  { id: 'family', label: 'משפחה', icon: '👨‍👩‍👧‍👦', desc: 'פעילויות לילדים, אקוופארקים' },
-  { id: 'couple', label: 'זוג', icon: '❤️', desc: 'רומנטיקה, מסעדות, שקיעות' },
-  { id: 'adventure', label: 'הרפתקה', icon: '⛰️', desc: 'ספארי, צניחה, ספורט ימי' },
-  { id: 'luxury', label: 'יוקרה', icon: '🧭', desc: 'מלונות 5 כוכבים, מסעדות שף' },
-  { id: 'budget', label: 'תקציבי', icon: '💰', desc: 'חסכוני ומהנה' },
-]
-
-const interests = [
-  { id: 'culture', label: 'תרבות', icon: '🕌' },
-  { id: 'beaches', label: 'חופים', icon: '🏖️' },
-  { id: 'shopping', label: 'קניות', icon: '🛍️' },
-  { id: 'food', label: 'אוכל', icon: '🍽️' },
-  { id: 'nightlife', label: 'חיי לילה', icon: '🌙' },
-  { id: 'adventure', label: 'אדרנלין', icon: '🪂' },
-]
-
-const itinerary3Days = [
-  { day: 1, title: 'דאונטאון ובורג\' חליפה', activities: [
-    { time: 'בוקר', title: 'בורג\' חליפה — At the Top', description: 'תצפית מהבניין הגבוה בעולם. הגיעו ב-10:00.', duration: '1.5 שעות' },
-    { time: 'צהריים', title: 'דובאי מול', description: 'הקניון הגדול בעולם. אקווריום ענק, מפל מים.', duration: '3-4 שעות' },
-    { time: 'ערב', title: 'מזרקות דובאי + ארוחת ערב', description: 'מופע המזרקות המדהים (כל 30 דקות מ-18:00).', duration: '2-3 שעות' },
-  ]},
-  { day: 2, title: 'דובאי הישנה + שווקים', activities: [
-    { time: 'בוקר', title: 'אזור אל פהידי ההיסטורי', description: 'טיול ברגל באזור ההיסטורי. מוזיאון דובאי, סמטאות עתיקות.', duration: '2 שעות' },
-    { time: 'צהריים', title: 'שווקים: זהב, תבלינים ובשמים', description: 'חצו ב-Abra (1 AED) לצד דירה. אל תשכחו להתמקח!', duration: '3 שעות' },
-    { time: 'ערב', title: 'דובאי מרינה + ארוחת ערב', description: 'טיילת המרינה המוארת, חיי לילה ומסעדות.', duration: '3 שעות' },
-  ]},
-  { day: 3, title: 'ספארי במדבר', activities: [
-    { time: 'בוקר', title: 'חוף JBR + The Walk', description: 'בוקר בחוף JBR — חול לבן ומים צלולים.', duration: '3 שעות' },
-    { time: 'צהריים', title: 'מול אוף דה אמירייטס + Ski Dubai', description: 'קניות + Ski Dubai — חווית סקי מקורה בלב המדבר.', duration: '2-3 שעות' },
-    { time: 'ערב', title: 'ספארי במדבר — Dune Bashing + שקיעה + BBQ', description: 'איסוף ב-15:00. ג\'יפים, גמלים, שקיעה, וארוחת BBQ.', duration: '6 שעות' },
-  ]},
-]
-
-const itinerary5Days = [
-  { day: 1, title: 'דאונטאון ובורג\' חליפה', activities: [
-    { time: 'בוקר', title: 'בורג\' חליפה', description: 'תצפית מהבניין הגבוה בעולם.', duration: '1.5 שעות' },
-    { time: 'צהריים', title: 'דובאי מול — אקווריום ושופינג', description: 'אקווריום, VR Park, ארוחת צהריים.', duration: '4 שעות' },
-    { time: 'ערב', title: 'מזרקות דובאי + מסעדה', description: 'מופע מזרקות + ארוחת ערב עם נוף.', duration: '3 שעות' },
-  ]},
-  { day: 2, title: 'דובאי הישנה + שווקים', activities: [
-    { time: 'בוקר', title: 'אל פהידי + מוזיאון דובאי', description: 'סיור בדובאי ההיסטורית.', duration: '2 שעות' },
-    { time: 'צהריים', title: 'Abra + שווקים', description: 'חצייה ב-Abra ושיטוט בשווקים.', duration: '3 שעות' },
-    { time: 'ערב', title: 'La Mer — חוף + מסעדות', description: 'קומפלקס חוף מעוצב.', duration: '3 שעות' },
-  ]},
-  { day: 3, title: 'חוף + מרינה', activities: [
-    { time: 'בוקר', title: 'Kite Beach', description: 'חוף ספורטיבי עם נוף לבורג\' אל ערב.', duration: '3 שעות' },
-    { time: 'צהריים', title: 'מול אוף דה אמירייטס + Ski Dubai', description: 'קניות + חווית סקי מקורה.', duration: '3 שעות' },
-    { time: 'ערב', title: 'שייט ערב + ארוחה במרינה', description: 'שייט בדאו + ארוחת ערב בטיילת.', duration: '4 שעות' },
-  ]},
-  { day: 4, title: 'ספארי במדבר', activities: [
-    { time: 'בוקר', title: 'בריכה/ספא במלון', description: 'בוקר רגוע בבריכת המלון.', duration: '3 שעות' },
-    { time: 'צהריים', title: 'City Walk', description: 'מרכז קניות פתוח עם בוטיקים.', duration: '2 שעות' },
-    { time: 'ערב', title: 'ספארי במדבר — חבילה מלאה', description: 'דיונות, גמלים, שקיעה, BBQ.', duration: '6 שעות' },
-  ]},
-  { day: 5, title: 'פאלם ג\'ומיירה + קניות אחרונות', activities: [
-    { time: 'בוקר', title: 'פאלם ג\'ומיירה + Atlantis', description: 'סיור באי המלאכותי.', duration: '3 שעות' },
-    { time: 'צהריים', title: 'קניות אחרונות + Tax Refund', description: 'קניות ומתנות.', duration: '2-3 שעות' },
-    { time: 'ערב', title: 'ארוחת פרידה', description: 'ארוחת ערב אחרונה עם נוף.', duration: '2 שעות' },
-  ]},
-]
-
-const itinerary7Days = [
-  { day: 1, title: 'הגעה + דאונטאון', activities: [
-    { time: 'בוקר', title: 'הגעה + צ\'ק אין', description: 'הגעה לדובאי, מנוחה קצרה.', duration: '2 שעות' },
-    { time: 'צהריים', title: 'בורג\' חליפה', description: 'תצפית מהבניין הכי גבוה בעולם.', duration: '1.5 שעות' },
-    { time: 'ערב', title: 'דובאי מול + מזרקות', description: 'קניון ענק + מופע מזרקות מרהיב.', duration: '4 שעות' },
-  ]},
-  { day: 2, title: 'דובאי הישנה + שווקים', activities: [
-    { time: 'בוקר', title: 'אל פהידי + מוזיאון דובאי', description: 'הצד ההיסטורי של דובאי.', duration: '2.5 שעות' },
-    { time: 'צהריים', title: 'Abra + שווקים', description: 'חצייה ב-Abra + מיקוח בשווקים.', duration: '3 שעות' },
-    { time: 'ערב', title: 'ארוחת ערב בדירה', description: 'אוכל ערבי מקורי.', duration: '2 שעות' },
-  ]},
-  { day: 3, title: 'חופים + מרינה', activities: [
-    { time: 'בוקר', title: 'JBR Beach', description: 'החוף הכי פופולרי בדובאי.', duration: '3 שעות' },
-    { time: 'צהריים', title: 'Dubai Marina Mall', description: 'קניות קלות + ארוחה.', duration: '2 שעות' },
-    { time: 'ערב', title: 'שייט ערב + ארוחה', description: 'שייט בדאו + ארוחת ערב בטיילת.', duration: '4 שעות' },
-  ]},
-  { day: 4, title: 'ספארי במדבר', activities: [
-    { time: 'בוקר', title: 'בריכה + ספא', description: 'בוקר רגוע.', duration: '3 שעות' },
-    { time: 'צהריים', title: 'הכנה לספארי', description: 'ארוחה קלה, בגדים נוחים.', duration: '1 שעה' },
-    { time: 'ערב', title: 'ספארי במדבר', description: 'Dune Bashing, גמלים, שקיעה, BBQ.', duration: '6 שעות' },
-  ]},
-  { day: 5, title: 'פאלם ג\'ומיירה + Atlantis', activities: [
-    { time: 'בוקר', title: 'Aquaventure Waterpark', description: 'פארק המים הגדול בדובאי.', duration: '4 שעות' },
-    { time: 'צהריים', title: 'ארוחה ב-Atlantis', description: 'Nobu, Bread Street Kitchen.', duration: '1.5 שעות' },
-    { time: 'ערב', title: 'The Pointe + Nakheel Mall', description: 'טיילת + מופע מזרקות Palm.', duration: '3 שעות' },
-  ]},
-  { day: 6, title: 'אבו דאבי (יום טיול)', activities: [
-    { time: 'בוקר', title: 'מסגד שייח\' זאיד', description: 'המסגד הכי מרהיב בעולם. חינם.', duration: '2 שעות' },
-    { time: 'צהריים', title: 'Louvre Abu Dhabi', description: 'מוזיאון אמנות עולמי. 63 AED.', duration: '2.5 שעות' },
-    { time: 'ערב', title: 'Yas Island', description: 'Ferrari World / Warner Bros.', duration: '4 שעות' },
-  ]},
-  { day: 7, title: 'קניות אחרונות + פרידה', activities: [
-    { time: 'בוקר', title: 'Kite Beach', description: 'בוקר רגוע בחוף.', duration: '2 שעות' },
-    { time: 'צהריים', title: 'Ibn Battuta Mall', description: 'קניון מרהיב + קניות אחרונות.', duration: '2-3 שעות' },
-    { time: 'ערב', title: 'Duty Free + טיסה', description: 'Duty Free — אחד הגדולים בעולם.', duration: '2 שעות' },
-  ]},
-]
-
-const allItineraries = [
-  { days: 3, label: 'מסלול 3 ימים', subtitle: 'טעימה מדובאי — הדברים שחייבים לראות', itinerary: itinerary3Days },
-  { days: 5, label: 'מסלול 5 ימים', subtitle: 'הטיול הקלאסי — כל האטרקציות המרכזיות', itinerary: itinerary5Days },
-  { days: 7, label: 'מסלול 7 ימים', subtitle: 'הטיול המושלם — כולל אבו דאבי', itinerary: itinerary7Days },
-]
-
-const planningTips = [
-  { title: 'בחרו מלון במיקום מרכזי', desc: 'דאונטאון דובאי או דובאי מרינה הם המיקומים הכי נוחים. קרוב למטרו, אטרקציות ומסעדות.' },
-  { title: 'הזמינו כרטיסים מראש', desc: 'בורג\' חליפה, Aquaventure, ו-Ski Dubai — הזמינו אונליין מראש. חוסך תורים ולפעמים 10-20%.' },
-  { title: 'אל תתכננו יותר מדי', desc: 'דובאי ענקית. 2-3 פעילויות ביום + זמן חופשי זה מושלם.' },
-  { title: 'שלבו ספארי ביום 3-4', desc: 'הספארי לוקח ערב שלם (15:00-21:00). שלבו אותו באמצע הטיול.' },
-]
-
-const articleSchema = {
-  '@context': 'https://schema.org', '@type': 'Article',
-  headline: 'תכנון טיול לדובאי',
-  description: 'תכננו את הטיול המושלם לדובאי. מסלולי טיול מוכנים ל-3, 5 ו-7 ימים.',
-  author: { '@type': 'Organization', name: 'Yalla Dubai' },
-  publisher: { '@type': 'Organization', name: 'Yalla Dubai', url: 'https://yalla-dubai.co.il' },
-  mainEntityOfPage: 'https://yalla-dubai.co.il/plan', inLanguage: 'he',
-  datePublished: '2025-01-01', dateModified: '2026-03-01',
-}
-
-function getTimeBadge(time: string) {
-  if (time === 'בוקר') return 'bg-amber-500/20 text-amber-400'
-  if (time === 'צהריים') return 'bg-blue-500/20 text-blue-400'
-  return 'bg-purple-500/20 text-purple-400'
-}
 ---
+<Layout title="תכנן את החופשה המושלמת בבאלי | יאללה באלי" description="תכנן את הטיול לבאלי: מסלולים מומלצים, לו״ז לפי ימים, עצות מקצועיות לישראלים">
+<main dir="rtl" class="max-w-5xl mx-auto px-4 py-12">
 
-<Layout
-  title="תכנון טיול לדובאי — מסלולים מוכנים ל-3, 5 ו-7 ימים"
-  description="מדריך תכנון טיול לדובאי: מסלולים מפורטים ל-3, 5 ו-7 ימים לפי סגנון — משפחות, זוגות, הרפתקנים. כולל טיפים לוגיסטיים, תקציב ופעילויות."
-  canonical="https://yalla-dubai.co.il/plan"
->
-  <SchemaOrg schema={articleSchema} />
+  <!-- Hero -->
+  <div class="text-center mb-16">
+    <div class="text-6xl mb-4">🌴</div>
+    <h1 class="text-5xl font-bold text-white mb-4">תכנן את באלי שלך</h1>
+    <p class="text-gray-400 text-xl">כמה ימים יש לכם? נבנה לכם את המסלול המושלם</p>
+  </div>
 
-  <section class="relative py-20 md:py-28 bg-gradient-to-b from-[#1A1208] to-[#0D0D0D]">
-    <div class="absolute inset-0 opacity-10"><div class="absolute inset-0 bg-gradient-to-br from-amber-900/20 to-transparent"></div></div>
-    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">תכננו את <span class="text-amber-400">הטיול המושלם</span></h1>
-      <p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">מסלולים מפורטים ל-3, 5 ו-7 ימים — בוקר, צהריים וערב. בחרו את המסלול המתאים לכם, או פנו אלינו לתכנון אישי בווטסאפ.</p>
-    </div>
-  </section>
-
-  <!-- Step 1: Duration -->
-  <section class="max-w-4xl mx-auto px-4 py-12">
-    <div class="flex items-center gap-3 mb-6">
-      <span class="bg-amber-500 text-[#0D0D0D] font-bold text-lg w-10 h-10 rounded-full flex items-center justify-center shrink-0">1</span>
-      <div><h2 class="text-2xl font-bold text-white">כמה ימים?</h2><p class="text-white/50 text-sm">בחרו את משך הטיול</p></div>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-      {durations.map((d) => (
-        <div class={`bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border rounded-xl p-4 text-center transition-all ${d.recommended ? 'border-amber-500/50 ring-1 ring-amber-500/30' : 'border-amber-500/10 hover:border-amber-500/30'}`}>
-          <span class="text-2xl block mb-2">📅</span>
-          <p class="text-white font-bold text-lg">{d.label}</p>
-          <p class="text-white/50 text-xs">{d.desc}</p>
-          {d.recommended && <span class="mt-2 inline-block text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">מומלץ</span>}
+  <!-- Duration picker — visual cards -->
+  <section class="mb-16">
+    <h2 class="text-2xl font-bold text-white mb-6 text-center">כמה זמן אתם בבאלי?</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {[
+        {days:'5 ימים', emoji:'⚡', desc:'נקודות השיא'},
+        {days:'7 ימים', emoji:'🌊', desc:'שבוע מושלם'},
+        {days:'10 ימים', emoji:'🏄', desc:'להכיר לעומק'},
+        {days:'14+ ימים', emoji:'🧘', desc:'חיים בבאלי'},
+      ].map(t => (
+        <div class="bg-gray-900 rounded-xl p-6 text-center cursor-pointer hover:border-teal-500 border border-gray-800 hover:bg-gray-800 transition-all">
+          <div class="text-4xl mb-3">{t.emoji}</div>
+          <div class="text-white font-bold text-lg">{t.days}</div>
+          <div class="text-gray-400 text-sm mt-1">{t.desc}</div>
         </div>
       ))}
     </div>
   </section>
 
-  <!-- Step 2: Travel Style -->
-  <section class="max-w-4xl mx-auto px-4 py-8">
-    <div class="flex items-center gap-3 mb-6">
-      <span class="bg-amber-500 text-[#0D0D0D] font-bold text-lg w-10 h-10 rounded-full flex items-center justify-center shrink-0">2</span>
-      <div><h2 class="text-2xl font-bold text-white">סגנון טיול</h2><p class="text-white/50 text-sm">מה הסגנון שלכם?</p></div>
-    </div>
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-      {travelStyles.map((s) => (
-        <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/10 hover:border-amber-500/30 rounded-xl p-4 text-center transition-all">
-          <span class="text-3xl block mb-2">{s.icon}</span>
-          <p class="text-white font-bold">{s.label}</p>
-          <p class="text-white/40 text-xs mt-1">{s.desc}</p>
+  <!-- Traveler type -->
+  <section class="mb-16">
+    <h2 class="text-2xl font-bold text-white mb-6 text-center">מה הסגנון שלכם?</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {[
+        {type:'🏄 גולשים', desc:'גלים, חוף, קאנגו', color:'blue'},
+        {type:'🧘 ריטריט', desc:'יוגה, מדיטציה, אובוד', color:'purple'},
+        {type:'🎉 מסיבות', desc:'קוטה, חיי לילה, ברים', color:'pink'},
+        {type:'🏛️ תרבות', desc:'מקדשים, אמנות, היסטוריה', color:'amber'},
+        {type:'🤿 הרפתקה', desc:'צלילה, מפלות, וולקאנו', color:'teal'},
+        {type:'👨‍👩‍👧 משפחה', desc:'בטוח, נוח, מושלם', color:'green'},
+      ].map(t => (
+        <div class="bg-gray-900 rounded-xl p-5 cursor-pointer hover:bg-gray-800 border border-gray-800 hover:border-teal-500 transition-all">
+          <div class="text-2xl mb-2">{t.type}</div>
+          <div class="text-gray-400 text-sm">{t.desc}</div>
         </div>
       ))}
     </div>
   </section>
 
-  <!-- Step 3: Interests -->
-  <section class="max-w-4xl mx-auto px-4 py-8">
-    <div class="flex items-center gap-3 mb-6">
-      <span class="bg-amber-500 text-[#0D0D0D] font-bold text-lg w-10 h-10 rounded-full flex items-center justify-center shrink-0">3</span>
-      <div><h2 class="text-2xl font-bold text-white">תחומי עניין</h2><p class="text-white/50 text-sm">מה מעניין אתכם?</p></div>
-    </div>
-    <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
-      {interests.map((i) => (
-        <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/10 hover:border-amber-500/30 rounded-xl p-4 text-center transition-all">
-          <span class="text-2xl mb-1 block">{i.icon}</span>
-          <p class="text-white font-bold text-sm">{i.label}</p>
+  <!-- 3 pre-built itineraries as timeline cards -->
+  <section class="mb-16">
+    <h2 class="text-2xl font-bold text-white mb-8 text-center">מסלולים מוכנים</h2>
+
+    <!-- 7-day itinerary -->
+    <div class="bg-gray-900 rounded-2xl p-8 mb-6 border border-gray-800">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="text-3xl">🗓️</div>
+        <div>
+          <h3 class="text-xl font-bold text-white">שבוע קלאסי בבאלי</h3>
+          <p class="text-gray-400 text-sm">7 ימים — הכי פופולרי אצל ישראלים</p>
         </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- WhatsApp CTA -->
-  <section class="max-w-4xl mx-auto px-4 py-8">
-    <div class="bg-gradient-to-r from-green-600/20 to-green-500/10 border border-green-500/30 rounded-2xl p-6 md:p-8 text-center">
-      <h3 class="text-2xl font-bold text-white mb-3">רוצים מסלול מותאם אישית?</h3>
-      <p class="text-white/60 mb-6 max-w-md mx-auto">שלחו לנו בווטסאפ את ההעדפות שלכם — ונבנה לכם מסלול טיול בחינם</p>
-      <a href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני רוצה עזרה בתכנון טיול לדובאי')}`} target="_blank" rel="noopener noreferrer" dir="rtl" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all">🧭 בקשו מסלול בווטסאפ</a>
-    </div>
-  </section>
-
-  <!-- Itineraries -->
-  <section class="max-w-6xl mx-auto px-4 py-12">
-    <h2 class="text-3xl md:text-4xl font-black text-white mb-4 text-center">מסלולי טיול <span class="text-amber-400">מוכנים</span></h2>
-    <p class="text-white/60 text-center mb-12 max-w-2xl mx-auto">מסלולים מפורטים עם פעילויות לבוקר, צהריים וערב</p>
-
-    {allItineraries.map((plan) => (
-      <div class="mb-16" id={`itinerary-${plan.days}`}>
-        <div class="flex items-center gap-4 mb-8">
-          <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-[#0D0D0D] font-black text-lg px-5 py-2 rounded-full shrink-0">{plan.label}</div>
-          <div><p class="text-white/60 text-sm">{plan.subtitle}</p></div>
-        </div>
-        <div class="space-y-6">
-          {plan.itinerary.map((day) => (
-            <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/10 rounded-2xl overflow-hidden">
-              <div class="bg-amber-500/10 border-b border-amber-500/10 px-6 py-3 flex items-center gap-3">
-                <span class="bg-amber-500 text-[#0D0D0D] font-bold text-sm px-3 py-1 rounded-full">יום {day.day}</span>
-                <h3 class="text-lg font-bold text-white">{day.title}</h3>
-              </div>
-              <div class="p-6 space-y-4">
-                {day.activities.map((act) => (
-                  <div class="flex gap-4">
-                    <div class="shrink-0 w-16 text-center">
-                      <span class={`text-xs font-bold px-2 py-1 rounded-full ${getTimeBadge(act.time)}`}>{act.time}</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-start justify-between gap-3">
-                        <h4 class="text-white font-bold text-sm">{act.title}</h4>
-                        <span class="text-white/30 text-xs shrink-0">⏱️ {act.duration}</span>
-                      </div>
-                      <p class="text-white/50 text-sm mt-1">{act.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+      </div>
+      <div class="space-y-4">
+        {[
+          {day:'יום 1', place:'נחיתה + קאנגו', emoji:'✈️', note:'הגעה, check-in, ערב ראשון בבאלי'},
+          {day:'יום 2-3', place:'קאנגו + גלישה', emoji:'🏄', note:'שיעור גלישה, בייק, קפה, sunset'},
+          {day:'יום 4', place:'אובוד', emoji:'🌾', note:'שדות אורז, מקדש, שוק, יוגה'},
+          {day:'יום 5', place:'נוסה פניידה', emoji:'🏝️', note:'day trip — Kelingking, Broken Beach'},
+          {day:'יום 6', place:'אולוואטו', emoji:'🌅', note:'גלישה, Kecak בשקיעה, ארוחת ים'},
+          {day:'יום 7', place:'טיסה חזרה', emoji:'✈️', note:'בוקר חופשי, checkout, נמל תעופה'},
+        ].map(d => (
+          <div class="flex gap-4 items-start">
+            <div class="text-2xl w-8 flex-shrink-0">{d.emoji}</div>
+            <div class="flex-1 border-r-2 border-teal-500 pr-4">
+              <div class="font-bold text-white text-sm">{d.day} — {d.place}</div>
+              <div class="text-gray-400 text-sm mt-1">{d.note}</div>
             </div>
-          ))}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- 10-day itinerary -->
+    <div class="bg-gray-900 rounded-2xl p-8 border border-gray-800">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="text-3xl">🗓️</div>
+        <div>
+          <h3 class="text-xl font-bold text-white">10 ימים — לטייל לעומק</h3>
+          <p class="text-gray-400 text-sm">למי שרוצה יותר מהרגיל</p>
         </div>
       </div>
-    ))}
+      <div class="space-y-4">
+        {[
+          {day:'יום 1', place:'נחיתה + כוטה/לגיאן', emoji:'✈️', note:'הגעה, מנוחה, קניות'},
+          {day:'יום 2-4', place:'קאנגו', emoji:'🏄', note:'גלישה, nomad life, nightlife'},
+          {day:'יום 5', place:'הר בטור — Sunrise Trek', emoji:'🌋', note:'יציאה ב-02:00, שקיעת שמש מהפסגה'},
+          {day:'יום 6-7', place:'אובוד', emoji:'🌾', note:'ריטריט יוגה, מקדשים, בישול בלינזי'},
+          {day:'יום 8', place:'נוסה פניידה', emoji:'🏝️', note:'Kelingking + Angel Billabong'},
+          {day:'יום 9', place:'אמד', emoji:'🤿', note:'צלילה על אוניית USAT Liberty'},
+          {day:'יום 10', place:'אולוואטו + הטיסה', emoji:'🌅', note:'Kecak ואז נמל תעופה'},
+        ].map(d => (
+          <div class="flex gap-4 items-start">
+            <div class="text-2xl w-8 flex-shrink-0">{d.emoji}</div>
+            <div class="flex-1 border-r-2 border-teal-500 pr-4">
+              <div class="font-bold text-white text-sm">{d.day} — {d.place}</div>
+              <div class="text-gray-400 text-sm mt-1">{d.note}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   </section>
 
-  <!-- Planning Tips -->
-  <section class="max-w-4xl mx-auto px-4 py-12">
-    <h2 class="text-3xl md:text-4xl font-black text-white mb-8 text-center">טיפים <span class="text-amber-400">לתכנון הטיול</span></h2>
-    <div class="grid md:grid-cols-2 gap-6">
-      {planningTips.map((t) => (
-        <div class="bg-gradient-to-br from-[#1A1208] to-[#0D0D0D] border border-amber-500/10 rounded-2xl p-6">
-          <h3 class="text-lg font-bold text-white mb-3">{t.title}</h3>
-          <p class="text-white/60 text-sm leading-relaxed">{t.desc}</p>
+  <!-- Budget estimator -->
+  <section class="mb-16">
+    <h2 class="text-2xl font-bold text-white mb-6 text-center">💰 אומדן תקציב לזוג</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {[
+        {type:'תרמיל', budget:'$80-120/יום', weekly:'~2,200 ₪', emoji:'🎒', items:['הוסטל/חדר פשוט','warung + שוק','Grab + קטנוע','פעילויות בחינם']},
+        {type:'מאוזן', budget:'$150-250/יום', weekly:'~4,000 ₪', emoji:'🌿', items:['וילה/בוטיק','מסעדות טובות','Grab comf.','טיולים מאורגנים']},
+        {type:'יוקרה', budget:'$300+/יום', weekly:'~7,500 ₪', emoji:'✨', items:['ריזורט/וילה פרטית','מסעדות פרמיום','נהג פרטי','ספא + ריטריטים']},
+      ].map(b => (
+        <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+          <div class="text-3xl mb-3">{b.emoji}</div>
+          <div class="text-white font-bold text-lg mb-1">{b.type}</div>
+          <div class="text-teal-400 font-bold text-xl mb-1">{b.budget}</div>
+          <div class="text-gray-500 text-sm mb-4">לזוג: {b.weekly}</div>
+          <ul class="space-y-2">
+            {b.items.map(i => <li class="text-gray-400 text-sm">• {i}</li>)}
+          </ul>
         </div>
       ))}
     </div>
   </section>
 
-  <!-- Final CTA -->
-  <section class="bg-gradient-to-b from-[#0D0D0D] to-[#1A1208] py-16">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-black text-white mb-6">מוכנים <span class="text-amber-400">לדובאי?</span></h2>
-      <p class="text-white/70 text-lg mb-8 max-w-xl mx-auto">הספארי במדבר הוא חובה בכל טיול. הזמינו עכשיו ותבטיחו מקום</p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/desert-safari" class="bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-[#F59E0B]/25">הזמינו ספארי במדבר</a>
-        <a href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מתכנן טיול לדובאי ורוצה עזרה')}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all">🧭 עזרה בתכנון — וואטסאפ</a>
-      </div>
-    </div>
+  <!-- Visa CTA -->
+  <section class="bg-teal-900/30 border border-teal-500/40 rounded-2xl p-8 text-center">
+    <div class="text-4xl mb-4">🛂</div>
+    <h2 class="text-2xl font-bold text-white mb-3">אל תשכחו ויזה לפני הטיסה!</h2>
+    <p class="text-gray-400 mb-6">ישראלים חייבים ויזה לבאלי. אנחנו מגישים עבורכם — 185 ₪ בלבד.</p>
+    <a href="/visa" class="inline-block bg-teal-500 hover:bg-teal-400 text-white font-bold py-3 px-8 rounded-xl transition-colors">
+      לפרטים ולהרשמה ←
+    </a>
   </section>
+
+</main>
 </Layout>
