@@ -39,17 +39,24 @@ const breadcrumbSchema = {
 }
 
 const categoryLinks = [
-  { label: '⭐ 5 כוכבים', href: '/hotels/5-stars/' },
-  { label: '🏖️ חוף', href: '/hotels/beach/' },
-  { label: '👨‍👩‍👧 משפחתי', href: '/hotels/family/' },
-  { label: '💎 יוקרה', href: '/hotels/luxury/' },
+  { label: '🌿 אובוד', href: '/areas/ubud/' },
+  { label: '🏄 קאנגו', href: '/areas/canggu/' },
+  { label: '🌅 סמינייק', href: '/areas/seminyak/' },
+  { label: '🪨 אולוואטו', href: '/areas/uluwatu/' },
+  { label: '🐟 ג׳ימברן', href: '/areas/jimbaran/' },
+  { label: '🌴 נוסה דואה', href: '/areas/nusa-dua/' },
 ]
 
-const starFilters = [
+const areaFilters = [
   { label: 'הכל', filter: 'all' },
-  { label: '⭐ 5 כוכבים', filter: '5' },
-  { label: '⭐ 4 כוכבים', filter: '4' },
-  { label: '⭐ 3 כוכבים', filter: '3' },
+  { label: 'סמינייק', filter: 'seminyak' },
+  { label: 'קאנגו', filter: 'canggu' },
+  { label: 'אובוד', filter: 'ubud' },
+  { label: 'קוטה', filter: 'kuta' },
+  { label: 'אולוואטו', filter: 'uluwatu' },
+  { label: 'ג׳ימברן', filter: 'jimbaran' },
+  { label: 'נוסה דואה', filter: 'nusa-dua' },
+  { label: 'סנור', filter: 'sanur' },
 ]
 ---
 
@@ -92,7 +99,7 @@ const starFilters = [
   <!-- Star filter pills (client-side) -->
   <section class="bg-[#0d0d0d] px-4 py-2">
     <div class="max-w-6xl mx-auto flex gap-2 overflow-x-auto scrollbar-hide">
-      {starFilters.map((p) => (
+      {areaFilters.map((p) => (
         <button
           data-filter={p.filter}
           class:list={[
@@ -144,7 +151,7 @@ const starFilters = [
         // Filter items
         let visible = 0
         items.forEach((item) => {
-          const stars = item.dataset.stars || ''
+          const stars = item.dataset.area || item.dataset.stars || ''
           const show = filter === 'all' || stars === filter
           item.style.display = show ? '' : 'none'
           if (show) visible++

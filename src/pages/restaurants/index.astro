@@ -17,21 +17,21 @@ const description = 'מדריך מסעדות בבאלי: מסעדות כשרות
 
 // Category pages (real URLs for SEO)
 const categoryLinks = [
-  { label: '✡ כשר', href: '/restaurants/kosher/' },
-  { label: 'Fine Dining', href: '/restaurants/fine-dining/' },
-  { label: '🍣 יפנית', href: '/restaurants/japanese/' },
-  { label: '🥩 בשרים', href: '/restaurants/meat/' },
+  { label: '🌿 ורונג׳', href: '/restaurants/?area=all&type=warung' },
+  { label: '🐟 פירות ים', href: '/restaurants/?area=all&type=seafood' },
+  { label: '🥗 טבעוני', href: '/restaurants/?area=all&type=vegan' },
+  { label: '💎 פיין דיינינג', href: '/restaurants/fine-dining/' },
 ]
 
-// Client-side filter categories (for remaining types without dedicated pages)
+// Client-side filter categories (by area and cuisine type)
 const categories = [
   { label: 'הכל', key: 'all' },
-  { label: '🍕 איטלקי', key: 'italian', match: ['איטלקי', 'פסטה', 'פיצה', 'טוסקני'] },
-  { label: '🥘 הודי', key: 'indian', match: ['הודי', 'הודית מודרנית', 'פנג׳אבי', 'פקיסטני'] },
-  { label: '🫒 ים תיכוני', key: 'mediterranean', match: ['ים תיכוני', 'ריביירה'] },
-  { label: '☕ ברנץ׳', key: 'brunch', match: ['ברנץ׳', 'ברנץ\'', 'ארוחת בוקר'] },
-  { label: '🌏 אסייתי', key: 'asian', match: ['אסייתי', 'אסייתית פיוז׳ן', 'אסייתית', 'תאילנדי'] },
-  { label: '🫙 ערבי', key: 'arabic', match: ['ערבי', 'אמירתי', 'לבנוני', 'מרוקאי', 'ערבי מודרני', 'אמירתי מסורתי', 'מזרח תיכוני'] },
+  { label: '🌅 סמינייק', key: 'seminyak', match: ['seminyak', 'סמינייק'] },
+  { label: '🏄 קאנגו', key: 'canggu', match: ['canggu', 'קאנגו'] },
+  { label: '🌿 אובוד', key: 'ubud', match: ['ubud', 'אובוד'] },
+  { label: '🏖️ קוטה', key: 'kuta', match: ['kuta', 'קוטה'] },
+  { label: '🐟 ג׳ימברן', key: 'jimbaran', match: ['jimbaran', 'ג׳ימברן'] },
+  { label: '🪨 אולוואטו', key: 'uluwatu', match: ['uluwatu', 'אולוואטו'] },
 ]
 
 const schemaItemList = {

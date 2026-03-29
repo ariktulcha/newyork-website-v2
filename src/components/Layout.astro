@@ -21,6 +21,7 @@ const navLinks = [
   { label: 'אטרקציות', href: '/attractions' },
   { label: 'אזורים', href: '/areas' },
   { label: 'מלונות', href: '/hotels' },
+  { label: 'מסעדות', href: '/restaurants' },
   { label: 'מדריכים', href: '/guides' },
   { label: 'תכנון טיול', href: '/plan' },
 ]
@@ -71,10 +72,12 @@ const navLinks = [
         })}
         <span class="mx-2 text-white/20">|</span>
         <a
-          href="/desert-safari"
+          href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מתכנן טיול לבאלי')}`}
+          target="_blank"
+          rel="noopener noreferrer"
           class="rounded-lg bg-teal-500 px-4 py-2 text-sm font-bold text-black transition-all hover:bg-teal-400 hover:shadow-lg hover:shadow-teal-500/20"
         >
-          הזמינו ספארי
+          📱 ייעוץ חינם
         </a>
       </div>
 
@@ -98,12 +101,12 @@ const navLinks = [
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden border-t border-teal-500/10 bg-[#0D0D0D]/95 backdrop-blur-md md:hidden">
       <div class="mx-auto max-w-7xl px-4 py-4">
-        <!-- ספארי וטיולים -->
+        <!-- ויזה ותכנון -->
         <div class="mb-6">
-          <h3 class="px-4 pb-3 text-xs font-bold uppercase tracking-wider text-teal-500">ספארי וטיולים</h3>
+          <h3 class="px-4 pb-3 text-xs font-bold uppercase tracking-wider text-teal-500">ויזה ותכנון</h3>
           <div class="space-y-1">
-            <a href="/desert-safari" class="block border-r-2 border-transparent px-4 py-3 text-base font-medium text-white/80 transition-colors hover:border-teal-500 hover:bg-teal-500/10 hover:text-teal-400">ספארי</a>
-            <a href="/tours" class="block border-r-2 border-transparent px-4 py-3 text-base font-medium text-white/80 transition-colors hover:border-teal-500 hover:bg-teal-500/10 hover:text-teal-400">טיולים</a>
+            <a href="/visa" class="block border-r-2 border-transparent px-4 py-3 text-base font-medium text-white/80 transition-colors hover:border-teal-500 hover:bg-teal-500/10 hover:text-teal-400">ויזה לבאלי</a>
+            <a href="/plan" class="block border-r-2 border-transparent px-4 py-3 text-base font-medium text-white/80 transition-colors hover:border-teal-500 hover:bg-teal-500/10 hover:text-teal-400">תכנון טיול</a>
             <a href="/guides" class="block border-r-2 border-transparent px-4 py-3 text-base font-medium text-white/80 transition-colors hover:border-teal-500 hover:bg-teal-500/10 hover:text-teal-400">מדריכים</a>
             <a href="/areas" class="block border-r-2 border-transparent px-4 py-3 text-base font-medium text-white/80 transition-colors hover:border-teal-500 hover:bg-teal-500/10 hover:text-teal-400">אזורים</a>
           </div>
@@ -122,10 +125,12 @@ const navLinks = [
 
         <!-- CTA Button -->
         <a
-          href="/desert-safari"
+          href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מתכנן טיול לבאלי')}`}
+          target="_blank"
+          rel="noopener noreferrer"
           class="mt-6 block rounded-lg bg-teal-500 px-4 py-3 text-center text-base font-bold text-black transition-all hover:bg-teal-400"
         >
-          הזמינו ספארי
+          📱 ייעוץ חינם בווטסאפ
         </a>
       </div>
     </div>
@@ -166,7 +171,8 @@ const navLinks = [
           <h3 class="mb-4 text-sm font-bold uppercase tracking-wider text-teal-500">ויזה וטיולים</h3>
           <ul class="space-y-2">
             <li><a href="/visa" class="text-sm text-white/60 transition-colors hover:text-teal-400">ויזה לבאלי</a></li>
-            <li><a href="/tours" class="text-sm text-white/60 transition-colors hover:text-teal-400">טיולים מאורגנים</a></li>
+            <li><a href="/hotels" class="text-sm text-white/60 transition-colors hover:text-teal-400">מלונות בבאלי</a></li>
+            <li><a href="/restaurants" class="text-sm text-white/60 transition-colors hover:text-teal-400">מסעדות בבאלי</a></li>
             <li><a href="/plan" class="text-sm text-white/60 transition-colors hover:text-teal-400">תכנון טיול</a></li>
             <li><a href="/guides" class="text-sm text-white/60 transition-colors hover:text-teal-400">מדריכים</a></li>
             <li><a href="/areas" class="text-sm text-white/60 transition-colors hover:text-teal-400">אזורים בבאלי</a></li>
