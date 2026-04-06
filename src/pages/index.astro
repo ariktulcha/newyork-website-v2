@@ -3,24 +3,30 @@ import Layout from '../components/Layout.astro'
 import SchemaOrg from '../components/SchemaOrg.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../lib/supabase'
 
-const { data: attractions } = await supabaseAdmin.from('attractions').select('name_he, slug, image, rating, price').eq('destination_id', DESTINATION_ID).eq('published', true).limit(4)
+const { data: attractions } = await supabaseAdmin.from('attractions').select('name_he, slug, image, rating, price, excerpt').eq('destination_id', DESTINATION_ID).eq('published', true).limit(6)
 const { data: tours } = await supabaseAdmin.from('tours').select('name, slug, image, base_price, rating, review_count, duration_minutes, short_description, includes').eq('destination_id', DESTINATION_ID).eq('published', true)
+const { data: hotels } = await supabaseAdmin.from('hotels').select('name_he, slug, image, rating, area').eq('destination_id', DESTINATION_ID).eq('published', true).limit(4)
+const { data: areas } = await supabaseAdmin.from('areas').select('name_he, slug, image, excerpt').eq('destination_id', DESTINATION_ID).eq('published', true).limit(6)
+const { data: guides } = await supabaseAdmin.from('guides').select('name_he, slug, image, excerpt').eq('destination_id', DESTINATION_ID).eq('published', true).limit(3)
 
 const featuredAttractions = attractions ?? []
 const featuredTours = tours ?? []
+const featuredHotels = hotels ?? []
+const featuredAreas = areas ?? []
+const featuredGuides = guides ?? []
 
 const categories = [
-  { label: 'טיולים וסיורים', icon: '🌴', href: '/tours', count: `${featuredTours.length} חבילות` },
-  { label: 'אטרקציות', icon: '🏛️', href: '/attractions', count: `${featuredAttractions.length}+ אטרקציות` },
-  { label: 'מלונות', icon: '🏨', href: '/hotels', count: 'מלונות מובילים' },
-  { label: 'מסעדות', icon: '🍽️', href: '/restaurants', count: 'מסעדות מומלצות' },
-  { label: 'חיי לילה', icon: '🌙', href: '/nightlife', count: 'מקומות לילה' },
-  { label: 'חופים', icon: '🏖️', href: '/beaches', count: 'חופים יפים' },
+  { label: 'אטרקציות', icon: '🏛️', href: '/attractions', desc: 'מקדשים, טרסות אורז וג׳ונגל' },
+  { label: 'מלונות', icon: '🏨', href: '/hotels', desc: 'וילות, ריזורטים ובוטיקים' },
+  { label: 'מסעדות', icon: '🍽️', href: '/restaurants', desc: 'אוכל מקומי ובינלאומי' },
+  { label: 'חיי לילה', icon: '🌙', href: '/nightlife', desc: 'בארים, מועדונים וביץ׳ קלאבס' },
+  { label: 'חופים', icon: '🏖️', href: '/beaches', desc: 'חופים לגלישה ושחייה' },
+  { label: 'אזורים', icon: '🗺️', href: '/areas', desc: 'אובוד, קאנגו, סמיניאק ועוד' },
 ]
 
 const testimonials = [
   {
-    text: 'הגענו לבאלי ל-10 ימים עם כל המשפחה — 3 ילדים כולל תינוק. הויזה הוגשה מראש דרכם ועברה חלק. המסלול שקיבלנו היה מדויק לגיל הילדים, וקאנגו הייתה חוויה שהילדים לא יפסיקו לדבר עליה.',
+    text: 'הגענו לבאלי ל-10 ימים עם כל המשפחה — 3 ילדים כולל תינוק. המסלול שקיבלנו היה מדויק לגיל הילדים, וקאנגו הייתה חוויה שהילדים לא יפסיקו לדבר עליה.',
     name: 'תמר ואביב פרידמן',
     city: 'כפר סבא',
     tour: 'טיול משפחתי 10 ימים',
@@ -34,10 +40,10 @@ const testimonials = [
     date: 'ינואר 2026',
   },
   {
-    text: 'הוויזה הגיעה ב-24 שעות, המדריך באובוד היה פנומנלי, והריטריט היוגה שמצאנו דרכם שינה לנו את החיים. יאללה באלי = שירות ברמה שלא מצאתי בשום מקום.',
+    text: 'המדריך באובוד היה פנומנלי, והריטריט היוגה שמצאנו דרכם שינה לנו את החיים. יאללה באלי = שירות ברמה שלא מצאתי בשום מקום.',
     name: 'רותם ש.',
     city: 'תל אביב',
-    tour: 'ויזה + ריטריט אובוד',
+    tour: 'ריטריט אובוד',
     date: 'מרץ 2026',
   },
 ]
@@ -47,7 +53,7 @@ const websiteSchema = {
   '@type': 'WebSite',
   name: 'Yalla Bali - יאללה באלי',
   url: 'https://yalla-bali.co.il',
-  description: 'המדריך המלא לבאלי בעברית — ויזה, אטרקציות, מלונות ומסעדות',
+  description: 'המדריך המלא לבאלי בעברית — אטרקציות, מלונות, מסעדות, אזורים וטיפים לטיול',
   inLanguage: 'he',
 }
 
@@ -67,20 +73,18 @@ const organizationSchema = {
 
 <Layout
   title="יאללה באלי — המדריך המלא לבאלי בעברית 2026"
-  description="המדריך הישראלי לבאלי. ויזה לבאלי, חופי קאנגו, מקדשים באובוד, מלוני יוקרה וחיי לילה. הכל בעברית, עם מחירים וטיפים מקומיים."
+  description="המדריך הישראלי המלא לבאלי. אטרקציות, מלונות, מסעדות, חופים, אזורים, חיי לילה ומדריכים מפורטים. הכל בעברית, עם מחירים וטיפים מקומיים."
   canonical="https://yalla-bali.co.il"
-  heroImage="/images/heroes/hero-bali.webp"
 >
   <SchemaOrg schema={[websiteSchema, organizationSchema]} />
 
   <!-- HERO -->
-  <section class="relative min-h-[75vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden">
-    <!-- Background photo -->
+  <section class="relative min-h-[80vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden">
     <picture>
       <source srcset="/images/heroes/hero-bali.webp" type="image/webp" />
       <img
         src="/images/heroes/hero-bali.webp"
-        alt="באלי — שדות אורז ירוקים ומקדשים עתיקים"
+        alt="באלי — מקדש אולון דאנו ברטאן על אגם ברטאן"
         class="absolute inset-0 w-full h-full object-cover object-center"
         fetchpriority="high"
         decoding="async"
@@ -88,43 +92,60 @@ const organizationSchema = {
         height="1080"
       />
     </picture>
-    <!-- Dark overlay -->
-    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0D0D0D]"></div>
-    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, rgba(13,148,136,0.3) 1px, transparent 1px); background-size: 20px 20px;"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-[#0D0D0D]"></div>
 
     <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
       <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.1]">
-        גלה את באלי
+        המדריך המלא <span class="text-amber-400">לבאלי</span> בעברית
       </h1>
 
-      <p class="text-xl md:text-2xl text-teal-400 font-bold mb-6">
-        ג׳ונגל, חופים, מקדשים וויזה — הכל בעברית
+      <p class="text-xl md:text-2xl text-white/80 font-medium mb-4">
+        ג׳ונגל, חופים, מקדשים, אוכל וחיי לילה — הכל במקום אחד
       </p>
 
-      <p class="text-lg text-white/60 mb-10 max-w-2xl mx-auto">
-        המדריך הישראלי המלא לבאלי. ויזה מהירה, מסלולים מומלצים, מלונות וחוויות — כל מה שצריך לטיול מושלם
+      <p class="text-lg text-white/50 mb-10 max-w-2xl mx-auto">
+        אטרקציות, מלונות, מסעדות, אזורים ומדריכים מפורטים. כל מה שצריך לטיול מושלם בבאלי.
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/visa" class="inline-flex flex-col items-center justify-center gap-1 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/25">
-          <span class="text-sm font-normal opacity-80">ישראלים חייבים ויזה לבאלי — מגישים עבורכם</span>
-          <span class="text-lg font-black">הגישו ויזה עכשיו — 185 ₪</span>
+        <a href="/plan" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25">
+          תכננו את הטיול לבאלי
         </a>
-        <a href="/plan" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold transition-all border border-white/20">
-          <span>🗓️</span>
-          <span>תכנן את הטיול</span>
+        <a href="/visa" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold transition-all border border-white/20">
+          מדריך ויזה לישראלים
         </a>
       </div>
     </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
   </section>
 
-  <!-- VISA CTA BANNER -->
-  <section class="bg-teal-900/40 border-y border-teal-500/30 py-6">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <p class="text-white font-bold text-lg">
-        🛂 <span class="text-teal-400">ויזה לבאלי לישראלים</span> — הגשה מהירה, אישור ב-24 שעות, 185 ₪ בלבד.
-        <a href="/visa" class="underline text-teal-300 hover:text-teal-200 mr-2">לפרטים ←</a>
-      </p>
+  <!-- QUICK STATS -->
+  <section class="border-y border-amber-500/10 bg-[#1A1208]/50 py-8">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div>
+          <div class="text-3xl font-black text-amber-400">{featuredAttractions.length}+</div>
+          <div class="text-white/50 text-sm mt-1">אטרקציות</div>
+        </div>
+        <div>
+          <div class="text-3xl font-black text-amber-400">{featuredHotels.length}+</div>
+          <div class="text-white/50 text-sm mt-1">מלונות מומלצים</div>
+        </div>
+        <div>
+          <div class="text-3xl font-black text-amber-400">{featuredTours.length}</div>
+          <div class="text-white/50 text-sm mt-1">חבילות טיולים</div>
+        </div>
+        <div>
+          <div class="text-3xl font-black text-amber-400">{featuredAreas.length}+</div>
+          <div class="text-white/50 text-sm mt-1">אזורים לגלות</div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -132,141 +153,269 @@ const organizationSchema = {
   <section class="max-w-7xl mx-auto px-4 py-16 md:py-24">
     <div class="text-center mb-12">
       <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
-        מה <span class="text-teal-400">לעשות בבאלי</span>
+        מה <span class="text-amber-400">לעשות בבאלי</span>
       </h2>
-      <p class="text-white/40 max-w-2xl mx-auto">גלו את כל מה שהאי הקסום הזה יכול להציע</p>
+      <p class="text-white/40 max-w-2xl mx-auto">כל מה שהאי הקסום הזה יכול להציע — ממקדשים עתיקים ועד מסיבות חוף</p>
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       {categories.map((cat) => (
-        <a href={cat.href} class="group relative p-6 rounded-2xl bg-[#0A1A18] border border-teal-500/10 hover:border-teal-500/30 transition-all duration-300 card-lift text-center">
+        <a href={cat.href} class="group relative p-6 rounded-2xl bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1 text-center">
           <span class="text-4xl mb-3 block">{cat.icon}</span>
-          <h3 class="text-lg font-bold text-white group-hover:text-teal-400 transition-colors mb-1">{cat.label}</h3>
-          <p class="text-white/40 text-xs">{cat.count}</p>
+          <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors mb-1">{cat.label}</h3>
+          <p class="text-white/40 text-xs">{cat.desc}</p>
         </a>
       ))}
     </div>
   </section>
 
+  <!-- VISA INFO BANNER -->
+  <section class="bg-amber-500/5 border-y border-amber-500/15 py-8">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-center sm:text-right">
+        <p class="text-white font-bold text-lg">ישראלים צריכים ויזה לבאלי</p>
+        <p class="text-white/50 text-sm mt-1">תהליך של 5–8 שבועות שכולל ספונסר אינדונזי. קראו את המדריך המלא שלנו.</p>
+      </div>
+      <a href="/visa" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black px-6 py-3 rounded-xl font-bold text-sm transition-all shrink-0">
+        מדריך ויזה מלא
+        <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </a>
+    </div>
+  </section>
+
   <!-- TOURS -->
   {featuredTours.length > 0 && (
-    <section class="bg-gradient-to-b from-[#0D0D0D] to-[#0A1A18] py-16 md:py-24">
+    <section class="py-16 md:py-24">
       <div class="max-w-7xl mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
-            חבילות <span class="text-teal-400">טיולים בבאלי</span>
-          </h2>
-          <p class="text-white/40 max-w-2xl mx-auto">גלישה, ג׳ונגל, מקדשים ועוד — בחרו את החוויה שלכם</p>
+        <div class="flex items-end justify-between mb-12">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-black text-white mb-2">
+              טיולים <span class="text-amber-400">וסיורים בבאלי</span>
+            </h2>
+            <p class="text-white/40">גלישה, ג׳ונגל, מקדשים ועוד — בחרו את החוויה שלכם</p>
+          </div>
+          <a href="/tours" class="hidden md:inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-sm transition-colors">
+            כל הטיולים
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredTours.map((tour: any) => (
-            <div class="rounded-2xl overflow-hidden bg-[#0A1A18] border border-teal-500/10 hover:border-teal-500/30 transition-all duration-300 card-lift flex flex-col">
+            <a href={`/tours/${tour.slug}`} class="group rounded-2xl overflow-hidden bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1 flex flex-col">
               <div class="relative h-48 overflow-hidden">
                 {tour.image ? (
-                  <img src={tour.image} alt={tour.name} class="w-full h-full object-cover" loading="lazy" />
+                  <img src={tour.image} alt={tour.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                 ) : (
-                  <div class="w-full h-full bg-gradient-to-br from-teal-900/40 via-[#0A1A18] to-[#0D0D0D] flex items-center justify-center">
+                  <div class="w-full h-full bg-gradient-to-br from-amber-900/20 via-[#1A1208] to-[#0D0D0D] flex items-center justify-center">
                     <span class="text-6xl opacity-30">🌴</span>
                   </div>
                 )}
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                {tour.base_price && (
+                  <div class="absolute top-3 left-3 bg-amber-500 text-black px-3 py-1 rounded-lg text-sm font-bold">
+                    החל מ-₪{tour.base_price}
+                  </div>
+                )}
               </div>
 
               <div class="p-6 flex flex-col flex-1">
-                <h3 class="text-xl font-bold text-white mb-2">{tour.name}</h3>
+                <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition-colors mb-2">{tour.name}</h3>
                 <div class="flex items-center gap-3 text-sm text-white/50 mb-3">
-                  <span class="flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5 text-teal-400 fill-teal-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    {tour.rating}
-                  </span>
+                  {tour.rating && (
+                    <span class="flex items-center gap-1">
+                      <svg class="w-3.5 h-3.5 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                      {tour.rating}
+                    </span>
+                  )}
                   {tour.duration_minutes && <span>{Math.round(tour.duration_minutes / 60)} שעות</span>}
                   {tour.review_count && <span>{tour.review_count} ביקורות</span>}
                 </div>
-                <p class="text-white/60 text-sm mb-4 flex-1 line-clamp-2">{tour.short_description}</p>
-                {tour.includes?.[0] && (
-                  <p class="text-teal-400/70 text-xs mb-4 flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    {tour.includes[0]}
-                  </p>
-                )}
-                <div class="flex items-center justify-between mt-auto">
-                  <div>
-                    <span class="text-white/40 text-xs">החל מ-</span>
-                    <span class="text-teal-400 font-bold text-xl mr-1">₪{tour.base_price}</span>
-                  </div>
-                  <a href={`/tours/${tour.slug}`} class="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:shadow-lg hover:shadow-teal-500/25">
-                    לפרטים
-                  </a>
-                </div>
+                <p class="text-white/60 text-sm flex-1 line-clamp-2">{tour.short_description}</p>
               </div>
-            </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="text-center mt-8 md:hidden">
+          <a href="/tours" class="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold transition-colors">
+            כל הטיולים
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- AREAS -->
+  {featuredAreas.length > 0 && (
+    <section class="bg-[#1A1208]/30 py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-end justify-between mb-12">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-black text-white mb-2">
+              אזורים <span class="text-amber-400">מובילים בבאלי</span>
+            </h2>
+            <p class="text-white/40">כל אזור בבאלי הוא עולם בפני עצמו — גלו מה מתאים לכם</p>
+          </div>
+          <a href="/areas" class="hidden md:inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-sm transition-colors">
+            כל האזורים
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredAreas.map((area: any) => (
+            <a href={`/areas/${area.slug}`} class="group relative rounded-2xl overflow-hidden h-52 flex items-end">
+              {area.image ? (
+                <img src={area.image} alt={area.name_he} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              ) : (
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-900/30 to-[#0D0D0D]"></div>
+              )}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+              <div class="relative p-5 w-full">
+                <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition-colors">{area.name_he}</h3>
+                {area.excerpt && <p class="text-white/60 text-sm mt-1 line-clamp-1">{area.excerpt}</p>}
+              </div>
+            </a>
           ))}
         </div>
       </div>
     </section>
   )}
 
-  <!-- WHY US -->
-  <section class="max-w-5xl mx-auto px-4 py-16 md:py-24">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
-        למה <span class="text-teal-400">יאללה באלי?</span>
-      </h2>
-    </div>
-
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="text-center p-8 rounded-2xl bg-[#0A1A18] border border-teal-500/10">
-        <span class="text-4xl mb-4 block">🛂</span>
-        <h3 class="text-xl font-bold text-white mb-2">ויזה מהירה ופשוטה</h3>
-        <p class="text-white/50 text-sm">מגישים עבורכם ויזה לבאלי — אישור ב-24 שעות, 185 ₪ בלבד</p>
-      </div>
-      <div class="text-center p-8 rounded-2xl bg-[#0A1A18] border border-teal-500/10">
-        <span class="text-4xl mb-4 block">⭐</span>
-        <h3 class="text-xl font-bold text-white mb-2">4.9 דירוג ממוצע</h3>
-        <p class="text-white/50 text-sm">מ-500+ ישראלים שכבר טסו לבאלי</p>
-      </div>
-      <div class="text-center p-8 rounded-2xl bg-[#0A1A18] border border-teal-500/10">
-        <span class="text-4xl mb-4 block">🗺️</span>
-        <h3 class="text-xl font-bold text-white mb-2">מסלולים מקצועיים</h3>
-        <p class="text-white/50 text-sm">מסלולים מותאמים לישראלים — לפי ימים, תקציב וסגנון</p>
-      </div>
-    </div>
-  </section>
-
   <!-- FEATURED ATTRACTIONS -->
   {featuredAttractions.length > 0 && (
     <section class="max-w-7xl mx-auto px-4 py-16 md:py-24">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
-          אטרקציות <span class="text-teal-400">מובילות בבאלי</span>
-        </h2>
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-black text-white mb-2">
+            אטרקציות <span class="text-amber-400">מובילות בבאלי</span>
+          </h2>
+          <p class="text-white/40">מקדשים, טרסות אורז, מפלים ועוד</p>
+        </div>
+        <a href="/attractions" class="hidden md:inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-sm transition-colors">
+          כל האטרקציות
+          <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </a>
       </div>
 
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {featuredAttractions.map((attraction: any) => (
-          <a href={`/attractions/${attraction.slug}`} class="group rounded-2xl overflow-hidden bg-[#0A1A18] border border-teal-500/10 hover:border-teal-500/30 transition-all duration-300 card-lift">
-            <div class="relative h-40 bg-gradient-to-br from-teal-900/30 via-[#0A1A18] to-[#0D0D0D] overflow-hidden">
+          <a href={`/attractions/${attraction.slug}`} class="group rounded-2xl overflow-hidden bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1">
+            <div class="relative h-44 overflow-hidden">
               {attraction.image ? (
-                <img src={attraction.image} alt={attraction.name_he} class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <img src={attraction.image} alt={attraction.name_he} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
               ) : (
-                <div class="w-full h-full flex items-center justify-center">
-                  <span class="text-5xl opacity-30">🌴</span>
+                <div class="w-full h-full bg-gradient-to-br from-amber-900/20 to-[#0D0D0D] flex items-center justify-center">
+                  <span class="text-5xl opacity-30">🏛️</span>
                 </div>
               )}
             </div>
-            <div class="p-4">
-              <h3 class="text-base font-bold text-white group-hover:text-teal-400 transition-colors mb-2">{attraction.name_he}</h3>
+            <div class="p-5">
+              <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors mb-2">{attraction.name_he}</h3>
               <div class="flex items-center justify-between text-sm">
                 {attraction.rating && (
-                  <span class="flex items-center gap-1 text-teal-400">
-                    <svg class="w-3.5 h-3.5 fill-teal-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <span class="flex items-center gap-1 text-amber-400">
+                    <svg class="w-3.5 h-3.5 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     {attraction.rating}
                   </span>
                 )}
-                <span class="text-white/40 text-xs">{attraction.price}</span>
+                {attraction.price && <span class="text-white/40 text-xs">{attraction.price}</span>}
               </div>
-              <span class="text-teal-400/70 text-xs mt-2 block">קראו עוד &larr;</span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="text-center mt-8 md:hidden">
+        <a href="/attractions" class="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold transition-colors">
+          כל האטרקציות
+          <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- HOTELS PREVIEW -->
+  {featuredHotels.length > 0 && (
+    <section class="bg-[#1A1208]/30 py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-end justify-between mb-12">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-black text-white mb-2">
+              מלונות <span class="text-amber-400">מומלצים בבאלי</span>
+            </h2>
+            <p class="text-white/40">וילות פרטיות, ריזורטים מפנקים ומלונות בוטיק</p>
+          </div>
+          <a href="/hotels" class="hidden md:inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-sm transition-colors">
+            כל המלונות
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredHotels.map((hotel: any) => (
+            <a href={`/hotels/${hotel.slug}`} class="group rounded-2xl overflow-hidden bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1">
+              <div class="relative h-40 overflow-hidden">
+                {hotel.image ? (
+                  <img src={hotel.image} alt={hotel.name_he} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                ) : (
+                  <div class="w-full h-full bg-gradient-to-br from-amber-900/20 to-[#0D0D0D] flex items-center justify-center">
+                    <span class="text-5xl opacity-30">🏨</span>
+                  </div>
+                )}
+              </div>
+              <div class="p-4">
+                <h3 class="text-base font-bold text-white group-hover:text-amber-400 transition-colors mb-1">{hotel.name_he}</h3>
+                <div class="flex items-center justify-between text-sm">
+                  {hotel.rating && (
+                    <span class="flex items-center gap-1 text-amber-400">
+                      <svg class="w-3.5 h-3.5 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                      {hotel.rating}
+                    </span>
+                  )}
+                  {hotel.area && <span class="text-white/40 text-xs">{hotel.area}</span>}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- GUIDES PREVIEW -->
+  {featuredGuides.length > 0 && (
+    <section class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-black text-white mb-2">
+            מדריכים <span class="text-amber-400">לבאלי</span>
+          </h2>
+          <p class="text-white/40">מדריכים מפורטים לכל מה שצריך לדעת</p>
+        </div>
+        <a href="/guides" class="hidden md:inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-sm transition-colors">
+          כל המדריכים
+          <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        {featuredGuides.map((guide: any) => (
+          <a href={`/guides/${guide.slug}`} class="group rounded-2xl overflow-hidden bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1 flex flex-col">
+            <div class="relative h-40 overflow-hidden">
+              {guide.image ? (
+                <img src={guide.image} alt={guide.name_he} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-amber-900/20 to-[#0D0D0D] flex items-center justify-center">
+                  <span class="text-5xl opacity-30">📖</span>
+                </div>
+              )}
+            </div>
+            <div class="p-5 flex-1 flex flex-col">
+              <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors mb-2">{guide.name_he}</h3>
+              {guide.excerpt && <p class="text-white/60 text-sm line-clamp-2">{guide.excerpt}</p>}
             </div>
           </a>
         ))}
@@ -274,19 +423,48 @@ const organizationSchema = {
     </section>
   )}
 
+  <!-- WHY US -->
+  <section class="bg-[#1A1208]/30 py-16 md:py-24">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
+          למה <span class="text-amber-400">יאללה באלי?</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="text-center p-8 rounded-2xl bg-[#1A1208] border border-amber-500/10">
+          <span class="text-4xl mb-4 block">🇮🇱</span>
+          <h3 class="text-xl font-bold text-white mb-2">הכל בעברית</h3>
+          <p class="text-white/50 text-sm">מדריכים, המלצות ומידע מפורט — כתוב לישראלים, על ידי ישראלים שמכירים את באלי</p>
+        </div>
+        <div class="text-center p-8 rounded-2xl bg-[#1A1208] border border-amber-500/10">
+          <span class="text-4xl mb-4 block">🗺️</span>
+          <h3 class="text-xl font-bold text-white mb-2">מידע מעודכן ומדויק</h3>
+          <p class="text-white/50 text-sm">מחירים, שעות פתיחה, כתובות וטיפים מעשיים — הכל מאומת ומעודכן ל-2026</p>
+        </div>
+        <div class="text-center p-8 rounded-2xl bg-[#1A1208] border border-amber-500/10">
+          <span class="text-4xl mb-4 block">💬</span>
+          <h3 class="text-xl font-bold text-white mb-2">תמיכה בוואטסאפ</h3>
+          <p class="text-white/50 text-sm">שאלות? התלבטויות? שלחו הודעה ונעזור עם מידע, המלצות וטיפים</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- TESTIMONIALS -->
   <section class="max-w-7xl mx-auto px-4 py-16 md:py-24">
     <div class="text-center mb-12">
       <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
-        מה <span class="text-teal-400">אומרים עלינו</span>
+        מה <span class="text-amber-400">אומרים עלינו</span>
       </h2>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
       {testimonials.map((t) => (
-        <div class="bg-[#0A1A18] rounded-2xl p-6 border border-teal-500/10">
+        <div class="bg-[#1A1208] rounded-2xl p-6 border border-amber-500/10">
           <div class="flex gap-1 mb-4">
             {[1,2,3,4,5].map(() => (
-              <svg class="w-4 h-4 text-teal-400 fill-teal-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             ))}
           </div>
           <p class="text-white/70 mb-4 leading-relaxed">&ldquo;{t.text}&rdquo;</p>
@@ -296,7 +474,7 @@ const organizationSchema = {
               <p class="text-white/30 text-sm">{t.city}</p>
             </div>
             <div class="text-left">
-              <p class="text-teal-400 text-sm font-medium">{t.tour}</p>
+              <p class="text-amber-400 text-sm font-medium">{t.tour}</p>
               <p class="text-white/20 text-xs">{t.date}</p>
             </div>
           </div>
@@ -306,30 +484,34 @@ const organizationSchema = {
   </section>
 
   <!-- FINAL CTA -->
-  <section class="bg-gradient-to-b from-[#0A1A18] to-[#0D0D0D] py-16 md:py-24">
+  <section class="bg-gradient-to-b from-[#0D0D0D] to-[#1A1208]/30 py-16 md:py-24">
     <div class="max-w-4xl mx-auto px-4 text-center">
       <h2 class="text-3xl md:text-5xl font-black text-white mb-6">מוכנים לגלות את באלי?</h2>
       <p class="text-white/50 text-lg mb-10 max-w-xl mx-auto">ג׳ונגל, חופים, מקדשים ושקיעות — באלי מחכה לכם</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/visa" class="inline-flex items-center justify-center bg-gradient-to-r from-teal-500 to-teal-600 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-lg hover:shadow-teal-500/25">
-          🛂 הגישו ויזה — 185 ₪
+        <a href="/plan" class="inline-flex items-center justify-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25">
+          תכננו את הטיול
         </a>
-        <a href="/plan" class="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all border border-white/20">
-          🗓️ תכנן את הטיול
+        <a href="https://wa.me/972528211665?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A0%D7%97%D7%A0%D7%95%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%A0%D7%99%D7%9D%20%D7%98%D7%99%D7%95%D7%9C%20%D7%9C%D7%91%D7%90%D7%9C%D7%99%20%F0%9F%8C%B4"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white px-8 py-4 rounded-xl font-bold text-lg transition-all">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <span>שלחו לנו הודעה</span>
         </a>
       </div>
       <div class="flex flex-wrap justify-center gap-6 mt-10 text-white/40 text-sm">
         <span class="flex items-center gap-1">
-          <svg class="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          ויזה ב-24 שעות
+          <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          מידע מעודכן ל-2026
         </span>
         <span class="flex items-center gap-1">
-          <svg class="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          תשלום מאובטח
+          <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          הכל בעברית
         </span>
         <span class="flex items-center gap-1">
-          <svg class="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-          מדריכים מקומיים
+          <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          תמיכה בוואטסאפ
         </span>
       </div>
     </div>

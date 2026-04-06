@@ -20,7 +20,7 @@ const SUPABASE_URL   = 'https://nsfmucsdxhcywisejxxq.supabase.co'
 const SUPABASE_KEY   = process.env.SUPABASE_SERVICE_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZm11Y3NkeGhjeXdpc2VqeHhxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDMzOTAwNywiZXhwIjoyMDg5OTE1MDA3fQ.xwTYYmf4r0fd_u8q5RQpNYCnygROD8BA0vY20ehkrBc'
 const GOOGLE_KEY     = process.env.GOOGLE_PLACES_KEY
-const DESTINATION_ID = 'dubai'
+const DESTINATION_ID = 'bali'
 const PHOTOS_COUNT   = 4           // photos per place (+ main image = 5 total)
 const BUCKET         = 'place-photos'
 const MAX_WIDTH      = 1200        // photo width in pixels
@@ -43,9 +43,9 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 // ─── Google Places helpers ───────────────────────────────────────────────────
 
-/** Find a place by name in Dubai → returns place_id */
+/** Find a place by name in Bali → returns place_id */
 async function findPlaceId(name) {
-  const query = encodeURIComponent(`${name} Dubai`)
+  const query = encodeURIComponent(`${name} Bali`)
   const url = `https://places.googleapis.com/v1/places:searchText`
 
   const res = await fetch(url, {
@@ -55,7 +55,7 @@ async function findPlaceId(name) {
       'X-Goog-Api-Key': GOOGLE_KEY,
       'X-Goog-FieldMask': 'places.id,places.displayName'
     },
-    body: JSON.stringify({ textQuery: `${name} Dubai` })
+    body: JSON.stringify({ textQuery: `${name} Bali` })
   })
   const data = await res.json()
   if (data.places && data.places.length > 0) {
@@ -183,7 +183,7 @@ async function processTable(table) {
 }
 
 async function main() {
-  console.log('🚀 Yalla Dubai — Gallery Fetch Script')
+  console.log('🚀 Yalla Bali — Gallery Fetch Script')
   console.log(`📍 Destination: ${DESTINATION_ID}`)
   console.log(`📷 Photos per place: ${PHOTOS_COUNT}`)
   console.log(`🔄 Force refetch: ${forceRefetch}`)

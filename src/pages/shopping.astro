@@ -1,8 +1,20 @@
 ---
 import Layout from '../components/Layout.astro'
+import SchemaOrg from '../components/SchemaOrg.astro'
 
 const title = 'קניות בבאלי — שווקים, בוטיקים ומה לקנות | Yalla Bali'
 const description = 'מדריך קניות בבאלי: שוק אומנות סוקוואטי, מרכז אובוד, שוק Seminyak, בוטיקים בקאנגו ועוד. מה לקנות, איפה לקנות ואיך לא להיפגע.'
+
+const shoppingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  image: 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800&q=80&fit=crop',
+  url: new URL('/shopping', Astro.site).toString(),
+  author: { '@type': 'Organization', name: 'Yalla Bali' },
+  publisher: { '@type': 'Organization', name: 'Yalla Bali' },
+}
 
 const markets = [
   {
@@ -91,7 +103,7 @@ const whatToBuy = [
 ]
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} schema={shoppingSchema}>
   <!-- Hero -->
   <section class="relative py-16 md:py-24 overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-b from-teal-900/30 to-transparent pointer-events-none" />
@@ -177,7 +189,7 @@ const whatToBuy = [
       <h2 class="text-2xl font-black text-white mb-3">צריכים עזרה עם הטיול?</h2>
       <p class="text-white/60 mb-6">מסלולים, ויזה, הזמנות — הכל בווטסאפ</p>
       <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אני מתכנן טיול לבאלי ורוצה עזרה עם הקניות והמסלול')}`}
+        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מתכננים טיול לבאלי ורוצים עזרה עם הקניות והמסלול')}`}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-black font-bold px-8 py-3 rounded-xl transition-colors"

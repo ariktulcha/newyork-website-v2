@@ -1,14 +1,12 @@
 ---
-const phoneNumber = '972528211665'
-const message = encodeURIComponent('היי, אני מתכנן טיול לבאלי 🌴')
-const waUrl = `https://wa.me/${phoneNumber}?text=${message}`
+import { site, waUrl } from '../config/site'
 ---
 <a
-  href={waUrl}
+  href={waUrl()}
   target="_blank"
   rel="noopener noreferrer"
   aria-label="צור קשר בוואטסאפ"
-  class="fixed bottom-6 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-110 hover:bg-[#1ebe5d] hover:shadow-green-500/50"
+  class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg shadow-green-500/30 transition-all duration-300 hover:scale-110 hover:bg-[#1ebe5d] hover:shadow-green-500/50"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"

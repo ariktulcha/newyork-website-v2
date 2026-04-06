@@ -1,201 +1,322 @@
 ---
 import Layout from '../components/Layout.astro'
 import SchemaOrg from '../components/SchemaOrg.astro'
+import Breadcrumb from '../components/Breadcrumb.astro'
 
-const visaSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'האם ישראלים צריכים ויזה לבאלי?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'כן, ישראלים חייבים ויזה לבאלי. ניתן להוציא בשתי דרכים: eVOA (טקסה לפני הטיסה) או VOA (בשדה).'
-      }
-    },
-    {
-      '@type': 'Question',
-      name: 'כמה עולה להוציא ויזה לבאלי?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'eVOA עולה $35. אם משתמשים בשירותנו, המחיר הכולל הוא 185 ₪ (כולל עמלת שירות).'
-      }
-    },
-    {
-      '@type': 'Question',
-      name: 'כמה זמן לוקח להוציא ויזה?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'eVOA: 3-5 ימי עסקים. VOA בשדה: מיידי אבל עם התנאות. מומלץ להגיש eVOA לפחות שבוע לפני הטיסה.'
-      }
-    }
-  ]
-}
+const title = 'ויזה לבאלי לישראלים — המדריך המלא 2026 | יאללה באלי'
+const description = 'מדריך מקיף להוצאת ויזה לבאלי לישראלים: מסמכים נדרשים, תהליך הגשה שלב אחר שלב, ספונסר אינדונזי, Telex, לוח זמנים וטיפים חשובים.'
 
-const title = 'ויזה לבאלי לישראלים - eVOA + VOA | יאללה באלי'
-const description = 'מדריך מלא להוצאת ויזה לבאלי: eVOA או VOA, תהליך, מסמכים, מחיר, כמה זמן. אנחנו מטפלים בהויזה בשבילכם.'
+const breadcrumbs = [
+  { name: 'דף הבית', url: 'https://yalla-bali.co.il/' },
+  { name: 'ויזה לבאלי', url: 'https://yalla-bali.co.il/visa' },
+]
+
+const faqItems = [
+  {
+    q: 'האם ישראלים צריכים ויזה לבאלי?',
+    a: 'כן. ישראלים חייבים ויזה מסוג Calling Visa (ויזת הזמנה) כדי להיכנס לאינדונזיה. התהליך דורש ספונסר אינדונזי מוסמך ואישור ממנהלת ההגירה בג\'קרטה. התהליך אורך 5–8 שבועות בממוצע.'
+  },
+  {
+    q: 'כמה עולה ויזה לבאלי לישראלים?',
+    a: 'אגרת הויזה הרשמית היא 2,000,000 רופיה אינדונזית (כ-125$). בנוסף יש עלויות של ספונסר אינדונזי, שמשתנות בהתאם לספק. סה"כ העלות הכוללת נעה בין 300$ ל-600$ בהתאם לספונסר ולשירותים נלווים.'
+  },
+  {
+    q: 'כמה זמן לוקח להוציא ויזה לבאלי?',
+    a: 'התהליך המלא אורך 5–8 שבועות: 1–2 שבועות לאיתור ספונסר, 2–4 שבועות להגשה וקבלת Telex, ו-1–2 שבועות נוספים להנפקת הויזה. בעונות שיא (יולי–אוגוסט, דצמבר–ינואר) מומלץ להתחיל 10 שבועות לפני הטיסה.'
+  },
+  {
+    q: 'מה זה ספונסר אינדונזי ואיך מוצאים אחד?',
+    a: 'ספונסר אינדונזי הוא חברה רשומה (PT) או אדם פרטי אינדונזי שחותם על אחריות משפטית לשהותכם. הספונסר מגיש את הבקשה הראשונית בשמכם מול מנהלת ההגירה. ניתן למצוא ספונסרים דרך סוכני ויזות מקומיים באלי או בג\'קרטה.'
+  },
+  {
+    q: 'מה קורה אם הויזה לבאלי נדחית?',
+    a: 'דחיית ויזה אפשרית ולרוב לא מקבלים הסבר על הסיבה. חלק מהסוכנויות מציעות החזר כספי חלקי במקרה של דחייה. לכן חשוב לא להזמין כרטיסי טיסה non-refundable לפני קבלת הויזה.'
+  },
+  {
+    q: 'האם אפשר להאריך את הויזה לבאלי?',
+    a: 'כן. ניתן להאריך את ה-Calling Visa בתוך אינדונזיה בתקופות של 30 יום נוספים. ההארכה נעשית דרך סוכן מקומי מוסמך ועולה $160–$200 לכל הארכה.'
+  },
+  {
+    q: 'האם יש שגרירות ישראלית באינדונזיה?',
+    a: 'לא. אין שגרירות ישראלית באינדונזיה. הקונסוליה הקרובה ביותר היא בסינגפור. לכן ביטוח נסיעות מקיף עם כיסוי פינוי רפואי הוא חובה מוחלטת.'
+  },
+]
+
+const visaSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'ויזה לבאלי לישראלים — המדריך המלא 2026',
+    description: description,
+    datePublished: '2026-01-15',
+    dateModified: '2026-04-06',
+    author: { '@type': 'Organization', name: 'Yalla Bali' },
+    publisher: { '@type': 'Organization', name: 'Yalla Bali', url: 'https://yalla-bali.co.il' },
+    inLanguage: 'he',
+    mainEntityOfPage: 'https://yalla-bali.co.il/visa',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map(item => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((b, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: b.name,
+      item: b.url,
+    })),
+  },
+]
 ---
 <Layout title={title} description={description}>
   <SchemaOrg schema={visaSchema} />
   <main class="max-w-4xl mx-auto px-4 py-12">
 
+    <Breadcrumb items={breadcrumbs} />
+
     <!-- Hero -->
-    <section class="text-center mb-12">
-      <h1 class="text-5xl font-bold text-white mb-4">🛂 ויזה לבאלי לישראלים</h1>
-      <p class="text-xl text-white/70">מדריך מלא: eVOA vs VOA, תהליך, מסמכים והכל מה שצריך לדעת</p>
+    <section class="text-center mb-16">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">ויזה לבאלי לישראלים — המדריך המלא 2026</h1>
+      <p class="text-xl text-white/70 max-w-2xl mx-auto">כל מה שצריך לדעת על תהליך הויזה לאינדונזיה: מסמכים, שלבים, לוח זמנים וטיפים חשובים</p>
     </section>
 
-    <!-- Quick comparison table -->
+    <!-- Important notice -->
     <section class="mb-12">
-      <h2 class="text-3xl font-bold text-white mb-6">eVOA או VOA? בואו נשווה</h2>
-      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl overflow-hidden">
-        <table class="w-full text-sm">
-          <thead class="bg-teal-500/5 border-b border-teal-500/10">
-            <tr>
-              <th class="text-right py-4 px-4 text-teal-400 font-bold">קריטריון</th>
-              <th class="text-center py-4 px-4 text-teal-400 font-bold">eVOA (תא לפני)</th>
-              <th class="text-center py-4 px-4 text-teal-400 font-bold">VOA (בשדה)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="border-b border-teal-500/5 hover:bg-teal-500/5">
-              <td class="text-right py-3 px-4 text-white font-medium">עלות</td>
-              <td class="text-center py-3 px-4 text-teal-400">$35 בלבד</td>
-              <td class="text-center py-3 px-4 text-teal-400">$35 בלבד</td>
-            </tr>
-            <tr class="border-b border-teal-500/5 hover:bg-teal-500/5">
-              <td class="text-right py-3 px-4 text-white font-medium">זמן עיבוד</td>
-              <td class="text-center py-3 px-4 text-green-400">3-5 ימי עסקים</td>
-              <td class="text-center py-3 px-4 text-orange-400">מיידי (בשדה)</td>
-            </tr>
-            <tr class="border-b border-teal-500/5 hover:bg-teal-500/5">
-              <td class="text-right py-3 px-4 text-white font-medium">תהליך</td>
-              <td class="text-center py-3 px-4 text-white/70">אונליין מהבית</td>
-              <td class="text-center py-3 px-4 text-white/70">בדלפקי ההגעה</td>
-            </tr>
-            <tr class="border-b border-teal-500/5 hover:bg-teal-500/5">
-              <td class="text-right py-3 px-4 text-white font-medium">שורות</td>
-              <td class="text-center py-3 px-4 text-white/70">בלי</td>
-              <td class="text-center py-3 px-4 text-red-400">ארוכות מאוד</td>
-            </tr>
-            <tr class="hover:bg-teal-500/5">
-              <td class="text-right py-3 px-4 text-white font-medium">יתרון</td>
-              <td class="text-center py-3 px-4 text-teal-400">✅ נוח, ללא חיכוכים</td>
-              <td class="text-center py-3 px-4 text-white/70">מהיר בעת הגעה</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="text-white/60 text-sm mt-4">💡 המלצה: <strong>eVOA זה הדרך הטובה</strong>. בקלות, ללא חיכוכים, וחוסכים שורות בשדה.</p>
-    </section>
-
-    <!-- How eVOA works -->
-    <section class="mb-12">
-      <h2 class="text-3xl font-bold text-white mb-6">איך להוציא eVOA בשלבים</h2>
-      <div class="space-y-4">
-        {[
-          { step: 1, title: 'כנסו לאתר הממשלה', desc: 'https://visa-indonesia.imigrasi.go.id — זה האתר הרשמי' },
-          { step: 2, title: 'מלאו טופס בקשה', desc: 'פרטים אישיים, דרכון, טיסה, מלון, מטרת ביקור (תיירות)' },
-          { step: 3, title: 'העלו מסמכים', desc: 'תמונה דרכון (bio page), תמונה פנים, תמונה קבלת טיסה' },
-          { step: 4, title: 'שלמו $35', desc: 'דרך כרטיס אשראי או Paypal' },
-          { step: 5, title: 'חכו 3-5 ימי עסקים', desc: 'תקבלו אימייל עם מספר ויזה וQR code' },
-          { step: 6, title: 'הדפיסו את הויזה', desc: 'זה לא חובה, אבל בטוח לתמונה בטלפון בהגעה' },
-        ].map(item => (
-          <div class="flex gap-4 items-start bg-[#1A1208] border border-teal-500/10 rounded-xl p-5">
-            <div class="flex-shrink-0 w-10 h-10 bg-teal-500 text-black font-bold rounded-full flex items-center justify-center text-lg">{item.step}</div>
-            <div>
-              <h3 class="text-white font-bold text-lg">{item.title}</h3>
-              <p class="text-white/60 text-sm mt-1">{item.desc}</p>
-            </div>
-          </div>
-        ))}
+      <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6">
+        <p class="text-amber-400 font-bold text-lg mb-2">מידע חשוב לפני שמתחילים</p>
+        <p class="text-white/70">ישראלים חייבים ויזה מסוג <strong class="text-white">Calling Visa</strong> (ויזת הזמנה) כדי להיכנס לאינדונזיה. התהליך דורש ספונסר אינדונזי מוסמך ואורך <strong class="text-white">5–8 שבועות</strong> בממוצע. מומלץ להתחיל מוקדם ככל האפשר.</p>
       </div>
     </section>
 
     <!-- Required documents -->
-    <section class="mb-12">
-      <h2 class="text-3xl font-bold text-white mb-6">📋 מסמכים נדרשים</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-6">
-          <h3 class="text-xl font-bold text-teal-400 mb-4">חובה</h3>
-          <ul class="space-y-2 text-white/70">
-            <li>✅ דרכון תקף לפחות 6 חודשים</li>
-            <li>✅ תמונה בגודל דרכון (4x6 ס״מ)</li>
-            <li>✅ קבלת טיסה (booking proof)</li>
-            <li>✅ הזמנת מלון או confirmation</li>
-            <li>✅ סכום כסף כדי להחזיק (לא חובה להוכיח)</li>
-          </ul>
-        </div>
-        <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-6">
-          <h3 class="text-xl font-bold text-teal-400 mb-4">טיפים חשובים</h3>
-          <ul class="space-y-2 text-white/70">
-            <li>💡 תמונה חייבת להיות אדם בודד, רקע לבן</li>
-            <li>💡 דרכון חייב להיות בתמונה (bio page)</li>
-            <li>💡 הגישו לפחות 7-10 ימים לפני הטיסה</li>
-            <li>💡 אחוז ההשלמה: 99% בהצלחה (נדיר שדוחים)</li>
-            <li>💡 ויזה תקפה ל-60 יום כניסה</li>
-          </ul>
-        </div>
+    <section class="mb-14">
+      <h2 class="text-3xl font-bold text-white mb-6">מסמכים נדרשים לויזה לבאלי</h2>
+      <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6">
+        <ul class="space-y-3 text-white/80">
+          {[
+            'דרכון בתוקף — לפחות 6 חודשים מעבר לתאריך הכניסה המתוכנן',
+            '2 תמונות פספורט על רקע לבן — גודל 4×6 ס"מ',
+            'מכתב הזמנה מספונסר אינדונזי מורשה (Surat Undangan)',
+            'מכתב אישור ממנהל כללי של Immigration (Telex)',
+            'הזמנת לינה לכל ימי השהות',
+            'כרטיסי טיסה הלוך ושוב',
+            'תדפיס חשבון בנק — 3 חודשים אחרונים',
+            'פוליסת ביטוח נסיעות בתוקף לכל אינדונזיה',
+            'מילוי טופס הבקשה הרשמי באתר e-visa.imigrasi.go.id',
+            'תשלום אגרה: 2,000,000 רופיה (~125$)',
+          ].map(doc => (
+            <li class="flex items-start gap-3">
+              <span class="text-amber-400 mt-1 flex-shrink-0">&#10003;</span>
+              <span>{doc}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
 
-    <!-- Timeline graphic -->
-    <section class="mb-12">
-      <h2 class="text-3xl font-bold text-white mb-6">⏰ ציר זמן מומלץ</h2>
-      <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-6">
-        <div class="space-y-4">
+    <!-- Step by step process -->
+    <section class="mb-14">
+      <h2 class="text-3xl font-bold text-white mb-8">תהליך הגשת ויזה לבאלי — שלב אחר שלב</h2>
+      <div class="space-y-6">
+
+        <!-- Step 1 -->
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-amber-500 text-black font-bold rounded-full flex items-center justify-center text-xl">1</div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-white mb-2">מציאת ספונסר אינדונזי מוסמך לויזה לבאלי</h3>
+              <p class="text-white/70 mb-3">זה השלב הקריטי ביותר — ובלעדיו אין תהליך. הספונסר חייב להיות חברה אינדונזית רשומה (PT) או אדם פרטי אינדונזי שמוכן לחתום על אחריות משפטית לשהותכם. הספונסר מגיש את הבקשה הראשונית בשמכם מול מנהלת ההגירה בג'קרטה.</p>
+              <div class="bg-amber-500/5 border border-amber-500/10 rounded-lg px-4 py-2 inline-block">
+                <span class="text-amber-400 text-sm font-medium">זמן משוער: 1–2 שבועות לאיתור</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-amber-500 text-black font-bold rounded-full flex items-center justify-center text-xl">2</div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-white mb-2">הגשת הבקשה המוקדמת על ידי הספונסר</h3>
+              <p class="text-white/70 mb-3">הספונסר מגיש לג'קרטה את Surat Undangan (מכתב הזמנה) יחד עם פרטי המבקש. הבקשה עוברת בדיקה של מספר גורמים ממשלתיים — הגירה, משרד החוץ, ביון, משטרה, וצבא.</p>
+              <div class="bg-amber-500/5 border border-amber-500/10 rounded-lg px-4 py-2 inline-block">
+                <span class="text-amber-400 text-sm font-medium">זמן משוער: 2–4 שבועות</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-amber-500 text-black font-bold rounded-full flex items-center justify-center text-xl">3</div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-white mb-2">קבלת אישור Telex לויזה לבאלי</h3>
+              <p class="text-white/70 mb-3">אם הבקשה עוברת, מנהל ההגירה הכללי מנפיק מכתב Telex — זהו האישור הממשלתי הרשמי. המסמך הזה הוא זה שמאפשר את פתיחת הבקשה באתר הויזות הרשמי.</p>
+              <div class="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2 inline-block">
+                <span class="text-red-400 text-sm font-medium">לא מובטח — ניתן לדחייה ללא הסבר</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-amber-500 text-black font-bold rounded-full flex items-center justify-center text-xl">4</div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-white mb-2">הגשה באתר הרשמי — e-visa.imigrasi.go.id</h3>
+              <p class="text-white/70">עם ה-Telex ביד, מגישים את הבקשה הפורמלית באתר e-visa.imigrasi.go.id. מצרפים את כל המסמכים ומשלמים את האגרה של 2,000,000 רופיה (~125$).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-amber-500 text-black font-bold rounded-full flex items-center justify-center text-xl">5</div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-white mb-2">קבלת הויזה לבאלי ויציאה לדרך</h3>
+              <p class="text-white/70">הויזה מונפקת כ-e-visa — מסמך דיגיטלי שיש להדפיס ולהציג בנקודת הכניסה.</p>
+              <div class="bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-2 inline-block mt-3">
+                <span class="text-green-400 text-sm font-medium">סה"כ: 5–8 שבועות מתחילת התהליך</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="mb-14">
+      <h2 class="text-3xl font-bold text-white mb-6">לוח זמנים — מתי להתחיל את תהליך הויזה לבאלי?</h2>
+      <div class="bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6">
+        <div class="space-y-6">
           {[
-            { days: 'T-30 ימים', action: 'בדקו שדרכון תקף', color: 'teal' },
-            { days: 'T-21 ימים', action: 'הזמינו טיסה ומלון', color: 'teal' },
-            { days: 'T-14 ימים', action: 'בקשו eVOA (היום האחרון המקסימלי)', color: 'amber' },
-            { days: 'T-10 ימים', action: 'קבלו אישור ויזה (בדרך כלל)', color: 'green' },
-            { days: 'T-7 ימים', action: 'הדפיסו ויזה (אופציונלי)', color: 'green' },
-            { days: 'T-1 יום', action: 'אריזה סופית', color: 'blue' },
-            { days: 'ביום הטיסה', action: 'הראו ויזה בזכוכית (QR code מספיק)', color: 'blue' },
-          ].map((item, i) => (
-            <div class="flex items-center gap-4">
-              <div class={`flex-shrink-0 w-24 font-bold text-sm px-3 py-1 rounded-full bg-${item.color}-500/10 text-${item.color}-400`}>{item.days}</div>
-              <div class="flex-1 border-l-2 border-teal-500 pl-4 text-white">{item.action}</div>
+            {
+              time: '8 שבועות לפני',
+              title: 'פתיחת תהליך הבקשה',
+              desc: 'איסוף מסמכים ואיתור ספונסר אינדונזי. 8 שבועות זה המינימום, לא הבאפר.',
+              color: 'amber',
+            },
+            {
+              time: '6 שבועות לפני',
+              title: 'הגשת הבקשה המוקדמת',
+              desc: 'הספונסר מגיש את הבקשה. מעכשיו — המתנה. יש לשמור על גמישות בתאריכי הטיסה.',
+              color: 'amber',
+            },
+            {
+              time: '3–4 שבועות לפני',
+              title: 'קבלת Telex והגשה רשמית',
+              desc: 'קבלת מכתב Telex והגשת הבקשה הפורמלית באתר הרשמי.',
+              color: 'green',
+            },
+            {
+              time: '1–2 שבועות לפני',
+              title: 'קבלת הויזה — או דחייה',
+              desc: 'חלק מהסוכנויות מציעות החזר כספי חלקי במקרה של דחייה.',
+              color: 'green',
+            },
+          ].map(item => (
+            <div class="flex items-start gap-4">
+              <div class={`flex-shrink-0 w-36 text-sm font-bold px-3 py-2 rounded-lg text-center bg-${item.color}-500/10 text-${item.color}-400`}>
+                {item.time}
+              </div>
+              <div class="flex-1 border-r-2 border-amber-500/30 pr-4">
+                <h3 class="text-white font-bold">{item.title}</h3>
+                <p class="text-white/60 text-sm mt-1">{item.desc}</p>
+              </div>
             </div>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- Pricing CTA -->
-    <section class="mb-12 bg-gradient-to-r from-teal-500/10 to-transparent border border-teal-500/20 rounded-2xl p-8">
-      <h2 class="text-3xl font-bold text-white mb-3">רוצים שנטפל בזה בשבילכם?</h2>
-      <p class="text-white/70 mb-6">אנחנו מטפלים בכל התהליך — בדיקת מסמכים, הגשה, עדכון סטטוס, תמיכה בוואטסאפ.</p>
-      <div class="bg-[#1A1208] border border-teal-500/30 rounded-xl p-6 mb-6">
-        <div class="text-3xl font-bold text-teal-400 mb-2">185 ₪</div>
-        <p class="text-white/60 text-sm">כולל שירות מלא + עלות hویزه</p>
+    <!-- Important tips -->
+    <section class="mb-14">
+      <h2 class="text-3xl font-bold text-white mb-6">טיפים חשובים לויזה לבאלי</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        {[
+          {
+            title: 'שמרו על פרופיל סוציאל נמוך',
+            desc: 'הרשויות האינדונזיות עוקבות אחרי רשתות חברתיות. תמונות בשירות צבאי, ביגוד עם דגל ישראל, או פוסטים פוליטיים עלולים לגרום לבעיות בגבול או להסרת ויזה.',
+            accent: 'red',
+          },
+          {
+            title: 'ביטוח נסיעות — לא אופציה',
+            desc: 'אין שגרירות ישראלית באינדונזיה. הקונסוליה הקרובה ביותר היא בסינגפור. ביטוח מקיף עם כיסוי פינוי רפואי הוא חובה מוחלטת.',
+            accent: 'amber',
+          },
+          {
+            title: 'גמישות בתאריכים — חיונית',
+            desc: 'אל תזמינו כרטיסי טיסה non-refundable לפני שהויזה בידכם. עיכובים ודחיות הם נפוצים, ולרוב לא מקבלים הסבר.',
+            accent: 'amber',
+          },
+          {
+            title: 'הארכת ויזה בבאלי',
+            desc: 'ניתן להאריך את ה-Calling Visa בתוך אינדונזיה בתקופות של 30 יום נוספים. ההארכה נעשית דרך סוכן מקומי מוסמך ועולה $160–$200.',
+            accent: 'green',
+          },
+          {
+            title: 'עונת שיא — תכננו מוקדם יותר',
+            desc: 'בעונות השיא (יולי–אוגוסט, דצמבר–ינואר) מומלץ להתחיל תהליך של 10 שבועות לפחות.',
+            accent: 'amber',
+          },
+          {
+            title: 'הזמינו לינה עם ביטול חינם',
+            desc: 'בשלב הגשת הבקשה נדרשת הזמנת לינה. הזמינו דרך אתרים עם ביטול חינם כדי לשמור על גמישות בתאריכים.',
+            accent: 'green',
+          },
+        ].map(tip => (
+          <div class={`bg-[#1A1208] border border-${tip.accent}-500/10 rounded-xl p-5`}>
+            <h3 class={`text-${tip.accent}-400 font-bold mb-2`}>{tip.title}</h3>
+            <p class="text-white/60 text-sm">{tip.desc}</p>
+          </div>
+        ))}
       </div>
-      <a href="https://wa.me/972528211665?text=היי%2C%20אני%20רוצה%20להוציא%20ויזה%20לבאלי%20🛂"
-         target="_blank"
-         rel="noopener noreferrer"
-         class="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-8 py-4 rounded-xl transition-colors">
-        📱 צרו קשר בוואטסאפ
-      </a>
     </section>
 
-    <!-- Extended FAQ -->
-    <section>
-      <h2 class="text-3xl font-bold text-white mb-6">❓ שאלות נפוצות נוספות</h2>
+    <!-- FAQ Section -->
+    <section class="mb-14">
+      <h2 class="text-3xl font-bold text-white mb-6">שאלות נפוצות על ויזה לבאלי לישראלים</h2>
       <div class="space-y-4">
-        {[
-          { q: 'מה אם הויזה תידחה?', a: 'נדיר מאוד (פחות מ-1%). אם יקרה, תקבלו הודעה מהממשלה. ניתן לנסות שוב או להוציא VOA בשדה.' },
-          { q: 'איפה בדיוק בדרכון אני רואה את הויזה?', a: 'ไม่ כתוב בדרכון פיזי. אתה מקבל מספר ויזה דיגיטלי, שאתה מראה בגוגל או בנייר בשדה.' },
-          { q: 'האם אני יכול להאריך את הויזה בבאלי?', a: 'כן. בהגעה, תוכל ללכת להמשרד ההגירה (שדה תעופה או נוסה דואה) ולהארכות ל-30 ימים נוספים תמורת ~$35.' },
-          { q: 'מה אם אני לא יכול לצאת?', a: 'ב-VOA תוכל להוציא בשדה. בeVOA תוכל להוציא בשדה גם אם הבקשה נדחתה (שורות ארוכות אבל יש את האפשרות).' },
-          { q: 'כמה זמן הויזה תקפה?', a: '30 יום מתאריך הכניסה. אתה יכול להישאר יותר, אבל צריך להאריך או להוציא ויזה חדשה.' },
-          { q: 'האם אני צריך לחזור עם אותה ויזה?', a: 'לא. אתה משתמש בה רק להכניסה. אחרי שנכנסת, אתה מקבל טמבור בדרכון שלך.' },
-        ].map(item => (
-          <details class="group bg-[#1A1208] border border-teal-500/10 rounded-xl p-5 cursor-pointer hover:border-teal-500/20 transition-all">
-            <summary class="font-bold text-white group-open:text-teal-400 transition-colors">{item.q}</summary>
+        {faqItems.map(item => (
+          <details class="group bg-[#1A1208] border border-amber-500/10 rounded-xl p-5 cursor-pointer hover:border-amber-500/20 transition-all">
+            <summary class="font-bold text-white group-open:text-amber-400 transition-colors">{item.q}</summary>
             <p class="text-white/60 text-sm mt-3">{item.a}</p>
           </details>
         ))}
+      </div>
+    </section>
+
+    <!-- WhatsApp CTA - informational -->
+    <section class="mb-14 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 rounded-2xl p-8 text-center">
+      <h2 class="text-2xl font-bold text-white mb-3">יש שאלות על הויזה לבאלי?</h2>
+      <p class="text-white/70 mb-6">שלחו לנו הודעה בוואטסאפ ונשמח לעזור עם מידע נוסף</p>
+      <a href="https://wa.me/972528211665?text=היי%2C%20יש%20לי%20שאלה%20לגבי%20ויזה%20לבאלי%20🛂"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-8 py-4 rounded-xl transition-colors">
+        שאלו אותנו בוואטסאפ
+      </a>
+    </section>
+
+    <!-- Disclaimer -->
+    <section class="mb-8">
+      <div class="bg-[#1A1208] border border-white/5 rounded-xl p-6">
+        <h2 class="text-lg font-bold text-white/50 mb-2">הצהרת אחריות</h2>
+        <p class="text-white/40 text-sm leading-relaxed">מידע זה מוצג למטרות מידע כללי בלבד ואינו מהווה ייעוץ משפטי. מדיניות ויזות עשויה להשתנות בכל עת בהתאם להחלטות ממשלתיות. מומלץ לאמת את המידע מול גורמים רשמיים לפני כל נסיעה. המצב הדיפלומטי בין ישראל לאינדונזיה נתון לשינויים תכופים.</p>
+        <p class="text-white/30 text-xs mt-3">עודכן לאחרונה: אפריל 2026</p>
       </div>
     </section>
 

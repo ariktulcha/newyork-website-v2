@@ -1,4 +1,6 @@
 ---
+import { site } from '../config/site'
+
 interface Props {
   title: string
   description: string
@@ -8,9 +10,9 @@ interface Props {
   heroImage?: string
 }
 const { title, description, canonical, ogImage: ogImageProp, ogType = 'website', heroImage } = Astro.props
-const ogImage = ogImageProp || '/images/heroes/hero-bali.webp'
+const ogImage = ogImageProp || site.defaultOgImage
 const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).toString()
-const safeOgImage = typeof ogImage === 'string' && ogImage ? ogImage : '/images/heroes/hero-bali.webp'
+const safeOgImage = typeof ogImage === 'string' && ogImage ? ogImage : site.defaultOgImage
 const absoluteOgImage = safeOgImage.startsWith('http') ? safeOgImage : new URL(safeOgImage, Astro.site).toString()
 ---
 <meta charset="utf-8" />
@@ -24,7 +26,7 @@ const absoluteOgImage = safeOgImage.startsWith('http') ? safeOgImage : new URL(s
 <meta property="og:image" content={absoluteOgImage} />
 <meta property="og:type" content={ogType} />
 <meta property="og:locale" content="he_IL" />
-<meta property="og:site_name" content="יאללה באלי" />
+<meta property="og:site_name" content={site.brandHe} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
