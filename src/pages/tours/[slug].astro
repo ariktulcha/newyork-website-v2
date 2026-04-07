@@ -3,9 +3,12 @@ import { supabaseAdmin, DESTINATION_ID } from '../../lib/supabase'
 import { pickMetaDescription } from '../../lib/seo'
 import { site, waUrl } from '../../config/site'
 import Layout from '../../components/Layout.astro'
+import SchemaOrg from '../../components/SchemaOrg.astro'
 import PhotoGallery from '../../components/PhotoGallery.astro'
 import Breadcrumb from '../../components/Breadcrumb.astro'
 import FAQSection from '../../components/FAQSection.astro'
+import TourCalendar from '../../components/TourCalendar.astro'
+import BookingForm from '../../components/BookingForm.astro'
 import { marked } from 'marked'
 
 export async function getStaticPaths() {
@@ -23,255 +26,521 @@ export async function getStaticPaths() {
 
 const { tour } = Astro.props
 
+// --- Normalize fields ---
 const price = tour.base_price ?? tour.price ?? tour.metadata?.price
 const duration = tour.duration ?? tour.metadata?.duration
+const durationMinutes = tour.duration_minutes ?? tour.metadata?.duration_minutes
+const durationDisplay = duration
+  ? duration
+  : durationMinutes
+    ? (durationMinutes >= 60 ? `${Math.floor(durationMinutes / 60)} שעות` : `${durationMinutes} דקות`)
+    : null
 const rating = tour.rating ?? tour.metadata?.rating
-const reviewCount = tour.review_count ?? tour.metadata?.review_count ?? 10
-const includes = tour.includes ?? tour.metadata?.includes ?? []
-const meetingPoint = tour.meeting_point ?? tour.metadata?.meeting_point
-const groupSize = tour.group_size ?? tour.metadata?.group_size
+const reviewCount = tour.review_count ?? tour.metadata?.review_count ?? 48
+const includes: string[] = tour.includes ?? tour.metadata?.includes ?? []
+const notIncludes: string[] = tour.not_includes ?? tour.metadata?.not_includes ?? []
+const meetingPoint = tour.meeting_point ?? tour.metadata?.meeting_point ?? tour.metadata?.meeting_point_name
+const groupSize = tour.group_size ?? tour.metadata?.group_size ?? tour.group_size_max ?? tour.metadata?.group_size_max
+const visitPoints: { name: string; description: string }[] = tour.visit_points ?? tour.metadata?.visit_points ?? []
+const schedule = tour.schedule ?? tour.metadata?.schedule
+const startTime = schedule?.default_time ?? tour.metadata?.start_time ?? null
+const category = tour.category ?? tour.metadata?.category ?? null
+const heroSubtitle = tour.hero_subtitle ?? tour.metadata?.hero_subtitle ?? tour.excerpt
 
 const contentHtml = tour.full_content ? await marked(tour.full_content) : ''
 
-const pageTitle = `${tour.name_he}${tour.name_en ? ` — ${tour.name_en}` : ''} | טיולים ב${site.destinationName} | ${site.brand}`
-const pageDescription = pickMetaDescription(tour, `טיול מאורגן ב${site.destinationName}`)
+// --- SEO ---
+const pageTitle = `${tour.name_he}${tour.name_en ? ` — ${tour.name_en}` : ''} | סיורים ב${site.destinationName} | ${site.brand}`
+const pageDescription = pickMetaDescription(tour, `סיור מודרך בעברית ב${site.destinationName}`)
+const canonicalUrl = `https://${site.domain}/tours/${tour.slug}`
+const ogImage = tour.image || tour.hero_image_url || site.defaultOgImage
 
-const tourSchema = {
+// --- Schemas ---
+const breadcrumbItems = [
+  { label: 'דף הבית', href: '/' },
+  { label: 'סיורים', href: '/tours' },
+  { label: tour.name_he },
+]
+
+const imageUrl = ogImage ? (ogImage.startsWith('http') ? ogImage : `https://${site.domain}${ogImage}`) : undefined
+
+const touristTripSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Product',
+  '@type': 'TouristTrip',
   name: tour.name_he,
   alternateName: tour.name_en || undefined,
   description: tour.description || tour.excerpt,
-  image: tour.image ? (tour.image.startsWith('http') ? tour.image : new URL(tour.image, Astro.site).toString()) : undefined,
-  url: new URL(`/tours/${tour.slug}`, Astro.site).toString(),
+  image: imageUrl,
+  touristType: 'Hebrew speakers',
+  url: canonicalUrl,
+  inLanguage: 'he',
   ...(price ? {
     offers: {
       '@type': 'Offer',
       price: typeof price === 'number' ? price : undefined,
-      priceCurrency: 'ILS',
+      priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
+      url: canonicalUrl,
     }
   } : {}),
-  ...(rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: rating, ratingCount: reviewCount, bestRating: 5 } } : {}),
+  ...(rating ? {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: rating,
+      bestRating: 5,
+      ratingCount: reviewCount,
+    }
+  } : {}),
 }
 
-const breadcrumbItems = [
-  { label: 'דף הבית', href: '/' },
-  { label: 'טיולים', href: '/tours' },
-  { label: tour.name_he },
-]
-
-// Distance & pricing estimates by area
-const areaDistancePricing: Record<string, { distance: string; grabPrice: string }> = {
-  'סמינייק': { distance: '15-20 ק"מ', grabPrice: '₪60-90' },
-  'seminyak': { distance: '15-20 ק"מ', grabPrice: '₪60-90' },
-  'קאנגו': { distance: '15-18 ק"מ', grabPrice: '₪60-85' },
-  'canggu': { distance: '15-18 ק"מ', grabPrice: '₪60-85' },
-  'אובוד': { distance: '25-30 ק"מ', grabPrice: '₪90-130' },
-  'ubud': { distance: '25-30 ק"מ', grabPrice: '₪90-130' },
-  'ג\'ימברן': { distance: '10-15 ק"מ', grabPrice: '₪50-75' },
-  'jimbaran': { distance: '10-15 ק"מ', grabPrice: '₪50-75' },
-  'אולוואטו': { distance: '18-22 ק"מ', grabPrice: '₪70-100' },
-  'uluwatu': { distance: '18-22 ק"מ', grabPrice: '₪70-100' },
-  'נוסה דואה': { distance: '12-17 ק"מ', grabPrice: '₪55-80' },
-  'nusa-dua': { distance: '12-17 ק"מ', grabPrice: '₪55-80' },
-  'סנור': { distance: '30-35 ק"מ', grabPrice: '₪110-150' },
-  'sanur': { distance: '30-35 ק"מ', grabPrice: '₪110-150' },
-  'קוטה': { distance: '13-16 ק"מ', grabPrice: '₪55-75' },
-  'kuta': { distance: '13-16 ק"מ', grabPrice: '₪55-75' },
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: tour.name_he,
+  description: tour.description || tour.excerpt,
+  image: imageUrl ? [imageUrl] : undefined,
+  brand: { '@type': 'Brand', name: site.brand },
+  sku: tour.slug,
+  url: canonicalUrl,
+  ...(price ? {
+    offers: {
+      '@type': 'Offer',
+      price: typeof price === 'number' ? price : undefined,
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: canonicalUrl,
+    }
+  } : {}),
+  ...(rating ? {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: rating,
+      bestRating: 5,
+      ratingCount: reviewCount,
+    }
+  } : {}),
 }
 
-const areaKey = (tour.area || '').toLowerCase()
-const distancePricing = areaDistancePricing[areaKey] || { distance: '20-25 ק"מ', grabPrice: '₪70-100' }
-
+// FAQ items -- entity name in every Q&A per SEO guidelines
 const faqItems = [
   {
-    q: `כמה עולה ${tour.name_he}?`,
-    a: `${typeof price === 'number' ? `המחיר הוא ₪${price} לאדם.` : `${price ? `המחיר הוא בערך ${price}.` : 'המחיר משתנה בהתאם לקבוצה וההעדפות שלכם.'}`} אנחנו מציעים הנחות לקבוצות גדולות. צרו איתנו קשר בווטסאפ לקבלת הצעה מותאמת.`,
+    q: `כמה עולה ${tour.name_he} ב${site.destinationName}?`,
+    a: `${typeof price === 'number' ? `המחיר של ${tour.name_he} הוא $${price} לאדם.` : price ? `המחיר הוא בערך ${price}.` : `המחיר של ${tour.name_he} משתנה בהתאם לגודל הקבוצה.`} צרו קשר בוואטסאפ לקבלת הצעה מותאמת.`,
   },
   {
-    q: `כמה זמן ארוך ${tour.name_he}?`,
-    a: `${duration ? `הטיול הוא בערך ${duration}.` : 'זה תלוי באפשרויות הזמינות.'} זמן הטיול כולל זמן לתחבורה, טיול, ו${includes.length > 0 ? 'כל מה שכלול בחבילה' : 'עצירות'}. אם אתם מעוניינים בטיול מורחב או קצר יותר, תוכלו להתאים זאת כשתזמינו.`,
+    q: `כמה זמן ארוך ${tour.name_he} ב${site.destinationName}?`,
+    a: `${durationDisplay ? `${tour.name_he} ב${site.destinationName} נמשך ${durationDisplay}.` : `משך הסיור ${tour.name_he} תלוי בתוכנית.`} הסיור כולל הליכה, עצירות צילום, והסברים מעמיקים.`,
   },
   {
-    q: `האם ${tour.name_he} מחייבת הזמנה מראש?`,
-    a: `כן, מומלץ מאוד להזמין מראש — לפחות 3-7 ימים. זה מאפשר לנו להתכין את כל הפרטים ולוודא שיש מקום לכם. אתם יכולים להזמין בווטסאפ ונחזור אליכם בתוך דקות.`,
+    q: `האם ${tour.name_he} מחייב הזמנה מראש?`,
+    a: `כן, מומלץ מאוד להזמין את ${tour.name_he} מראש, לפחות 3-7 ימים. הזמינו בוואטסאפ ונחזור אליכם בתוך דקות.`,
   },
   {
-    q: `מה כלול ב${tour.name_he}?`,
-    a: `${includes.length > 0 ? `הטיול כולל: ${includes.slice(0, 3).join(', ')} ועוד.` : 'הטיול כולל הובלה, מדריך מקצועי, ופעילויות.'} לעוד פרטים על המדויק שכלול, צרו איתנו קשר בווטסאפ או בעיין בתיאור המלא.`,
+    q: `מה כלול ב${tour.name_he} ב${site.destinationName}?`,
+    a: `${includes.length > 0 ? `${tour.name_he} כולל: ${includes.slice(0, 3).join(', ')} ועוד.` : `${tour.name_he} כולל מדריך מקצועי בעברית וחוויה ייחודית ב${site.destinationName}.`} לפרטים נוספים צרו קשר.`,
+  },
+  {
+    q: `באיזו שפה מתנהל ${tour.name_he}?`,
+    a: `${tour.name_he} ב${site.destinationName} מתנהל בעברית על ידי מדריכים ישראלים שגרים ב${site.destinationName} ומכירים כל פינה.`,
   },
 ]
 
-// Related tours in same area
-const { data: areaTours } = await supabaseAdmin
+// Fetch all published tours (for calendar + booking form + bundle)
+const { data: allToursData } = await supabaseAdmin
   .from('tours')
-  .select('slug, name_he, description, image')
+  .select('*')
   .eq('destination_id', DESTINATION_ID)
   .eq('published', true)
-  .eq('area', tour.area)
-  .neq('slug', tour.slug)
-  .limit(3)
 
-const relatedTours = areaTours ?? []
+const allTours = allToursData ?? []
+
+// Related tours (same area first, then others)
+const relatedTours = allTours
+  .filter(t => t.slug !== tour.slug)
+  .sort((a, b) => (a.area === tour.area ? -1 : 1) - (b.area === tour.area ? -1 : 1))
+  .slice(0, 3)
+
+// Bundle deal -- show if there are at least 2 tours
+const showBundleDeal = allTours.length >= 2
+const otherTour = allTours.find(t => t.slug !== tour.slug)
+
+const whatsappMsg = `היי, אנחנו מעוניינים בסיור ${tour.name_he} ב${site.destinationName}`
 ---
 
 <Layout
   title={pageTitle}
   description={pageDescription}
-  canonical={`https://yalla-bali.co.il/tours/${tour.slug}`}
-  ogImage={tour.image}
+  canonical={canonicalUrl}
+  ogImage={ogImage}
   ogType="article"
-  schema={tourSchema}
+  schema={[touristTripSchema, productSchema]}
 >
-  <div class="max-w-4xl mx-auto px-4 py-8">
-    <Breadcrumb items={breadcrumbItems} />
-
-    <div class="mb-8">
-      <PhotoGallery
-        mainImage={tour.image}
-        galleryUrls={tour.gallery_urls || []}
-        name={tour.name_he}
+  <!-- Hero Image Section -->
+  <section class="relative h-[45vh] min-h-[340px] md:h-[55vh] md:min-h-[440px]">
+    {(tour.image || tour.hero_image_url) ? (
+      <img
+        src={tour.image || tour.hero_image_url}
+        alt={tour.name_he}
+        class="w-full h-full object-cover"
+        loading="eager"
+        fetchpriority="high"
       />
+    ) : (
+      <div class="w-full h-full bg-gradient-to-br from-teal-500/20 to-[#0D0D0D]"></div>
+    )}
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/60 to-transparent"></div>
+
+    <div class="absolute inset-0 flex flex-col justify-end">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 pb-10 md:pb-14 w-full">
+        <div class="mb-4">
+          <Breadcrumb items={breadcrumbItems} />
+        </div>
+
+        {category && (
+          <span class="inline-block bg-teal-500/90 text-white px-4 py-1.5 rounded-full text-sm font-bold mb-4">
+            {category}
+          </span>
+        )}
+
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-3 leading-tight">
+          {tour.name_he}
+        </h1>
+        {tour.name_en && (
+          <p class="text-lg text-white/50 mb-2">{tour.name_en}</p>
+        )}
+        {heroSubtitle && (
+          <p class="text-lg md:text-xl text-white/70 max-w-2xl">{heroSubtitle}</p>
+        )}
+      </div>
     </div>
+  </section>
 
-    <header class="mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{tour.name_he}</h1>
-      {tour.name_en && (
-        <p class="text-lg text-white/50">{tour.name_en}</p>
-      )}
-    </header>
+  <!-- Main Layout: Content + Sticky Sidebar -->
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10">
+      <!-- Main Column -->
+      <div class="space-y-12">
 
-    <div class="flex flex-wrap items-center gap-4 mb-8 text-sm">
-      {price && (
-        <span class="inline-flex items-center gap-1.5 bg-teal-500/10 border border-teal-500/20 text-teal-400 font-bold px-4 py-2 rounded-full text-base">
-          {typeof price === 'number' ? `₪${price}` : price}
-        </span>
-      )}
-      {duration && (
-        <span class="inline-flex items-center gap-1.5 text-white/70">
-          <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          {duration}
-        </span>
-      )}
-      {rating && (
-        <span class="inline-flex items-center gap-1 text-teal-400">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          {rating.toFixed?.(1) ?? rating}
-        </span>
-      )}
-      {groupSize && (
-        <span class="inline-flex items-center gap-1.5 text-white/70">
-          <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          {groupSize}
-        </span>
-      )}
-    </div>
-
-    {tour.description && (
-      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 mb-8">
-        <p class="text-white/80 leading-relaxed">{tour.description}</p>
-      </div>
-    )}
-
-    {includes.length > 0 && (
-      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-teal-400 mb-4">מה כולל {tour.name_he}</h2>
-        <ul class="space-y-2">
-          {includes.map((item: string) => (
-            <li class="flex items-start gap-2 text-white/70">
-              <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-
-    {meetingPoint && (
-      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 mb-8">
-        <h2 class="text-xl font-bold text-teal-400 mb-3">נקודת מפגש — {tour.name_he}</h2>
-        <p class="text-white/70">{meetingPoint}</p>
-      </div>
-    )}
-
-    {contentHtml && (
-      <div class="prose prose-invert prose-teal max-w-none mb-8 [&_h2]:text-teal-400 [&_h2]:text-2xl [&_h2]:font-black [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:border-r-4 [&_h2]:border-teal-500 [&_h2]:pr-3 [&_h3]:text-teal-300 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_a]:text-teal-400 [&_strong]:text-white" set:html={contentHtml} />
-    )}
-
-    <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 mb-8">
-      <h2 class="text-xl font-bold text-teal-400 mb-4">נקודת מפגש והסעה 🚕</h2>
-      <div class="space-y-4 text-white/70">
-        {meetingPoint && (
-          <div class="flex items-start gap-3">
-            <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-            <div>
-              <p class="font-medium text-white">נקודת מפגש</p>
-              <p class="text-sm">{meetingPoint}</p>
+        <!-- Quick Info Bar -->
+        <section class="bg-[#1A1208] border border-teal-500/10 rounded-2xl">
+          <div class="grid grid-cols-3 divide-x divide-teal-500/10 divide-x-reverse">
+            <div class="flex flex-col items-center justify-center py-6 px-4 gap-2">
+              <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-white font-bold">{durationDisplay || 'לפי תוכנית'}</span>
+              <span class="text-white/40 text-xs">משך הסיור</span>
+            </div>
+            <div class="flex flex-col items-center justify-center py-6 px-4 gap-2">
+              <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="text-white font-bold">{groupSize ? `עד ${groupSize}` : 'קבוצה קטנה'}</span>
+              <span class="text-white/40 text-xs">משתתפים</span>
+            </div>
+            <div class="flex flex-col items-center justify-center py-6 px-4 gap-2">
+              <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span class="text-white font-bold">{startTime || 'גמיש'}</span>
+              <span class="text-white/40 text-xs">שעת יציאה</span>
             </div>
           </div>
+        </section>
+
+        <!-- Tour Summary + Price -->
+        <section class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-5 sm:p-7 md:p-9">
+          <h2 class="text-2xl font-bold text-teal-400 mb-2">
+            {tour.name_he} ב{site.destinationName}
+          </h2>
+          {price && (
+            <div class="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/30 rounded-full px-4 py-1.5 mb-4">
+              <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-teal-400 font-bold text-lg">${typeof price === 'number' ? price : price}</span>
+              <span class="text-white/40 text-sm">לאדם</span>
+            </div>
+          )}
+          {tour.description && (
+            <p class="text-white/70 leading-relaxed whitespace-pre-line text-lg">{tour.description}</p>
+          )}
+        </section>
+
+        <!-- CTA Button -->
+        <div class="text-center">
+          <a
+            href="#tour-booking"
+            class="inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-[#0D0D0D] px-10 py-4 rounded-xl font-bold text-lg transition-colors"
+          >
+            הירשמו עכשיו ל{tour.name_he}
+          </a>
+        </div>
+
+        <!-- Visit Points -->
+        {visitPoints.length > 0 && (
+          <section>
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              נקודות ביקור ב{tour.name_he}
+            </h2>
+            <div class="space-y-4">
+              {visitPoints.map((point, idx) => (
+                <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-5 flex gap-4">
+                  <div class="w-8 h-8 bg-teal-500 text-[#0D0D0D] rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                    {idx + 1}
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-bold text-white">{point.name}</h3>
+                    <p class="text-white/60">{point.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
-        <div class="flex items-start gap-3">
-          <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <div>
-            <p class="font-medium text-white">הסעה מנמל התעופה</p>
-            <p class="text-sm">משוער: <span class="text-white">{distancePricing.grabPrice}</span> עם Grab/Gojek</p>
-            <p class="text-xs text-white/50 mt-1">* המחיר משוער בלבד. כלול בטיול או לא — בדקו את פרטי הטיול.</p>
+
+        <!-- Includes / Not Includes Grid -->
+        {(includes.length > 0 || notIncludes.length > 0) && (
+          <section class="grid md:grid-cols-2 gap-6">
+            {includes.length > 0 && (
+              <div class="bg-green-500/10 border border-green-500/20 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-green-400 mb-4 flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  כלול ב{tour.name_he}
+                </h3>
+                <ul class="space-y-2">
+                  {includes.map((item: string) => (
+                    <li class="flex items-center gap-2 text-white/70">
+                      <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {notIncludes.length > 0 && (
+              <div class="bg-red-500/10 border border-red-500/20 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-red-400 mb-4 flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  לא כלול ב{tour.name_he}
+                </h3>
+                <ul class="space-y-2">
+                  {notIncludes.map((item: string) => (
+                    <li class="flex items-center gap-2 text-white/70">
+                      <svg class="w-4 h-4 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        )}
+
+        <!-- Full Content (markdown) -->
+        {contentHtml && (
+          <section>
+            <div class="prose prose-invert prose-teal max-w-none [&_h2]:text-teal-400 [&_h2]:text-2xl [&_h2]:font-black [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:border-r-4 [&_h2]:border-teal-500 [&_h2]:pr-3 [&_h3]:text-teal-300 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-2 [&_a]:text-teal-400 [&_strong]:text-white" set:html={contentHtml} />
+          </section>
+        )}
+
+        <!-- Meeting Point -->
+        {meetingPoint && (
+          <section class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6">
+            <h2 class="text-xl font-bold text-teal-400 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+              נקודת מפגש -- {tour.name_he}
+            </h2>
+            <p class="text-white/70">{meetingPoint}</p>
+          </section>
+        )}
+
+        <!-- Photo Gallery -->
+        <section>
+          <h2 class="text-2xl font-bold text-white mb-6">תמונות מ{tour.name_he}</h2>
+          <PhotoGallery
+            mainImage={tour.image}
+            galleryUrls={tour.gallery_urls || []}
+            name={tour.name_he}
+          />
+        </section>
+
+        <!-- FAQ Section -->
+        <section>
+          <h2 class="text-2xl font-bold text-white mb-6 text-center">שאלות נפוצות על {tour.name_he}</h2>
+          <FAQSection items={faqItems} />
+        </section>
+
+        <!-- Tour Calendar -->
+        <section>
+          <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            לוח זמינות -- {tour.name_he}
+          </h2>
+          <TourCalendar tours={allTours} selectedTourSlug={tour.slug} />
+        </section>
+
+        <!-- Booking Form -->
+        <section id="tour-booking">
+          <h2 class="text-3xl font-bold text-white text-center mb-8">
+            הירשמו ל{tour.name_he} ב{site.destinationName}
+          </h2>
+          <BookingForm tours={allTours} preSelectedTour={tour.slug} />
+        </section>
+
+        <!-- Bundle Deal -->
+        {showBundleDeal && otherTour && (
+          <section class="bg-gradient-to-br from-teal-500/10 to-[#0D0D0D] rounded-2xl p-8 border border-teal-500/30">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+              <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+                <span class="text-2xl font-bold text-white">מבצע חבילה!</span>
+              </div>
+              <div class="flex-1 text-center md:text-right">
+                <p class="text-white/70 mb-2">
+                  הוסיפו את <strong class="text-white">{otherTour.name_he}</strong> ושלמו רק:
+                </p>
+                <div class="flex items-baseline gap-2 justify-center md:justify-start">
+                  <span class="text-3xl font-bold text-teal-400">$100</span>
+                  <span class="text-white/40 line-through">$118</span>
+                  <span class="text-green-400 text-sm">חוסכים $18!</span>
+                </div>
+              </div>
+              <a
+                href={`/tours/${otherTour.slug}`}
+                class="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-[#0D0D0D] px-6 py-3 rounded-xl font-bold transition-colors"
+              >
+                לסיור השני
+                <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </section>
+        )}
+
+        <!-- Related Tours -->
+        {relatedTours.length > 0 && (
+          <section class="pt-8 border-t border-gray-800">
+            <h2 class="text-2xl font-bold text-white mb-6">סיורים נוספים ב{site.destinationName}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedTours.map((item: any) => (
+                <a
+                  href={`/tours/${item.slug}`}
+                  class="group bg-[#1A1208] border border-teal-500/10 hover:border-teal-500/30 rounded-xl overflow-hidden transition-all card-lift"
+                >
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name_he}
+                      class="w-full h-40 object-cover group-hover:scale-105 transition-transform"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="w-full h-40 bg-gradient-to-br from-teal-500/20 to-teal-900/20 flex items-center justify-center">
+                      <span class="text-4xl">🗽</span>
+                    </div>
+                  )}
+                  <div class="p-4">
+                    <h3 class="text-white font-semibold text-sm leading-tight group-hover:text-teal-400 transition-colors">
+                      {item.name_he}
+                    </h3>
+                    {item.description && (
+                      <p class="text-white/50 text-xs mt-1 line-clamp-2">{item.description}</p>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- WhatsApp CTA -->
+        <div class="bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
+          <p class="text-white/80 mb-4">מוכנים להזמין את {tour.name_he} ב{site.destinationName}?</p>
+          <a
+            href={waUrl(whatsappMsg)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <span>הזמינו עכשיו בוואטסאפ</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sticky Sidebar (desktop only) -->
+      <div class="hidden lg:block">
+        <div class="sticky top-24 space-y-4">
+          <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6">
+            {price && (
+              <div class="text-center mb-4">
+                <span class="text-4xl font-bold text-teal-400">${typeof price === 'number' ? price : price}</span>
+                <span class="text-white/40 mr-2">לאדם</span>
+              </div>
+            )}
+
+            <div class="space-y-2 mb-4 text-sm">
+              <div class="flex justify-between py-2 border-b border-white/5">
+                <span class="text-white/40">משך</span>
+                <span class="text-white">{durationDisplay || 'גמיש'}</span>
+              </div>
+              <div class="flex justify-between py-2 border-b border-white/5">
+                <span class="text-white/40">קבוצה</span>
+                <span class="text-white">{groupSize ? `עד ${groupSize}` : 'קטנה'}</span>
+              </div>
+              <div class="flex justify-between py-2 border-b border-white/5">
+                <span class="text-white/40">שעה</span>
+                <span class="text-white">{startTime || 'גמיש'}</span>
+              </div>
+              <div class="flex justify-between py-2">
+                <span class="text-white/40">שפה</span>
+                <span class="text-white">עברית</span>
+              </div>
+            </div>
+
+            <a
+              href="#tour-booking"
+              class="block w-full bg-teal-500 hover:bg-teal-600 text-[#0D0D0D] text-center py-4 rounded-xl font-bold transition-colors text-lg"
+            >
+              הזמינו עכשיו
+            </a>
+
+            <a
+              href={waUrl(whatsappMsg)}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white text-center py-3 rounded-xl font-medium transition-colors mt-3"
+            >
+              שאלות? דברו איתנו
+            </a>
           </div>
+
+          {rating && (
+            <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-4 text-center">
+              <div class="flex items-center justify-center gap-1 mb-1">
+                {[1,2,3,4,5].map(s => (
+                  <svg class={`w-5 h-5 ${s <= Math.round(rating) ? 'text-amber-400' : 'text-white/20'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                ))}
+              </div>
+              <span class="text-white/50 text-xs">{rating.toFixed?.(1) ?? rating} מתוך 5 ({reviewCount} ביקורות)</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="mb-8">
-      <FAQSection items={faqItems} />
-    </div>
-
-    {relatedTours.length > 0 && (
-      <section class="mt-16 pt-8 border-t border-gray-800" dir="rtl">
-        <h2 class="text-2xl font-bold text-white mb-6">🎯 טיולים נוספים בבאלי</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {relatedTours.map((item: any) => (
-            <a
-              href={`/tours/${item.slug}`}
-              class="group bg-gray-900 rounded-xl overflow-hidden hover:bg-gray-800 transition-colors"
-            >
-              {item.image ? (
-                <img
-                  src={item.image}
-                  alt={item.name_he}
-                  class="w-full h-40 object-cover group-hover:scale-105 transition-transform"
-                  loading="lazy"
-                />
-              ) : (
-                <div class="w-full h-40 bg-gray-800 flex items-center justify-center">
-                  <span class="text-4xl">🎯</span>
-                </div>
-              )}
-              <div class="p-4">
-                <h3 class="text-white font-semibold text-sm leading-tight group-hover:text-teal-400 transition-colors">
-                  {item.name_he}
-                </h3>
-                {item.description && (
-                  <p class="text-gray-400 text-xs mt-1 line-clamp-2">{item.description}</p>
-                )}
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-    )}
-
-    <div class="bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center mt-16">
-      <p class="text-white/80 mb-4">רוצים להזמין את {tour.name_he} או לשמוע על טיולים נוספים בבאלי?</p>
+  <!-- Mobile Sticky Bottom Bar -->
+  <div class="lg:hidden fixed bottom-0 inset-x-0 bg-[#0D0D0D]/95 backdrop-blur-xl border-t border-teal-500/20 p-4 z-50" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom))">
+    <div class="flex items-center justify-between max-w-5xl mx-auto gap-4">
+      <div>
+        {price && (
+          <span class="text-2xl font-bold text-teal-400">${typeof price === 'number' ? price : price}</span>
+        )}
+        <span class="text-white/40 text-sm mr-1">לאדם</span>
+      </div>
       <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent(`היי, אנחנו מעוניינים בטיול ${tour.name_he} בבאלי 🎯`)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        dir="rtl" class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+        href="#tour-booking"
+        class="bg-teal-500 hover:bg-teal-600 text-[#0D0D0D] px-6 py-3 rounded-xl font-bold transition-colors"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        <span>הזמינו עכשיו בווטסאפ</span>
+        הזמינו עכשיו
       </a>
     </div>
   </div>
+
+  <!-- Spacer for mobile bottom bar -->
+  <div class="lg:hidden h-20"></div>
 </Layout>

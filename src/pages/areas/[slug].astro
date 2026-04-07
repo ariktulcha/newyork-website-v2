@@ -42,8 +42,8 @@ const placeSchema = {
   url: new URL(`/areas/${area.slug}`, Astro.site).toString(),
   address: {
     '@type': 'PostalAddress',
-    addressLocality: 'Bali',
-    addressCountry: 'ID',
+    addressLocality: 'New York',
+    addressCountry: 'US',
   },
 }
 
@@ -68,7 +68,7 @@ const faqItems = [
   },
   {
     q: `כיצד מגיעים ל${area.name_he}?`,
-    a: `ניתן להגיע דרך Grab או מונית מקומית (בערך 30-60 דקות מנמל התעופה בהתאם לאזור). אנחנו ממליצים לסדר רכב עם נהג כדי שתוכלו להתמקד בנוף ובחוויה. אם אתם רוצים סיור מפונקח, צרו איתנו קשר בווטסאפ.`,
+    a: `ניתן להגיע במטרו, אוטובוס או מונית (Uber/Lyft). רוב השכונות בניו יורק נגישות בקלות בתחבורה ציבורית. אנחנו ממליצים לרכוש כרטיס MetroCard או להשתמש ב-OMNY כדי לחסוך זמן וכסף. אם אתם רוצים סיור מודרך, צרו איתנו קשר בווטסאפ.`,
   },
 ]
 ---
@@ -76,7 +76,7 @@ const faqItems = [
 <Layout
   title={pageTitle}
   description={pageDescription}
-  canonical={`https://yalla-bali.co.il/areas/${area.slug}`}
+  canonical={new URL(`/areas/${area.slug}`, Astro.site).toString()}
   ogImage={area.image}
   ogType="article"
   schema={placeSchema}
@@ -148,9 +148,9 @@ const faqItems = [
     </div>
 
     <div class="bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
-      <p class="text-white/80 mb-4">רוצים לדעת עוד על {area.name_he} ואזורים נוספים בבאלי?</p>
+      <p class="text-white/80 mb-4">רוצים לדעת עוד על {area.name_he} ואזורים נוספים ב{site.destinationName}?</p>
       <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מתכננים טיול לבאלי ורוצים לשמוע על אזורים מומלצים 🌴')}`}
+        href={waUrl(`היי, אנחנו מתכננים טיול ל${site.destinationName} ורוצים לשמוע על אזורים מומלצים`)}
         target="_blank"
         rel="noopener noreferrer"
         dir="rtl"

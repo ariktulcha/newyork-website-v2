@@ -1,64 +1,69 @@
 ---
 import Layout from '../components/Layout.astro'
+import { site, waUrl } from '../config/site'
 ---
 
-<Layout title="הדף לא נמצא | Yalla Bali" description="הדף שחיפשתם לא נמצא בבאלי. חזרו לעמוד הבית או בחרו בטיול אחר.">
+<Layout title={`הדף לא נמצא | ${site.brand}`} description={`הדף שחיפשתם לא נמצא. חזרו לעמוד הבית או בחרו יעד אחר ב${site.destinationName}.`}>
   <div class="min-h-[70vh] flex items-center justify-center px-4">
     <div class="max-w-2xl mx-auto text-center">
       <!-- 404 Number -->
-      <div class="mb-8">
-        <h1 class="text-9xl md:text-[10rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-teal-500 to-teal-400">
+      <div class="relative mb-8">
+        <h1 class="text-[150px] md:text-[200px] font-black text-[#1A1208] leading-none select-none">
           404
         </h1>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="text-6xl md:text-8xl">🗽</span>
+        </div>
       </div>
 
-      <!-- Heading -->
-      <h2 class="text-4xl md:text-5xl font-black text-white mb-4">הדף לא נמצא</h2>
-
-      <!-- Subtext -->
-      <p class="text-xl text-white/70 mb-8 max-w-xl mx-auto leading-relaxed">
-        נראה שהתעיתם... אבל באלי מחכה לכם! 🌴
+      <!-- Message -->
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+        אופס! הלכת לאיבוד במנהטן
+      </h2>
+      <p class="text-white/70 text-lg mb-8 max-w-md mx-auto">
+        העמוד שחיפשת לא נמצא. אולי הוא עבר, נמחק, או שפשוט התבלבלת בדרך.
+        בואו נחזיר אותך למסלול!
       </p>
 
       <!-- Navigation Links -->
       <div class="grid sm:grid-cols-2 gap-4 mb-8">
-        <a
-          href="/"
-          class="bg-teal-500 hover:bg-teal-600 text-[#0D0D0D] font-bold py-3 px-6 rounded-lg transition-all"
-        >
-          🏠 חזרה לעמוד הבית
+        <a href="/" class="bg-amber-500 hover:bg-amber-400 text-black font-bold py-3 px-6 rounded-lg transition-all">
+          חזרה לדף הבית
         </a>
-        <a
-          href="/tours"
-          class="bg-teal-500/20 hover:bg-teal-500/30 text-teal-400 font-bold py-3 px-6 rounded-lg border border-teal-500/40 transition-all"
-        >
-          🌴 טיולים בבאלי
+        <a href="/tours" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-3 px-6 rounded-lg border border-amber-500/40 transition-all">
+          סיורים בעברית
         </a>
-        <a
-          href="/attractions"
-          class="bg-teal-500/20 hover:bg-teal-500/30 text-teal-400 font-bold py-3 px-6 rounded-lg border border-teal-500/40 transition-all"
-        >
-          🎢 אטרקציות
+        <a href="/attractions" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-3 px-6 rounded-lg border border-amber-500/40 transition-all">
+          אטרקציות
         </a>
-        <a
-          href="/hotels"
-          class="bg-teal-500/20 hover:bg-teal-500/30 text-teal-400 font-bold py-3 px-6 rounded-lg border border-teal-500/40 transition-all"
-        >
-          🏨 מלונות
+        <a href="/hotels" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 font-bold py-3 px-6 rounded-lg border border-amber-500/40 transition-all">
+          מלונות
         </a>
       </div>
 
+      <!-- Popular Pages -->
+      <div class="bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-right">
+        <h3 class="text-xl font-bold text-white mb-4">אולי חיפשת את אלה?</h3>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <a href="/attractions" class="text-amber-400 hover:underline block">אטרקציות ב{site.destinationName}</a>
+          <a href="/areas" class="text-amber-400 hover:underline block">שכונות ב{site.destinationName}</a>
+          <a href="/restaurants" class="text-amber-400 hover:underline block">מסעדות ב{site.destinationName}</a>
+          <a href="/hotels" class="text-amber-400 hover:underline block">מלונות ב{site.destinationName}</a>
+          <a href="/tours" class="text-amber-400 hover:underline block">סיורים בעברית</a>
+          <a href="/plan" class="text-amber-400 hover:underline block">תכנון טיול</a>
+        </div>
+      </div>
+
       <!-- WhatsApp CTA -->
-      <div class="bg-[#1A1208] border border-teal-500/20 rounded-2xl p-8">
+      <div class="mt-8 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-8">
         <p class="text-white/80 mb-4">צריכים עזרה בתכנון הטיול?</p>
         <a
-          href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מחפשים עזרה בתכנון טיול לבאלי 🌴')}`}
+          href={waUrl(`היי, אנחנו מחפשים עזרה בתכנון טיול ל${site.destinationName}`)}
           target="_blank"
           rel="noopener noreferrer"
-          dir="rtl"
           class="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-8 py-3 rounded-full transition-all"
         >
-          💬 דברו איתנו בווטסאפ
+          דברו איתנו בווטסאפ
         </a>
       </div>
     </div>

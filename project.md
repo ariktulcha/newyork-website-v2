@@ -1,131 +1,59 @@
-# יאללה באלי — Project Definition
+# יאללה ניו יורק — Project Definition
 
 ## Company
-**שם החברה:** Yalla Bali / יאללה באלי
-**סלוגן:** המדריך המלא שלכם לבאלי
-**שפת האתר:** עברית
-**קהל יעד:** ישראלים מטיילים לבאלי
+**Name:** יאללה ניו יורק
+**Language:** Hebrew
+**Target Audience:** Israeli travelers
+**Domain:** https://yalla-ny.co.il
+**Supabase Destination ID:** newyork
 
 ---
 
-## Geography
-**עיר / מדינה:** באלי, אינדונזיה
-**אזורים עיקריים שמכוסים:**
-- אובוד (Ubud)
-- סמיניאק (Seminyak)
-- קוטה (Kuta)
-- נוסה דואה (Nusa Dua)
-- צ'אנגו (Canggu)
-- אולואטו (Uluwatu)
-- נוסה פנידה (Nusa Penida)
-**עונת שיא:** אפריל–אוקטובר (יבש)
-**עונת שפל:** נובמבר–מרץ (גשם)
+## Clone Checklist
 
----
+### Config (do first):
+- [ ] Edit `src/config/site.ts` — brand, WhatsApp, socials, nav, footer
+- [ ] Verify `.env` has correct keys
 
-## Product
-**מה אנחנו מוכרים:**
-סיורים מודרכים / ויזות / תכנון טיולים מותאם אישית / מידע תיירותי מקיף
+### Special Pages (decide per page):
+- [ ] `visa.astro` — keep/delete/rewrite
+- [ ] `beaches.astro` — keep/delete/rewrite
+- [ ] `weather.astro` — keep/delete/rewrite
+- [ ] `shopping.astro` — keep/delete/rewrite
+- [ ] `plan.astro` — keep/delete/rewrite
 
-**מוצר ראשי:** ויזה לבאלי + ייעוץ ותכנון טיולים
-**מוצרים משניים:** סיורים מאורגנים, המלצות מלונות/מסעדות/אטרקציות
-**מחיר ממוצע לעסקה:** —
-**מטבע:** ILS / USD
-**איך מזמינים:** WhatsApp / טופס באתר
+### Category Pages (verify data exists):
+- [ ] `areas/index.astro` — verify data, update SEO text
+- [ ] `attractions/free/index.astro` — verify data, update SEO text
+- [ ] `attractions/index.astro` — verify data, update SEO text
+- [ ] `attractions/kids/index.astro` — verify data, update SEO text
+- [ ] `guides/index.astro` — verify data, update SEO text
+- [ ] `hotels/5-stars/index.astro` — verify data, update SEO text
+- [ ] `hotels/beach/index.astro` — verify data, update SEO text
+- [ ] `hotels/family/index.astro` — verify data, update SEO text
+- [ ] `hotels/index.astro` — verify data, update SEO text
+- [ ] `hotels/luxury/index.astro` — verify data, update SEO text
+- [ ] `nightlife/bars/index.astro` — verify data, update SEO text
+- [ ] `nightlife/beach-clubs/index.astro` — verify data, update SEO text
+- [ ] `nightlife/clubs/index.astro` — verify data, update SEO text
+- [ ] `nightlife/index.astro` — verify data, update SEO text
+- [ ] `nightlife/rooftop/index.astro` — verify data, update SEO text
+- [ ] `restaurants/fine-dining/index.astro` — verify data, update SEO text
+- [ ] `restaurants/index.astro` — verify data, update SEO text
+- [ ] `restaurants/japanese/index.astro` — verify data, update SEO text
+- [ ] `restaurants/kosher/index.astro` — verify data, update SEO text
+- [ ] `restaurants/meat/index.astro` — verify data, update SEO text
+- [ ] `tours/index.astro` — verify data, update SEO text
 
-**WhatsApp להזמנות:** 972528211665
-**טלפון:** —
-**אימייל:** —
+### Content:
+- [ ] Rewrite `index.astro` homepage — hero, featured, intro
+- [ ] Rewrite `about.astro` — brand story
+- [ ] Rewrite `contact.astro` — contact details
+- [ ] Rewrite `faq.astro` — destination Q&As
+- [ ] Add hero image to `public/images/heroes/`
+- [ ] Add favicon
 
----
-
-## Brand
-**צבע ראשי:** #0D9488 (teal-600)
-**צבע משני:** #FCD34D (amber-300)
-**צבע רקע:** #0D0D0D
-**צבע טקסט:** #FFFFFF
-**פונט ראשי:** Heebo Variable
-**פונט משני:** system-ui, sans-serif
-**לוגו:** טקסט — יאללה באלי (teal accent)
-
-**סגנון ויזואלי:**
-Dark luxury, gold+teal accents, צילום אמיתי + hover effects על כרטיסים
-
-**Hero image overlay:**
-gradient — #1C1408 → #0D0D0D (opacity 0.55+)
-
-**רפרנס תמונות שאוהבים:**
-- צילומי טבע באלי (מקדשים, אורז, חופים)
-- סגנון cinematic עם טונים חמים
-- תמונות אטמוספריות של חיי לילה ואוכל
-
----
-
-## Social
-**אינסטגרם:** https://instagram.com/yallabaliil
-**פייסבוק:** https://facebook.com/yallabaliil
-**טיקטוק:** https://tiktok.com/@yallabaliil
-**יוטיוב:** —
-
-**FBManagerTool חשבון:** —
-**GA Property ID:** G- (placeholder — ממתין להגדרה)
-**GCS Bucket:** —
-
----
-
-## Content
-**טון כתיבה:**
-חם ושיחתי, ישיר, מעשי — מדבר בגובה העיניים עם מטיילים ישראלים. מידע מדויק בלי פלאפים.
-
-**מה מייחד אותנו מהמתחרים:**
-- תוכן מלא בעברית עם פירוט מעשי (מחירים, שעות, כתובות)
-- ויזה מהירה לבאלי
-- ייעוץ אישי ב-WhatsApp
-- מדריכי אזורים מפורטים
-
-**מה אנחנו לא עושים:**
-- לא חבילות נופש סטנדרטיות
-- לא סיורים קבוצתיים גדולים
-
-**מילות מפתח מרכזיות:**
-- באלי
-- ויזה לבאלי
-- מלונות בבאלי
-- מסעדות בבאלי
-- אטרקציות בבאלי
-- טיול לבאלי
-- חופים בבאלי
-
----
-
-## Tech
-**סטטוס:** Astro 5 (מוכן — SSG)
-**Supabase Project URL:** https://nsfmucsdxhcywisejxxq.supabase.co
-**טבלאות פעילות:**
-- restaurants
-- hotels
-- attractions
-- tours
-- nightlife
-- guides
-- areas
-
----
-
-## Agents & Skills
-**agents פעילים לפרויקט זה:**
-- [x] content-creator
-- [x] researcher
-- [x] dev-agent
-- [x] designer
-- [x] analytics-agent
-- [x] seo-auditor
-
-**הערות מיוחדות לפרויקט:**
-- כל הטבלאות מסוננות לפי `destination_id = 'bali'`
-- צבע ראשי teal (לא amber כמו שמופיע ב-CLAUDE.md המקורי — האתר עודכן)
-- פונט Heebo Variable לעברית (לא system default)
-- דף ויזה (`/visa`) הוא דף מרכזי עם CTA banner קבוע בכל האתר
-- WhatsApp CTA text: `היי, אני מתכנן טיול לבאלי`
-- Site URL: https://yalla-bali.co.il
-- Hosting target: Cloudflare Pages (static)
+### Verify:
+- [ ] `npm run build` — 0 errors
+- [ ] Run SEO crawler — all pages have title, description, schema
+- [ ] Compare with old site URLs — no missing pages

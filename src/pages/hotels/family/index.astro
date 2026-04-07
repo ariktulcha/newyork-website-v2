@@ -4,6 +4,7 @@ import SchemaOrg from '../../../components/SchemaOrg.astro'
 import Breadcrumb from '../../../components/Breadcrumb.astro'
 import HotelCard from '../../../components/Cards/HotelCard.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+import { site, waUrl } from '../../../config/site'
 
 const { data } = await supabaseAdmin
   .from('hotels')
@@ -11,8 +12,8 @@ const { data } = await supabaseAdmin
   .eq('destination_id', DESTINATION_ID)
   .eq('published', true)
 
-// Family hotels = resorts, Atlantis, larger/themed hotels known for families
-const FAMILY_KEYWORDS = ['ריזורט', 'resort', 'אטלנטיס', 'atlantis', 'holiday', 'הולידיי', 'מריוט', 'marriott', 'hilton', 'הילטון', 'intercontinental', 'hyatt', 'radisson', 'חוף']
+// Family hotels = resorts, large chains, and hotels known for families
+const FAMILY_KEYWORDS = ['ריזורט', 'resort', 'מריוט', 'marriott', 'hilton', 'הילטון', 'hyatt', 'radisson', 'holiday inn', 'הולידיי', 'doubletree', 'embassy suites', 'homewood', 'residence inn', 'suite', 'סוויט']
 const items = (data || []).filter(h =>
   FAMILY_KEYWORDS.some(kw =>
     (h.name_he || '').toLowerCase().includes(kw.toLowerCase()) ||
@@ -20,20 +21,20 @@ const items = (data || []).filter(h =>
   )
 )
 
-const pageTitle = 'מלונות משפחתיים בבאלי | Yalla Bali'
-const pageDescription = 'מלונות משפחתיים מומלצים בבאלי. מלונות עם מועדוני ילדים, בריכות, חדרים מרווחים ופעילויות לכל המשפחה.'
+const pageTitle = `מלונות משפחתיים ב${site.destinationName} | ${site.brand}`
+const pageDescription = `מלונות משפחתיים מומלצים ב${site.destinationName}. מלונות עם חדרים מרווחים, מיקום נוח לאטרקציות ושירותים לכל המשפחה.`
 
 const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'מלונות משפחתיים בבאלי',
+  name: `מלונות משפחתיים ב${site.destinationName}`,
   description: pageDescription,
   numberOfItems: items.length,
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name_he,
-    url: new URL(`/hotels/${item.slug}`, 'https://yalla-bali.co.il').toString(),
+    url: new URL(`/hotels/${item.slug}`, `https://${site.domain}`).toString(),
   })),
 }
 
@@ -52,17 +53,19 @@ const breadcrumbItems = [
     <!-- Category pills -->
     <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
       <a href="/hotels/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
-      <a href="/hotels/5-stars/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">⭐ 5 כוכבים</a>
-      <a href="/hotels/beach/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🏖️ חוף</a>
-      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-teal-500 text-black whitespace-nowrap">👨‍👩‍👧 משפחתי</span>
-      <a href="/hotels/luxury/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">💎 יוקרה</a>
+      <a href="/hotels/5-stars/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">5 כוכבים</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">משפחתי</span>
+      <a href="/hotels/luxury/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">יוקרה</a>
+      <a href="/hotels/boutique/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">בוטיק</a>
+      <a href="/hotels/manhattan/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">מנהטן</a>
+      <a href="/hotels/brooklyn/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">ברוקלין</a>
     </nav>
 
     <header class="mb-10 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מלונות משפחתיים בבאלי</h1>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מלונות משפחתיים ב{site.destinationName}</h1>
       <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
-        מתכננים טיול משפחתי לבאלי? בחרנו עבורכם את המלונות המתאימים ביותר למשפחות —
-        עם מועדוני ילדים, בריכות שחייה, סוויטות מרווחות ופעילויות משפחתיות לכל הגילאים.
+        מתכננים טיול משפחתי ל{site.destinationName}? בחרנו עבורכם את המלונות המתאימים ביותר למשפחות —
+        עם חדרים מרווחים, מיקום נוח לאטרקציות, סוויטות משפחתיות ושירותים מותאמים לכל הגילאים.
       </p>
     </header>
 
@@ -86,56 +89,56 @@ const breadcrumbItems = [
       </div>
     )}
 
-    <section class="mt-16 bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-teal-400 mb-6">שאלות נפוצות — מלונות משפחתיים בבאלי</h2>
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — מלונות משפחתיים ב{site.destinationName}</h2>
       <div class="space-y-4">
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה האזור הכי טוב למשפחות בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בבאלי נמצאים בסמינייק וקאנגו. אזורי מלונות משפחתיים בבאלי קרובים לחוף וקל. Ubud וCanggu טובים למשפחות שרוצות טבע ואטרקציות תרבותיות.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה האזור הכי טוב למשפחות ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים ב{site.destinationName} ממוקמים בעיקר במידטאון מנהטן — קרוב לטיימס סקוור, סנטרל פארק והאטרקציות המרכזיות. Upper West Side גם מצוין למשפחות עם קרבה למוזיאון הטבע ופארקים.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">האם ילדים מתקבלים בכל מלונות משפחתיים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כן, מלונות משפחתיים בבאלי מקבלים ילדים בשמחה. מלונות משפחתיים בבאלי מציעים מועדוני ילדים ופעילויות משפחתיות.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם ילדים מתקבלים בכל מלונות משפחתיים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, מלונות משפחתיים ב{site.destinationName} מקבלים ילדים בשמחה. רוב הרשתות הגדולות כמו Hilton, Marriott ו-Hyatt מציעות ערכות קבלת ילדים, מיטות תוספת בחינם לילדים עד גיל 12, וארוחות בוקר לילדים.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">יש מלונות משפחתיים עם בריכות גדולות בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כן, מלונות משפחתיים בבאלי כמו Mulia ו-Four Seasons כוללים בריכות ענקיות עם אזורים משחקים לילדים. מלונות משפחתיים בבאלי עם בריכות גדולות וטוביות טובות לילדים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">יש מלונות משפחתיים עם סוויטות ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, מלונות משפחתיים ב{site.destinationName} כמו Embassy Suites, Residence Inn ו-Homewood Suites מציעים סוויטות עם סלון נפרד ומטבחון. מלונות משפחתיים ב{site.destinationName} עם סוויטות מאפשרים להרגיש כמו בבית.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה המחירים של מלונות משפחתיים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בבאלי עולים בין 60-300 דולר ללילה. מלון משפחתי בבאלי משתנה בעונה — בקיץ זולים יותר, בחורף יקרים יותר.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה המחירים של מלונות משפחתיים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים ב{site.destinationName} עולים בין $150-500 ללילה תלוי בעונה ומיקום. בעונת שיא (דצמבר, סתיו) המחירים גבוהים יותר. הזמנה מוקדמת של 2-3 חודשים מראש חוסכת משמעותית.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">איזה סוגי חדרים יש במלונות משפחתיים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בבאלי מציעים: חדרים משפחתיים, סוויטות עם חדרי ישון נפרדים. מלון משפחתי בבאלי מרווח לעולם.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איזה סוגי חדרים יש במלונות משפחתיים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים ב{site.destinationName} מציעים: חדרים כפולים מחוברים (connecting rooms), סוויטות עם חדרי שינה נפרדים, ודירות מלון (apart-hotel) עם מטבח. מלון משפחתי ב{site.destinationName} מרווח יותר ומאפשר חופשה נוחה.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה הפעילויות למשפחות בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בבאלי מציעים: מועדוני ילדים, בריכות, אטרקציות קרובות. מלון משפחתי בבאלי עשוי להיות עם אנימציה.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הפעילויות למשפחות ליד מלונות ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים ב{site.destinationName} קרובים ל: סנטרל פארק, טיימס סקוור, הופעות ברודווי לילדים, המוזיאון להיסטוריה טבעית, Top of the Rock, ו-Intrepid Museum. מיקום מרכזי מאפשר הגעה קלה לכל אטרקציה.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">צריך להזמין מלון משפחתי בבאלי מראש?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כן, מומלץ להזמין מלון משפחתי בבאלי מוקדם כדי לקבל חדר טוב. מלונות משפחתיים בבאלי פופולריים במהלך חגים וחופשות.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">צריך להזמין מלון משפחתי ב{site.destinationName} מראש?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, מומלץ להזמין מלון משפחתי ב{site.destinationName} לפחות חודשיים מראש. מלונות משפחתיים ב{site.destinationName} פופולריים במיוחד בחגים (חנוכה/חג המולד), קיץ ותקופת הסתיו.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה שירותים נוספים של מלונות משפחתיים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בבאלי מציעים: בייביסיטר, אתיקט משפחתי, מסעדות בחירה. שירותי מלון משפחתי בבאלי מתוכננים לנוחות.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה שירותים נוספים של מלונות משפחתיים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים ב{site.destinationName} מציעים: ארוחת בוקר כלולה, כביסה, מיטות תוספת, עגלות לתינוקות בהשאלה וקונסיירז' שעוזר בהזמנת כרטיסים לאטרקציות. שירותי מלון משפחתי ב{site.destinationName} מותאמים לנוחות משפחות.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה מלונות משפחתיים הטובים ביותר בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים מובילים בבאלי: Four Seasons, Hilton Bali, W Bali, Mulia Family Suites. כל מלון משפחתי בבאלי זה מעולה עבור משפחות עם ילדים בכל גיל.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה מלונות משפחתיים הטובים ביותר ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים מובילים ב{site.destinationName}: Hilton Midtown, Marriott Marquis Times Square, Embassy Suites, Residence Inn Central Park. כל מלון משפחתי ב{site.destinationName} מעולה עבור משפחות עם ילדים בכל גיל.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה אטרקציות קרובות למלונות משפחתיים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים בבאלי קרובים לWaterbom, Bali Zoo, Tegallalang Monkey Forest. מלונות משפחתיים בבאלי ממוקומים ליד אטרקציות טבע וחיות בר.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה אטרקציות קרובות למלונות משפחתיים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות משפחתיים ב{site.destinationName} קרובים לסנטרל פארק, Rockefeller Center, Times Square, Empire State Building, ו-Bryant Park. מלונות משפחתיים ב{site.destinationName} ממוקמים ליד תחבורה ציבורית שמקלה על הגעה לכל אטרקציה בעיר.</p>
         </details>
       </div>
     </section>
 
-    <div class="mt-10 bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
-      <p class="text-white/80 mb-4">צריכים עזרה בבחירת מלון למשפחה בבאלי?</p>
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">צריכים עזרה בבחירת מלון למשפחה ב{site.destinationName}?</p>
       <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מחפשים מלון משפחתי בבאלי 👨‍👩‍👧‍👦')}`}
+        href={waUrl(`היי, אנחנו מחפשים מלון משפחתי ב${site.destinationName}`)}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"

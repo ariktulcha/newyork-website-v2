@@ -4,6 +4,7 @@ import SchemaOrg from '../../../components/SchemaOrg.astro'
 import Breadcrumb from '../../../components/Breadcrumb.astro'
 import AttractionCard from '../../../components/Cards/AttractionCard.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+import { site, waUrl } from '../../../config/site'
 
 const { data } = await supabaseAdmin
   .from('attractions')
@@ -13,20 +14,20 @@ const { data } = await supabaseAdmin
 
 const items = (data || []).filter(a => a.is_free === true || a.price_range === 'חינם' || a.price_range === 'free')
 
-const pageTitle = 'אטרקציות חינם בבאלי | Yalla Bali'
-const pageDescription = 'אטרקציות חינם בבאלי שאפשר ליהנות מהן ללא תשלום. חופים, גנים, מזרקות, שווקים ועוד — חוויות בחינם בבאלי.'
+const pageTitle = `אטרקציות חינם ב${site.destinationName} | ${site.brand}`
+const pageDescription = `אטרקציות חינם ב${site.destinationName} שאפשר ליהנות מהן ללא תשלום. פארקים, מוזיאונים, גשרים, שווקים ועוד — חוויות בחינם ב${site.destinationName}.`
 
 const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'אטרקציות חינם בבאלי',
+  name: `אטרקציות חינם ב${site.destinationName}`,
   description: pageDescription,
   numberOfItems: items.length,
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name_he,
-    url: new URL(`/attractions/${item.slug}`, 'https://yalla-bali.co.il').toString(),
+    url: new URL(`/attractions/${item.slug}`, `https://${site.domain}`).toString(),
   })),
 }
 
@@ -44,15 +45,15 @@ const breadcrumbItems = [
 
     <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
       <a href="/attractions/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
-      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-teal-500 text-black whitespace-nowrap">🆓 חינם</span>
-      <a href="/attractions/kids/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">👧 לילדים</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">חינם</span>
+      <a href="/attractions/kids/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">לילדים</a>
     </nav>
 
     <header class="mb-10 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">אטרקציות חינם בבאלי</h1>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">אטרקציות חינם ב{site.destinationName}</h1>
       <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
-        באלי לא חייבת להיות יקרה. יש המון אטרקציות חינמיות מדהימות —
-        מחופים יפהפיים ועד שווקים מסורתיים, טבע בוקר וטיולים בטבע.
+        {site.destinationName} לא חייבת להיות יקרה. יש המון אטרקציות חינמיות מדהימות —
+        מסנטרל פארק ועד גשר ברוקלין, נמל חופשי בסטטן איילנד פרי ועוד.
       </p>
     </header>
 
@@ -76,52 +77,52 @@ const breadcrumbItems = [
       </div>
     )}
 
-    <section class="mt-16 bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-teal-400 mb-6">שאלות נפוצות — אטרקציות חינם בבאלי</h2>
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — אטרקציות חינם ב{site.destinationName}</h2>
       <div class="space-y-4">
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה אפשר לעשות בבאלי בחינם?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">באלי מציעה הרבה חוויות חינם: חופים ציבוריים, טיולי טבע בטגללאלנג, טיול בקוף אופיסים, בקר בטמפלים קטנים, שווקים מסורתיים, שקיעות במקומות יפים, הליכה בכפרים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה אפשר לעשות ב{site.destinationName} בחינם?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">{site.destinationName} מציעה הרבה חוויות חינם: סנטרל פארק, גשר ברוקלין, High Line, טיימס סקוור, סטטן איילנד פרי, שווקי רחוב, גלריות חינמיות בצ'לסי, וטיולים ברחבי מנהטן.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">האם החופים בבאלי בחינם?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כן, רוב החופים הציבוריים בבאלי הם בחינם — כולל סמינייק ביץ', קאנגו ביץ' וסנור ביץ'. חופים פרטיים של מלונות דורשים תשלום או תשלום כניסה.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם המוזיאונים ב{site.destinationName} בחינם?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">חלק מהמוזיאונים ב{site.destinationName} מציעים כניסה חופשית או "שלמו כרצונכם" — כולל המוזיאון לאמנות מודרנית (MoMA) בימי שישי בערב, המוזיאון האמריקני להיסטוריה טבעית, ומוזיאון ברוקלין.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה שקיעות טובות בבאלי בחינם?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">שקיעות יפות בבאלי ניתן לראות בחינם בחופים כמו Tanah Lot Beach (הערה: בעלות דומה בכניסה לטמפל), Seminyak Sunset Beach, וUluwatu Cliffs. הצפייה בשקיעה הוא חוויה מהיפות בבאלי.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הפארקים החינמיים הטובים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">הפארקים החינמיים הטובים ב{site.destinationName} כוללים: סנטרל פארק, High Line, ברייאנט פארק, בטרי פארק, Washington Square Park, ופרוספקט פארק בברוקלין. כולם פתוחים לציבור ללא תשלום.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה השווקים המסורתיים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">שווקים מסורתיים בבאלי כוללים: Ubud Art Market (חינם להסתכל), Gianyar Market, ו-Sanur Fish Market. סיור באטרקציות חינם בבאלי הוא חוויה תרבותית עמוקה של חיי מקומיים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם סטטן איילנד פרי ב{site.destinationName} בחינם?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כן, סטטן איילנד פרי ב{site.destinationName} הוא לגמרי בחינם. ההפלגה מציעה נוף מרהיב של פסל החירות, קו הרקיע של מנהטן וגשר ורזאנו — אחת האטרקציות החינמיות הטובות ב{site.destinationName}.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה טיולי טבע חינם בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בבאלי כוללות טיולי טבע: טגללאלנג (חינם להסתכל), ריצ'ספדס (רויאל וקי טיול בחינם בסביבת הכפר), טיולים בגנים מקומיים. טיולים בבאלי מציעים עיזים ירוקים ונופים דרמטיים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה טיולים רגליים חינם ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם ב{site.destinationName} כוללות טיולים רגליים: הליכה על גשר ברוקלין, טיול ב-High Line, סיור בסוהו וצ'איינטאון, טיול לאורך הריברסייד פארק ברחבי מנהטן. טיולים חינמיים ב{site.destinationName} מגלים את הנשמה האמיתית של העיר.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה טמפלים חינם בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בבאלי כוללות טמפלים מסורתיים: Goa Gajah (Elephant Cave) — בעלות נמוכה, Tirta Empul Temple, וטמפלים קטנים בכפרים. אטרקציות חינם בבאלי תרבותיות מעניקות הבנה של ההיסטוריה ההינדית של באלי.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה גלריות חינמיות ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם ב{site.destinationName} כוללות מאות גלריות אמנות בחינם בצ'לסי, Lower East Side ו-Williamsburg. גם National Museum of the American Indian ו-The Bronx Museum of the Arts הם בכניסה חופשית.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה אירועים חינם בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בבאלי כוללות אירועים תרבותיים במשך השנה. ריקוד מסורתי Kecak ביערות בחינם, טקסים מקומיים, וטיולים בקופים בחינם בטגללאלנג. אירועים בבאלי מקדמים חוויה תרבותית אמיתית.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה אירועים חינם ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם ב{site.destinationName} כוללות אירועים לאורך השנה: הופעות חינם בסנטרל פארק (SummerStage), סרטים בפארקים בקיץ, פסטיבלי רחוב, ופעילויות עונתיות בברייאנט פארק וטיימס סקוור.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה הזמן הטוב ביותר לבקר באטרקציות חינם בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בבאלי טובות במיוחד בחורף (נובמבר-מרץ) כשהמזג אוויר נעים. אטרקציות חינם בבאלי בקיץ חמות מאוד אך פחות עמוסות.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הזמן הטוב ביותר לבקר באטרקציות חינם ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם ב{site.destinationName} מושלמות בסתיו (ספטמבר-נובמבר) עם מזג אוויר נעים ועלי שלכת. האביב (אפריל-יוני) גם נהדר. בקיץ יש הכי הרבה אירועים חינם אך חם ולח.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">איך להגיע לאטרקציות חינם בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם בבאלי נגישות בתחבורה ציבורית, מוניות (Grab/Gojek), אופני תלת-אופן (scooter rental), או אופניים. Grab ו-Gojek זול מאוד בבאלי — רוב הנסיעות מעלות פחות מ-2 דולר.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איך להגיע לאטרקציות חינם ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">אטרקציות חינם ב{site.destinationName} נגישות בתחבורה ציבורית מצוינת — הסאבוויי פועל 24/7 ומגיע לכל מקום. כרטיס OMNY או MetroCard מאפשרים נסיעות ללא הגבלה. רוב האטרקציות החינמיות נמצאות במרחק הליכה מתחנת רכבת תחתית.</p>
         </details>
       </div>
     </section>
 
-    <div class="mt-10 bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
-      <p class="text-white/80 mb-4">רוצים לדעת עוד על אטרקציות חינם בבאלי?</p>
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">רוצים לדעת עוד על אטרקציות חינם ב{site.destinationName}?</p>
       <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מחפשים אטרקציות חינם בבאלי 🎡')}`}
+        href={waUrl(`היי, אנחנו מחפשים אטרקציות חינם ב${site.destinationName}`)}
         target="_blank"
         rel="noopener noreferrer"
         dir="rtl"

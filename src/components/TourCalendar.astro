@@ -1,0 +1,265 @@
+---
+/**
+ * TourCalendar.astro
+ * Interactive calendar showing tour availability by date.
+ * Hebrew day/month names, dark theme, teal accents.
+ * Client-side JS handles month navigation and date selection.
+ */
+interface TourSchedule {
+  default_time?: string
+  available_days?: number[]
+  excluded_dates?: string[]
+  notes?: string
+}
+
+interface CalendarTour {
+  slug: string
+  name_he: string
+  base_price?: number | null
+  price?: number | null
+  metadata?: {
+    schedule?: TourSchedule
+    price?: number | null
+    [key: string]: unknown
+  }
+  schedule?: TourSchedule
+}
+
+interface Props {
+  tours: CalendarTour[]
+  selectedTourSlug?: string
+}
+
+const { tours, selectedTourSlug } = Astro.props
+
+// Normalize tours for the client script
+const calendarTours = tours.map(t => {
+  const schedule = t.schedule ?? t.metadata?.schedule
+  const price = t.base_price ?? t.price ?? t.metadata?.price
+  return {
+    slug: t.slug,
+    name: t.name_he,
+    base_price: typeof price === 'number' ? price : 0,
+    schedule: {
+      default_time: schedule?.default_time ?? '10:00',
+      available_days: schedule?.available_days ?? [0, 1, 2, 3, 4, 5, 6],
+      excluded_dates: schedule?.excluded_dates ?? [],
+    },
+  }
+})
+---
+
+<div
+  id="tour-calendar"
+  class="bg-[#1A1208] rounded-2xl p-4 sm:p-6 border border-teal-500/20"
+  data-tours={JSON.stringify(calendarTours)}
+  data-selected-slug={selectedTourSlug ?? ''}
+>
+  <!-- Header: month nav -->
+  <div class="flex items-center justify-between mb-6">
+    <button
+      id="cal-next"
+      class="p-2.5 rounded-lg hover:bg-teal-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+      aria-label="חודש הבא"
+    >
+      <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+    <h3 id="cal-month-label" class="text-lg font-bold text-white"></h3>
+    <button
+      id="cal-prev"
+      class="p-2.5 rounded-lg hover:bg-teal-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+      aria-label="חודש קודם"
+    >
+      <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Day headers -->
+  <div class="grid grid-cols-7 gap-1 mb-2">
+    {['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'].map(day => (
+      <div class="text-center text-sm font-medium text-white/40 py-2">{day}</div>
+    ))}
+  </div>
+
+  <!-- Calendar grid (populated by JS) -->
+  <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+
+  <!-- Selected date tours (populated by JS) -->
+  <div id="cal-selected" class="hidden mt-6 pt-6 border-t border-teal-500/10">
+    <h4 id="cal-selected-title" class="text-sm font-medium text-white/50 mb-3"></h4>
+    <div id="cal-selected-list" class="space-y-3"></div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  var container = document.getElementById('tour-calendar');
+  if (!container) return;
+
+  var tours = JSON.parse(container.dataset.tours || '[]');
+  var selectedSlug = container.dataset.selectedSlug || '';
+
+  var today = new Date();
+  today.setHours(0,0,0,0);
+
+  var currentMonth = today.getMonth();
+  var currentYear = today.getFullYear();
+  var selectedDate = null;
+
+  var maxDate = new Date(today);
+  maxDate.setMonth(maxDate.getMonth() + 3);
+
+  var filteredTours = selectedSlug
+    ? tours.filter(function(t) { return t.slug === selectedSlug; })
+    : tours;
+
+  var grid = document.getElementById('cal-grid');
+  var monthLabel = document.getElementById('cal-month-label');
+  var prevBtn = document.getElementById('cal-prev');
+  var nextBtn = document.getElementById('cal-next');
+  var selectedSection = document.getElementById('cal-selected');
+  var selectedTitle = document.getElementById('cal-selected-title');
+  var selectedList = document.getElementById('cal-selected-list');
+
+  function getHebrewMonth(d) {
+    return new Intl.DateTimeFormat('he-IL', { month: 'long', year: 'numeric' }).format(d);
+  }
+
+  function daysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
+  function firstDayOfMonth(y, m) { return new Date(y, m, 1).getDay(); }
+
+  function isAvailable(date) {
+    if (date < today) return false;
+    var dow = date.getDay();
+    var ds = date.toISOString().split('T')[0];
+    return filteredTours.some(function(t) {
+      if (t.schedule.excluded_dates.indexOf(ds) !== -1) return false;
+      return t.schedule.available_days.indexOf(dow) !== -1;
+    });
+  }
+
+  function getToursForDate(date) {
+    if (date < today) return [];
+    var dow = date.getDay();
+    var ds = date.toISOString().split('T')[0];
+    return filteredTours.filter(function(t) {
+      if (t.schedule.excluded_dates.indexOf(ds) !== -1) return false;
+      return t.schedule.available_days.indexOf(dow) !== -1;
+    });
+  }
+
+  function render() {
+    monthLabel.textContent = getHebrewMonth(new Date(currentYear, currentMonth));
+
+    var canBack = currentYear > today.getFullYear() || (currentYear === today.getFullYear() && currentMonth > today.getMonth());
+    var canForward = new Date(currentYear, currentMonth + 1) < maxDate;
+    prevBtn.disabled = !canBack;
+    nextBtn.disabled = !canForward;
+
+    var dim = daysInMonth(currentYear, currentMonth);
+    var fd = firstDayOfMonth(currentYear, currentMonth);
+
+    grid.innerHTML = '';
+
+    // Empty cells
+    for (var e = 0; e < fd; e++) {
+      var emptyDiv = document.createElement('div');
+      emptyDiv.className = 'aspect-square';
+      grid.appendChild(emptyDiv);
+    }
+
+    for (var d = 1; d <= dim; d++) {
+      var date = new Date(currentYear, currentMonth, d);
+      var avail = isAvailable(date);
+      var isPast = date < today;
+      var isSel = selectedDate && selectedDate.getDate() === d && selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear;
+      var isToday = today.getDate() === d && today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+
+      var btn = document.createElement('button');
+      btn.textContent = d;
+      btn.dataset.day = d;
+
+      var cls = 'aspect-square rounded-lg flex flex-col items-center justify-center text-sm relative transition-all ';
+      if (isPast) cls += 'text-white/20 cursor-not-allowed ';
+      else if (isSel) cls += 'bg-teal-500 text-[#0D0D0D] font-bold ';
+      else if (avail) cls += 'text-white hover:bg-teal-500/20 cursor-pointer ';
+      else cls += 'text-white/30 cursor-not-allowed ';
+
+      if (isToday && !isSel) cls += 'ring-1 ring-teal-500/50 ';
+      btn.className = cls;
+      btn.disabled = !avail;
+
+      // Availability dot
+      if (avail && !isSel) {
+        var dot = document.createElement('span');
+        dot.className = 'absolute bottom-1 w-1.5 h-1.5 rounded-full bg-teal-400';
+        btn.appendChild(dot);
+      }
+
+      (function(day) {
+        btn.addEventListener('click', function() {
+          selectedDate = new Date(currentYear, currentMonth, day);
+          render();
+          showSelected();
+        });
+      })(d);
+
+      grid.appendChild(btn);
+    }
+  }
+
+  function showSelected() {
+    if (!selectedDate) {
+      selectedSection.classList.add('hidden');
+      return;
+    }
+    var dateTours = getToursForDate(selectedDate);
+    if (dateTours.length === 0) {
+      selectedSection.classList.add('hidden');
+      return;
+    }
+    selectedSection.classList.remove('hidden');
+    var dateStr = selectedDate.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+    selectedTitle.textContent = '\u05e1\u05d9\u05d5\u05e8\u05d9\u05dd \u05d6\u05de\u05d9\u05e0\u05d9\u05dd \u05d1-' + dateStr;
+
+    selectedList.innerHTML = '';
+    dateTours.forEach(function(tour) {
+      var card = document.createElement('div');
+      card.className = 'bg-[#0D0D0D] rounded-xl p-4 flex items-center justify-between border border-teal-500/10';
+      card.innerHTML =
+        '<div>' +
+          '<p class="font-bold text-white">' + tour.name + '</p>' +
+          '<div class="flex items-center gap-3 mt-1 text-sm text-white/50">' +
+            '<span class="flex items-center gap-1">' +
+              '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+              tour.schedule.default_time +
+            '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="text-left">' +
+          '<span class="text-lg font-bold text-teal-400">$' + tour.base_price + '</span>' +
+          '<span class="text-white/40 text-sm mr-1">\u05dc\u05d0\u05d3\u05dd</span>' +
+        '</div>';
+      selectedList.appendChild(card);
+    });
+  }
+
+  prevBtn.addEventListener('click', function() {
+    if (currentMonth === 0) { currentMonth = 11; currentYear--; }
+    else { currentMonth--; }
+    render();
+  });
+
+  nextBtn.addEventListener('click', function() {
+    if (currentMonth === 11) { currentMonth = 0; currentYear++; }
+    else { currentMonth++; }
+    render();
+  });
+
+  render();
+})();
+</script>

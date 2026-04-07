@@ -1,0 +1,212 @@
+---
+import Layout from '../../components/Layout.astro'
+import SchemaOrg from '../../components/SchemaOrg.astro'
+import Breadcrumb from '../../components/Breadcrumb.astro'
+import FAQSection from '../../components/FAQSection.astro'
+import AttractionCard from '../../components/Cards/AttractionCard.astro'
+import { supabaseAdmin, DESTINATION_ID } from '../../lib/supabase'
+import { site, waUrl } from '../../config/site'
+
+const { data: items } = await supabaseAdmin
+  .from('attractions')
+  .select('*')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('published', true)
+  .eq('category', 'broadway')
+  .order('name_he')
+
+const shows = items || []
+
+const title = `ברודווי -- מופעים ומחזות בניו יורק | ${site.brand}`
+const description = `מופעי ברודווי בניו יורק -- המדריך המלא למחזמרים, מחזות ומופעים. טיפים לרכישת כרטיסים, מופעים מומלצים, ומידע על תיאטראות ברודווי.`
+const canonicalUrl = `https://${site.domain}/broadway`
+
+const breadcrumbItems = [
+  { label: 'דף הבית', href: '/' },
+  { label: 'ברודווי' },
+]
+
+const schemaItemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `מופעי ברודווי בניו יורק`,
+  description,
+  numberOfItems: shows.length,
+  itemListElement: shows.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: s.name_he,
+    url: `https://${site.domain}/attractions/${s.slug}`,
+  })),
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'דף הבית', item: `https://${site.domain}/` },
+    { '@type': 'ListItem', position: 2, name: 'ברודווי' },
+  ],
+}
+
+const faqItems = [
+  {
+    q: 'איך קונים כרטיסים לברודווי בניו יורק?',
+    a: 'יש כמה דרכים לקנות כרטיסים לברודווי בניו יורק: אונליין דרך האתרים הרשמיים, דרך אפליקציות כמו TodayTix, או בדוכני TKTS בטיימס סקוור שמציעים הנחות של 20-50% על כרטיסים ליום הופעה.',
+  },
+  {
+    q: 'כמה עולים כרטיסים לברודווי בניו יורק?',
+    a: 'מחירי כרטיסים לברודווי בניו יורק נעים בין $60 למושבים אחוריים ועד $300+ למושבים מרכזיים. כרטיסי לוטרי ו-Rush יכולים להיות זולים כ-$30-$40. בדוכני TKTS אפשר למצוא הנחות משמעותיות.',
+  },
+  {
+    q: 'אילו מופעי ברודווי מומלצים בניו יורק?',
+    a: 'מופעי ברודווי מומלצים בניו יורק משתנים לפי העונה. מופעים קלאסיים כמו The Lion King, Wicked, ו-Hamilton תמיד פופולריים. מומלץ לבדוק מה חדש ומה מקבל ביקורות טובות.',
+  },
+  {
+    q: 'מה ההבדל בין On-Broadway ל-Off-Broadway בניו יורק?',
+    a: 'ברודווי (On-Broadway) בניו יורק מתייחס ל-41 תיאטראות גדולים באזור טיימס סקוור עם 500+ מושבים. Off-Broadway הם תיאטראות קטנים יותר (100-499 מושבים) עם הפקות עצמאיות יותר, לעתים חדשניות ובמחירים נמוכים יותר.',
+  },
+  {
+    q: 'מתי הזמן הטוב ביותר ללכת לברודווי בניו יורק?',
+    a: 'מופעי ברודווי בניו יורק מתקיימים כמעט כל יום. מופעי ערב מתחילים ב-19:00 או 20:00, ומופעי מטינה בימי רביעי ושבת ב-14:00. ימי שלישי ורביעי הם בדרך כלל השקטים ביותר ולכן קל יותר למצוא כרטיסים.',
+  },
+]
+---
+
+<Layout title={title} description={description} canonical={canonicalUrl}>
+  <SchemaOrg schema={[schemaItemList, breadcrumbSchema]} />
+
+  <!-- Hero Section -->
+  <section class="relative py-20 md:py-28 bg-gradient-to-b from-teal-500/10 to-transparent overflow-hidden">
+    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0); background-size: 24px 24px;"></div>
+    <div class="relative max-w-6xl mx-auto px-4 text-center">
+      <div class="mb-6">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+        ברודווי -- מופעים ומחזות <span class="text-teal-400">בניו יורק</span>
+      </h1>
+      <p class="text-lg md:text-xl text-white/60 max-w-3xl mx-auto">
+        המדריך המלא למופעי ברודווי בניו יורק. מחזמרים, מחזות, טיפים לרכישת כרטיסים במחירים טובים, ומידע על התיאטראות הטובים ביותר.
+      </p>
+      <p class="mt-4 text-teal-400 font-medium">{shows.length} מופעים</p>
+    </div>
+  </section>
+
+  <!-- Info Cards -->
+  <section class="max-w-6xl mx-auto px-4 py-8">
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 text-center hover:border-teal-500/30 transition-colors">
+        <span class="text-3xl mb-3 block">🎭</span>
+        <h3 class="text-lg font-bold text-white mb-2">41 תיאטראות</h3>
+        <p class="text-white/50 text-sm">אזור ברודווי כולל 41 תיאטראות רשמיים באזור טיימס סקוור בניו יורק</p>
+      </div>
+      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 text-center hover:border-teal-500/30 transition-colors">
+        <span class="text-3xl mb-3 block">🎟️</span>
+        <h3 class="text-lg font-bold text-white mb-2">TKTS הנחות</h3>
+        <p class="text-white/50 text-sm">בדוכני TKTS בטיימס סקוור תמצאו הנחות של 20-50% על כרטיסים ליום ההופעה</p>
+      </div>
+      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 text-center hover:border-teal-500/30 transition-colors">
+        <span class="text-3xl mb-3 block">⏰</span>
+        <h3 class="text-lg font-bold text-white mb-2">מופעי ערב ומטינה</h3>
+        <p class="text-white/50 text-sm">מופעי ערב ב-19:00-20:00 ומטינה בימי רביעי ושבת ב-14:00</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shows Grid -->
+  <section class="max-w-6xl mx-auto px-4 pb-16">
+    <h2 class="text-2xl font-bold text-white mb-8">מופעי ברודווי מומלצים בניו יורק</h2>
+    {shows.length > 0 ? (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {shows.map((show: any) => (
+          <AttractionCard
+            name_he={show.name_he}
+            name_en={show.name_en}
+            slug={show.slug}
+            image={show.image}
+            area={show.area}
+            price={show.metadata?.price || show.price_range}
+            rating={show.rating}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="bg-[#1A1208] border border-teal-500/10 rounded-2xl p-12 text-center">
+        <span class="text-5xl mb-4 block">🎭</span>
+        <p class="text-white/60 text-lg mb-2">מופעי ברודווי יתווספו בקרוב!</p>
+        <p class="text-white/40 text-sm mb-6">אנחנו מעדכנים את רשימת המופעים באופן שוטף</p>
+        <a
+          href={waUrl(`היי, אנחנו רוצים לשמוע על מופעי ברודווי בניו יורק 🎭`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <span>שאלו אותנו על ברודווי</span>
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- Tips Section -->
+  <section class="bg-gradient-to-br from-teal-900/10 to-transparent border-y border-teal-500/10 py-16">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-white text-center mb-8">טיפים לרכישת כרטיסי ברודווי בניו יורק</h2>
+      <div class="space-y-4">
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-5 flex gap-4">
+          <div class="w-8 h-8 bg-teal-500 text-[#0D0D0D] rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+          <div>
+            <h3 class="text-lg font-bold text-white">דוכני TKTS בטיימס סקוור</h3>
+            <p class="text-white/60">הגיעו לדוכן TKTS בטיימס סקוור ותקבלו הנחות של 20-50% על כרטיסים למופעים ליום ההופעה. התור נפתח בשעה 15:00 למופעי ערב.</p>
+          </div>
+        </div>
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-5 flex gap-4">
+          <div class="w-8 h-8 bg-teal-500 text-[#0D0D0D] rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+          <div>
+            <h3 class="text-lg font-bold text-white">אפליקציית TodayTix</h3>
+            <p class="text-white/60">הורידו את אפליקציית TodayTix -- אפליקציה מעולה למציאת כרטיסים אחרונים במחירים מוזלים. לפעמים מופעים גדולים נותנים כרטיסים ב-$30 בלבד.</p>
+          </div>
+        </div>
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-5 flex gap-4">
+          <div class="w-8 h-8 bg-teal-500 text-[#0D0D0D] rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+          <div>
+            <h3 class="text-lg font-bold text-white">לוטרי דיגיטלי</h3>
+            <p class="text-white/60">רוב מופעי ברודווי מציעים לוטרי דיגיטלי לכרטיסים ב-$30-$40. נרשמים באפליקציה של המופע, ואם זוכים מקבלים כרטיסים לשורות הראשונות.</p>
+          </div>
+        </div>
+        <div class="bg-[#1A1208] border border-teal-500/10 rounded-xl p-5 flex gap-4">
+          <div class="w-8 h-8 bg-teal-500 text-[#0D0D0D] rounded-full flex items-center justify-center font-bold flex-shrink-0">4</div>
+          <div>
+            <h3 class="text-lg font-bold text-white">מופעי מטינה</h3>
+            <p class="text-white/60">מופעי מטינה (צהריים) בימי רביעי ושבת הם בדרך כלל זולים יותר ממופעי ערב, ואיכות ההופעה זהה לחלוטין.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-16 max-w-4xl mx-auto px-4">
+    <h2 class="text-3xl font-bold text-white text-center mb-8">שאלות נפוצות על ברודווי בניו יורק</h2>
+    <FAQSection items={faqItems} />
+  </section>
+
+  <!-- WhatsApp CTA -->
+  <section class="py-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-white mb-4">צריכים עזרה בבחירת מופע ברודווי בניו יורק?</h2>
+      <p class="text-white/50 mb-8">שלחו לנו הודעה ונעזור לכם לבחור את המופע המושלם לפי הטעם שלכם</p>
+      <a
+        href={waUrl(`היי, אנחנו מחפשים המלצה למופע ברודווי בניו יורק 🎭`)}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white px-8 py-4 rounded-xl font-bold transition-colors"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span>דברו איתנו בוואטסאפ</span>
+      </a>
+    </div>
+  </section>
+</Layout>

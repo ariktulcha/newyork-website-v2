@@ -1,0 +1,142 @@
+---
+import Layout from '../components/Layout.astro'
+import SchemaOrg from '../components/SchemaOrg.astro'
+import FAQSection from '../components/FAQSection.astro'
+import { site, waUrl } from '../config/site'
+
+const faqItems = [
+  { q: `איך משתמשים במפה הקולינרית של ${site.destinationName}?`, a: 'לוחצים על הסמלים במפה כדי לראות פרטים על כל מקום - שם, כתובת, ומה כדאי להזמין. אפשר לסנן לפי קטגוריות (פיצה, בייגלים, דמפלינגס וכו\') ולשמור את המפה לגוגל מפות שלכם.' },
+  { q: `האם המקומות במפה כשרים?`, a: 'רוב המקומות במפה אינם כשרים. מקומות עם הכשר מסומנים בנפרד. לניו יורק יש מאות מסעדות כשרות - בקרו בעמוד המסעדות שלנו לסינון לפי כשרות.' },
+  { q: `מה הטווח מחירים של המקומות ב${site.destinationName}?`, a: 'יש לכל כיס! מפיצה ב-$1 ובייגל ב-$3, דרך דמפלינגס ב-$5, ועד מסעדות ישיבה ב-$20-40 לארוחה. סימנו במפה את טווח המחירים לכל מקום.' },
+  { q: `באיזה שכונות מרוכזים רוב המקומות?`, a: 'הריכוז הגדול ביותר הוא בלואר מנהטן - Lower East Side, צ\'יינה טאון, ליטל איטלי, ואיסט וילג\'. יש גם ריכוזים מעולים בוויליאמסבורג, צ\'לסי מרקט, ובמידטאון.' },
+  { q: `כמה זמן לפני כדאי להגיע למסעדות פופולריות ב${site.destinationName}?`, a: 'למקומות כמו Katz\'s Deli ו-Joe\'s Pizza יכולים להיות תורים של 15-30 דקות בשעות שיא. המלצה: הגיעו בשעות הלא שגרתיות (11:00 או 15:00) לחוויה בלי תורים.' },
+  { q: `האם אפשר לשמור את המפה לשימוש אופליין?`, a: 'כן! לחצו על שלוש הנקודות בפינה הימנית העליונה של המפה ובחרו "הורד ל-Google Maps". ככה המפה תהיה זמינה גם בלי אינטרנט.' },
+  { q: `כל כמה זמן המפה מתעדכנת?`, a: 'אנחנו מעדכנים את המפה באופן שוטף - מוסיפים מקומות חדשים ומסירים כאלה שנסגרו. המפה מבוססת על ביקורים אישיים שלנו ולא על פרסום.' },
+  { q: `איך המפה שונה מ-Google Reviews?`, a: 'המפה הזו אינה מבוססת על ציוני גוגל. היא מבוססת על טעימות אישיות שלנו ושל הקהילה הישראלית בניו יורק. כל מקום נבחן אישית.' },
+]
+
+const mapCategories = [
+  { icon: '🍕', name: 'פיצריות', description: 'הפיצריות הכי טובות - מ-$1 slice ועד פיצה נפוליטנית' },
+  { icon: '🥯', name: 'בייגלים', description: 'בייגל ניו יורקי אמיתי עם כל התוספות' },
+  { icon: '🥟', name: 'דמפלינגס', description: 'הדמפלינגס הכי טובים בצ\'יינה טאון ומעבר' },
+  { icon: '🥩', name: 'בשרים', description: 'סטייקים, ברגרים, פסטרמה ובריסקט' },
+  { icon: '🍰', name: 'קינוחים', description: 'עוגות, מאפים, גלידות וצ\'יזקייק' },
+  { icon: '☕', name: 'בתי קפה', description: 'הקפה הכי טוב ובתי קפה עם אווירה' },
+]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'ראשי', item: `https://${site.domain}/` },
+    { '@type': 'ListItem', position: 2, name: 'המפה הקולינרית', item: `https://${site.domain}/culinary-map/` },
+  ],
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map(item => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+}
+---
+
+<Layout
+  title={`המפה הקולינרית של ${site.destinationName} | מסעדות, פיצריות, בייגלים ועוד | ${site.brand}`}
+  description={`המפה הקולינרית המלאה של ${site.destinationName} בעברית. כל המסעדות, הפיצריות, הבייגלים, הדמפלינגס והמקומות הכי שווים לאכול ב${site.destinationName}.`}
+  canonical={`https://${site.domain}/culinary-map`}
+>
+  <SchemaOrg schema={[breadcrumbSchema, faqSchema]} />
+
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-amber-500/5 via-transparent to-transparent"></div>
+    <div class="relative max-w-5xl mx-auto px-4 pt-12 pb-8">
+      <nav class="mb-6">
+        <a href="/" class="text-amber-400 hover:text-amber-300 text-sm transition-colors">חזרה לדף הבית</a>
+      </nav>
+      <h1 class="text-4xl md:text-6xl font-black text-white mb-4">
+        המפה <span class="text-amber-400">הקולינרית</span> של {site.destinationName}
+      </h1>
+      <p class="text-xl text-white/70 max-w-2xl">
+        אספנו עבורכם את המקומות הקולינריים הכי טובים ב{site.destinationName}!
+        תמצאו כאן פיצריות, בייגלים, דמפלינגס, קינוחים ועוד.
+      </p>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section class="max-w-5xl mx-auto px-4 pb-12">
+    <div class="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
+      <!-- TODO: Replace this iframe src with your Google MyMaps embed URL -->
+      <iframe
+        src="https://www.google.com/maps/d/embed?mid=YOUR_MAP_ID_HERE&ehbc=2E312F"
+        width="100%"
+        height="500"
+        style="border: 0; min-height: 400px;"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title={`המפה הקולינרית של ${site.destinationName} - ${site.brand}`}
+        class="w-full h-[400px] md:h-[500px] lg:h-[550px]"
+      ></iframe>
+    </div>
+    <p class="text-white/40 text-xs text-center mt-3">
+      לחצו על הסמלים במפה לפרטים נוספים על כל מקום. אפשר גם להגדיל ולהקטין.
+    </p>
+  </section>
+
+  <!-- Categories -->
+  <section class="max-w-5xl mx-auto px-4 py-12">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold text-white mb-3">מה תמצאו במפה הקולינרית של {site.destinationName}?</h2>
+      <p class="text-white/50 max-w-2xl mx-auto">
+        אספנו עבורכם את המקומות הקולינריים הכי טובים ב{site.destinationName}! תמצאו כאן מסעדות, בתי קפה קלאסיים ושווקי אוכל מדהימים.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {mapCategories.map(cat => (
+        <div class="bg-[#1A1208] rounded-xl p-5 border border-amber-500/10 hover:border-amber-500/30 transition-colors group">
+          <span class="text-3xl mb-3 block">{cat.icon}</span>
+          <h3 class="text-white font-bold mb-1 group-hover:text-amber-400 transition-colors">{cat.name}</h3>
+          <p class="text-white/50 text-sm">{cat.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Food Tour CTA -->
+  <section class="max-w-5xl mx-auto px-4 py-12">
+    <div class="bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/20 rounded-2xl p-8 text-center">
+      <h2 class="text-2xl font-bold text-white mb-3">
+        רוצים לטעום את {site.destinationName} עם מדריך מקומי?
+      </h2>
+      <p class="text-white/50 mb-6 max-w-lg mx-auto">
+        הצטרפו לסיור האוכל שלנו - 4 שעות של טעימות מהמטבחים הכי טובים של {site.destinationName}. כל הטעימות כלולות במחיר!
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/tours"
+          class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-amber-500/25 text-lg"
+        >
+          לסיור הקולינרי
+        </a>
+        <a
+          href="/restaurants"
+          class="text-amber-400 hover:text-amber-300 font-medium transition-colors"
+        >
+          לכל המסעדות שלנו
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="max-w-3xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold text-white mb-8 text-center">שאלות ותשובות על אוכל ב{site.destinationName}</h2>
+    <FAQSection items={faqItems} />
+  </section>
+</Layout>

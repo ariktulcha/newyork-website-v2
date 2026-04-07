@@ -4,6 +4,7 @@ import SchemaOrg from '../../../components/SchemaOrg.astro'
 import Breadcrumb from '../../../components/Breadcrumb.astro'
 import NightlifeCard from '../../../components/Cards/NightlifeCard.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+import { site, waUrl } from '../../../config/site'
 
 const { data } = await supabaseAdmin
   .from('nightlife')
@@ -14,20 +15,20 @@ const { data } = await supabaseAdmin
 
 const items = data || []
 
-const pageTitle = 'ברים בבאלי | Yalla Bali'
-const pageDescription = 'הברים הטובים ביותר בבאלי. מברים אלגנטיים ועד ברים מזדמנים — המדריך המלא לחיי הלילה בבאלי.'
+const pageTitle = `ברים ב${site.destinationName} | ${site.brand}`
+const pageDescription = `הברים הטובים ביותר ב${site.destinationName}. מברים אלגנטיים ועד ברים מזדמנים — המדריך המלא לחיי הלילה ב${site.destinationName}.`
 
 const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'ברים בבאלי',
+  name: `ברים ב${site.destinationName}`,
   description: pageDescription,
   numberOfItems: items.length,
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name_he,
-    url: new URL(`/nightlife/${item.slug}`, 'https://yalla-bali.co.il').toString(),
+    url: new URL(`/nightlife/${item.slug}`, `https://${site.domain}`).toString(),
   })),
 }
 
@@ -45,17 +46,17 @@ const breadcrumbItems = [
 
     <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
       <a href="/nightlife/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
-      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-teal-500 text-black whitespace-nowrap">🍸 ברים</span>
-      <a href="/nightlife/clubs/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🎵 מועדונים</a>
-      <a href="/nightlife/beach-clubs/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🏖️ ביץ׳ קלאב</a>
-      <a href="/nightlife/rooftop/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🌇 רופטופ</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">ברים</span>
+      <a href="/nightlife/clubs/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">מועדונים</a>
+      <a href="/nightlife/manhattan/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">מנהטן</a>
+      <a href="/nightlife/brooklyn/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">ברוקלין</a>
     </nav>
 
     <header class="mb-10 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">ברים בבאלי</h1>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">ברים ב{site.destinationName}</h1>
       <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
-        באלי מציעה סצנת ברים מגוונת ומרשימה — מברים על גגות עם נוף מהמם,
-        ברי קוקטיילים אלגנטיים, וברי ספורט בפאבים בסגנון בריטי.
+        {site.destinationName} מציעה סצנת ברים מגוונת ומרשימה — מברי speakeasy מוסתרים
+        ועד ברי גגות עם נוף לקו הרקיע, ברי קוקטיילים יצירתיים ופאבים אותנטיים.
       </p>
     </header>
 
@@ -78,56 +79,56 @@ const breadcrumbItems = [
       </div>
     )}
 
-    <section class="mt-16 bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-teal-400 mb-6">שאלות נפוצות — ברים בבאלי</h2>
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — ברים ב{site.destinationName}</h2>
       <div class="space-y-4">
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">האם מותר לשתות אלכוהול בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כן, מותר לשתות אלכוהול בבאלי בברים, מסעדות ומלונות מורשים. גיל המינימום הרשמי הוא 18. שתייה ברחוב או שכרות בפומבי אסורים וחוקים על הנהיגה בשתייה מחוזקים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה גיל הכניסה לברים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">גיל הכניסה לברים ב{site.destinationName} הוא 21 ומעלה. חובה להציג תעודה מזהה (דרכון לתיירים). כל הברים ב{site.destinationName} בודקים תעודה בכניסה — אין חריגים.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">כמה עולה שתייה בבר בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">בירה עולה בין 3-6 דולר, קוקטייל בין 5-10 דולר. יש Happy Hours במקומות רבים עם מחירים מופחתים עד 50% בשעות אחר הצהריים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">כמה עולה שתייה בבר ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">בירה ב{site.destinationName} עולה בין $8-14, קוקטייל בין $16-25. יש Happy Hours בברים רבים ב{site.destinationName} עם הנחות של 30-50% בשעות אחר הצהריים, בדרך כלל בין 4-7 בערב.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה קוד הלבוש בברים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">רוב הברים היוקרתיים דורשים Smart Casual. ברים קז'ואליים יותר מקבלים לבוש חופשי אבל לא כפכפים או בגדי ים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה קוד הלבוש בברים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">רוב הברים ב{site.destinationName} מקבלים לבוש קז'ואל. ברים יוקרתיים וברי מלונות דורשים Smart Casual. ברי speakeasy ורופטופ ב{site.destinationName} מעדיפים לבוש אלגנטי יותר.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה זה Happy Hour בברים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">Happy Hour הוא תקופה בברים בבאלי כאשר המשקאות זולים יותר — בדרך כלל בין 4-7 בערב. ברים בבאלי רבים מציעים ל-50% הנחה על קוקטיילים והחטיפים בשעות Happy Hour.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה זה Happy Hour בברים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">Happy Hour הוא מבצע קבוע בברים ב{site.destinationName} — בדרך כלל בין 4-7 בערב עם הנחות של 30-50% על משקאות וחטיפים. ברים ב{site.destinationName} רבים מציעים גם $1 oysters ומנות קטנות במחירים מוזלים.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">איזה ברים בבאלי טובים לחברים?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">ברים בבאלי טובים לקבוצות חברים: La Favela, Mirror, Motel Mexicola. ברים בבאלי עם אווירה חברתית וקוקטיילים יצירתיים מאפשרים להזמין שולחנות ובקבוקים לקבוצות גדולות.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">איזה ברים ב{site.destinationName} טובים לחברים?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">ברים ב{site.destinationName} מצוינים לקבוצות חברים: The Dead Rabbit ב-FiDi, Please Don't Tell (PDT) ב-East Village, Employees Only ב-West Village. ברים ב{site.destinationName} עם אווירה חברתית מאפשרים להזמין שולחנות מראש.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה הברים הטובים ביותר בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">ברים המובילים בבאלי: La Favela, Mirror, Motel Mexicola. ברים בבאלי אלה מפורסמים בקוקטיילים משובחים, אווירה מעולה ומוקד שירות ברמה הגבוהה.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה הברים הטובים ביותר ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">ברים מובילים ב{site.destinationName}: The Dead Rabbit, Employees Only, Attaboy, Please Don't Tell (PDT), Dante. ברים אלה ב{site.destinationName} נמנים עם הטובים בעולם, עם קוקטיילים יצירתיים ואווירה ייחודית.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">האם צריך הזמנה לברים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">ברים בבאלי קז'ואליים לא דורשים הזמנה. ברים בבאלי יוקרתיים או מקומות עם זמן כנסה מומלצת להזמין מראש בעיקר בסוף השבוע.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם צריך הזמנה לברים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">ברים קז'ואליים ב{site.destinationName} לא דורשים הזמנה. ברי speakeasy ב{site.destinationName} כמו PDT דורשים הזמנה מראש. ברי גגות ומלונות מומלץ להזמין, במיוחד בסוף השבוע.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה סוגי הקוקטיילים בברים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">ברים בבאלי מציעים: קוקטיילים קלאסיים (Margarita, Mojito), קוקטיילים יצירתיים עם רכיבים אקזוטיים. ברים בבאלי מומלצים משתמשים בספיריטוסים פרימיום וחומרים טריים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה ברי speakeasy ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">ברי speakeasy ב{site.destinationName} הם ברים מוסתרים בסגנון שנות ה-20 — ללא שלט בכניסה. PDT (נכנסים דרך תא טלפון), Attaboy, ו-Bathtub Gin הם מהמפורסמים. ברים ב{site.destinationName} אלה מציעים חוויית שתייה אינטימית וייחודית.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מתי ברים בבאלי פתוחים?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">ברים בבאלי בדרך כלל פתוחים מ-12:00 עד 3:00-4:00 בבוקר. ברים בבאלי במלונות יכולים להיות פתוחים עד מאוחר יותר בסוף השבוע.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מתי ברים ב{site.destinationName} פתוחים?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">ברים ב{site.destinationName} בדרך כלל פתוחים מ-16:00 עד 4:00 בבוקר. ברי brunch פתוחים כבר מ-11:00 בצהריים. ברים ב{site.destinationName} פתוחים כל יום, כולל ימי חול וחגים.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">האם יש ברים בבאלי ללא אלכוהול?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כן, ברים בבאלי מציעים משקאות ללא אלכוהול — קוקטיילים מוקד, מיצים, קפה ותה. ברים בבאלי מצייתים לדרישות אסלאמיות ותומכים באפשרויות עבור מי שלא שותה אלכוהול.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה טיפים לברים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">טיפים לברים ב{site.destinationName}: תמיד השאירו טיפ של 18-20% (נורמה מחייבת בניו יורק), הביאו דרכון לזיהוי, הגיעו מוקדם בסוף שבוע כדי לקבל מקום. ב{site.destinationName} נהוג לשלם בכרטיס אשראי — רוב הברים לא מקבלים מזומן.</p>
         </details>
       </div>
     </section>
 
-    <div class="mt-10 bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
-      <p class="text-white/80 mb-4">רוצים המלצה לבר בבאלי?</p>
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">רוצים המלצה לבר ב{site.destinationName}?</p>
       <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מחפשים בר מומלץ בבאלי 🍸')}`}
+        href={waUrl(`היי, אנחנו מחפשים בר מומלץ ב${site.destinationName}`)}
         target="_blank"
         rel="noopener noreferrer"
         dir="rtl"

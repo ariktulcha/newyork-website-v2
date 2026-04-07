@@ -12,20 +12,20 @@ const { data: items } = await supabaseAdmin
 
 const hotels = items || []
 
-const title = 'מלונות בבאלי — המדריך המלא | Yalla Bali'
-const description = 'מדריך מלונות בבאלי: מלונות 5 כוכבים, מלונות חוף, מלונות משפחתיים ומלונות יוקרה. השוואת מחירים, דירוגים וביקורות.'
+const title = 'מלונות בניו יורק — המדריך המלא | Yalla NY'
+const description = 'מדריך מלונות בניו יורק: מלונות 5 כוכבים, מלונות ליד טיימס סקוור, מלונות משפחתיים ומלונות יוקרה. השוואת מחירים, דירוגים וביקורות.'
 
 const schemaItemList = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'מלונות בבאלי',
+  name: 'מלונות בניו יורק',
   description,
   numberOfItems: hotels.length,
   itemListElement: hotels.map((h, i) => ({
     '@type': 'ListItem',
     position: i + 1,
     name: h.name_he,
-    url: `https://yalla-bali.co.il/hotels/${h.slug}`,
+    url: new URL(`/hotels/${h.slug}`, Astro.site).toString(),
   })),
 }
 
@@ -33,30 +33,30 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'דף הבית', item: 'https://yalla-bali.co.il/' },
+    { '@type': 'ListItem', position: 1, name: 'דף הבית', item: Astro.site?.toString() },
     { '@type': 'ListItem', position: 2, name: 'מלונות' },
   ],
 }
 
 const categoryLinks = [
-  { label: '🌿 אובוד', href: '/areas/ubud/' },
-  { label: '🏄 קאנגו', href: '/areas/canggu/' },
-  { label: '🌅 סמינייק', href: '/areas/seminyak/' },
-  { label: '🪨 אולוואטו', href: '/areas/uluwatu/' },
-  { label: '🐟 ג׳ימברן', href: '/areas/jimbaran/' },
-  { label: '🌴 נוסה דואה', href: '/areas/nusa-dua/' },
+  { label: '🗽 מנהטן', href: '/areas/manhattan/' },
+  { label: '🌉 ברוקלין', href: '/areas/brooklyn/' },
+  { label: '🏙️ מידטאון', href: '/areas/midtown/' },
+  { label: '🌇 טיימס סקוור', href: '/areas/times-square/' },
+  { label: '🏛️ סנטרל פארק', href: '/areas/central-park/' },
+  { label: '🌊 לואר מנהטן', href: '/areas/lower-manhattan/' },
 ]
 
 const areaFilters = [
   { label: 'הכל', filter: 'all' },
-  { label: 'סמינייק', filter: 'seminyak' },
-  { label: 'קאנגו', filter: 'canggu' },
-  { label: 'אובוד', filter: 'ubud' },
-  { label: 'קוטה', filter: 'kuta' },
-  { label: 'אולוואטו', filter: 'uluwatu' },
-  { label: 'ג׳ימברן', filter: 'jimbaran' },
-  { label: 'נוסה דואה', filter: 'nusa-dua' },
-  { label: 'סנור', filter: 'sanur' },
+  { label: 'מנהטן', filter: 'manhattan' },
+  { label: 'מידטאון', filter: 'midtown' },
+  { label: 'טיימס סקוור', filter: 'times-square' },
+  { label: 'ברוקלין', filter: 'brooklyn' },
+  { label: 'סוהו', filter: 'soho' },
+  { label: 'צ׳לסי', filter: 'chelsea' },
+  { label: 'אפר ווסט סייד', filter: 'upper-west-side' },
+  { label: 'לואר איסט סייד', filter: 'lower-east-side' },
 ]
 ---
 
@@ -71,11 +71,11 @@ const areaFilters = [
         <span class="mx-2">/</span>
         <span class="text-white/60">מלונות</span>
       </nav>
-      <h1 class="text-4xl md:text-5xl font-black mb-4">מלונות בבאלי</h1>
+      <h1 class="text-4xl md:text-5xl font-black mb-4">מלונות בניו יורק</h1>
       <p class="text-lg text-white/60 max-w-2xl mx-auto">
-        באלי מציעה מאות מלונות מדהימים לכל טעם — מוילות פרטיות יוקרתיות בהרים ועד ריזורטים משפחתיים על החוף.
-        מלונות בבאלי מציעים ספא בלינזי, בריכות אינסוף, חוף פרטי ואווירה של אי כזה שאתה חייב לפרוש כמו מלך או מלכה.
-        בחר מלון בבאלי לפי האזור (סמינייק, קאנגו, אובוד, אולוואטו) וההעדפה שלך (משפחתי, רומנטי, יוקרה).
+        ניו יורק מציעה אלפי מלונות מדהימים לכל טעם — ממלונות בוטיק אלגנטיים בסוהו ועד מלונות יוקרה ליד סנטרל פארק.
+        מלונות בניו יורק מציעים נוף לקו הרקיע, גישה לברודווי, קרבה לאטרקציות המרכזיות ושירות ברמה עולמית.
+        בחרו מלון בניו יורק לפי השכונה (מנהטן, מידטאון, ברוקלין, טיימס סקוור) וההעדפה שלכם (משפחתי, רומנטי, יוקרה).
       </p>
       <p class="mt-4 text-teal-400 font-medium" id="hotel-count">{hotels.length} מלונות</p>
     </div>

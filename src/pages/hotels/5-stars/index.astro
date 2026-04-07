@@ -4,6 +4,7 @@ import SchemaOrg from '../../../components/SchemaOrg.astro'
 import Breadcrumb from '../../../components/Breadcrumb.astro'
 import HotelCard from '../../../components/Cards/HotelCard.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+import { site, waUrl } from '../../../config/site'
 
 const { data } = await supabaseAdmin
   .from('hotels')
@@ -16,20 +17,20 @@ const items = (data || []).filter(h => {
   return h.star_rating === 5 || meta.star_rating === 5 || meta.stars === 5
 })
 
-const pageTitle = 'מלונות 5 כוכבים בבאלי | Yalla Bali'
-const pageDescription = 'מלונות 5 כוכבים מובילים בבאלי. פינוק, יוקרה ושירות ברמה הגבוהה ביותר. המדריך המלא למלונות חמישה כוכבים בבאלי.'
+const pageTitle = `מלונות 5 כוכבים ב${site.destinationName} | ${site.brand}`
+const pageDescription = `מלונות 5 כוכבים מובילים ב${site.destinationName}. פינוק, יוקרה ושירות ברמה הגבוהה ביותר במנהטן וברוקלין.`
 
 const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'מלונות 5 כוכבים בבאלי',
+  name: `מלונות 5 כוכבים ב${site.destinationName}`,
   description: pageDescription,
   numberOfItems: items.length,
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name_he,
-    url: new URL(`/hotels/${item.slug}`, 'https://yalla-bali.co.il').toString(),
+    url: new URL(`/hotels/${item.slug}`, `https://${site.domain}`).toString(),
   })),
 }
 
@@ -45,99 +46,53 @@ const breadcrumbItems = [
   <main class="max-w-7xl mx-auto px-4 py-8">
     <Breadcrumb items={breadcrumbItems} />
 
-    <!-- Category pills -->
     <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
       <a href="/hotels/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
-      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-teal-500 text-black whitespace-nowrap">⭐ 5 כוכבים</span>
-      <a href="/hotels/beach/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🏖️ חוף</a>
-      <a href="/hotels/family/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">👨‍👩‍👧 משפחתי</a>
-      <a href="/hotels/luxury/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">💎 יוקרה</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">5 כוכבים</span>
+      <a href="/hotels/luxury/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">יוקרה</a>
+      <a href="/hotels/boutique/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">בוטיק</a>
+      <a href="/hotels/manhattan/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">מנהטן</a>
+      <a href="/hotels/brooklyn/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">ברוקלין</a>
     </nav>
 
     <header class="mb-10 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מלונות 5 כוכבים בבאלי</h1>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מלונות 5 כוכבים ב{site.destinationName}</h1>
       <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
-        באלי ידועה במלונות היוקרה שלה. מלונות 5 כוכבים בבאלי מציעים חוויית אירוח
-        ברמה הגבוהה ביותר בעולם — ספא, בריכות אינסוף, מסעדות גורמה ושירות אישי.
+        {site.destinationName} מציעה מלונות 5 כוכבים מהטובים בעולם. The Plaza, Ritz-Carlton, St. Regis, Mandarin Oriental ועוד - חוויית אירוח ברמה הגבוהה ביותר.
       </p>
     </header>
 
     {items.length > 0 ? (
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map(item => (
-          <HotelCard
-            name_he={item.name_he}
-            name_en={item.name_en}
-            slug={item.slug}
-            image={item.image}
-            area={item.area}
-            star_rating={item.star_rating}
-            price_range={item.price_range}
-          />
+          <HotelCard name_he={item.name_he} name_en={item.name_en} slug={item.slug} image={item.image} area={item.area} star_rating={item.star_rating} price_range={item.price_range} />
         ))}
       </div>
     ) : (
-      <div class="text-center py-16">
-        <p class="text-white/40 text-lg">לא נמצאו מלונות 5 כוכבים כרגע. חזרו בקרוב!</p>
-      </div>
+      <div class="text-center py-16"><p class="text-white/40 text-lg">לא נמצאו מלונות 5 כוכבים כרגע. חזרו בקרוב!</p></div>
     )}
 
-    <section class="mt-16 bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-teal-400 mb-6">שאלות נפוצות — מלונות 5 כוכבים בבאלי</h2>
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות - מלונות 5 כוכבים ב{site.destinationName}</h2>
       <div class="space-y-4">
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">כמה עולה לילה במלון חמש כוכבים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות 5 כוכבים בבאלי מתחילים מ-150 דולר בעונה נמוכה. מלון 5 כוכבים בבאלי יכול להגיע ל-600 דולר בעונת שיא, תלוי בבחירת החדר ובתקופת ההזמנה.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">כמה עולה לילה במלון 5 כוכבים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מלונות 5 כוכבים ב{site.destinationName} מתחילים מ-$400 ללילה בעונה נמוכה ויכולים להגיע ל-$1,500+ לסוויטה בעונת השיא (דצמבר, קיץ). הזמנה מוקדמת חוסכת כסף משמעותי.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה האזור הכי טוב בבאלי למלון 5 כוכבים?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">אזורי מלונות 5 כוכבים בבאלי המומלצים: סמינייק (חיים לילה וחופים), ג'ימברן (חופים שקטים), אולוואטו (נופים דרמטיים), וג'ן'ן (טבע וספא). בחרו מלון 5 כוכבים בבאלי לפי הסגנון שלכם.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה האזור הכי טוב ב{site.destinationName} למלון 5 כוכבים?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">Midtown (ליד סנטרל פארק) ו-Upper East Side הם האזורים הפופולריים ביותר למלונות 5 כוכבים ב{site.destinationName}. Tribeca ו-SoHo מציעים מלונות בוטיק יוקרתיים עם אווירה שכונתית.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מתי הזול ביותר להזמין מלון 5 כוכבים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות 5 כוכבים בבאלי זולים בעונת הגשמים (נוב-מרץ) ובחודשים הביניים (מאי-יוני). מלון 5 כוכבים בבאלי יקר בעונת השיא (יולי-אוגוסט). הזמנה מוקדמת חוסכת כסף משמעותי.</p>
-        </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">איזה שירותים כוללים מלונות 5 כוכבים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות 5 כוכבים בבאלי כוללים: ספא, מסעדות, בריכות, חוף (במלונות חוף 5 כוכבים בבאלי), קונסיירג'. מלון 5 כוכבים בבאלי מספק שירות עולמי.</p>
-        </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה ההבדל בין 5 כוכבים ליוקרה בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלון 5 כוכבים בבאלי מציע יוקרה בסטנדרט גבוה. מלון יוקרה בבאלי — כמו בורג' — מעבר ל-5 כוכבים. מלון 5 כוכבים בבאלי עדיין מעולה ברמה.</p>
-        </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">יש מלונות 5 כוכבים כשרים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כמה מלונות 5 כוכבים בבאלי מציעים אפשרויות כשרות. בדקו עם מלון 5 כוכבים בבאלי הספציפי לאפשרויות הכשרות לפני הזמנה.</p>
-        </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">צריך להזמין מלון 5 כוכבים בבאלי מראש?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כן, מומלץ להזמין מלון 5 כוכבים בבאלי מראש, במיוחד בעונה גבוהה. מלונות 5 כוכבים בבאלי מתמלאים במהירות בחורף.</p>
-        </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה סוגי החדרים במלונות 5 כוכבים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלון 5 כוכבים בבאלי מציע: חדרים סטנדרטיים, סוויטות, וסוויטות נשיאותיות. מלון 5 כוכבים בבאלי מציע וריאציות רחבות של רמות נוחות וחניכות.</p>
-        </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה דירוג המלונות 5 כוכבים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלונות 5 כוכבים בבאלי בעלי דירוגים גבוהים על מפות. מלון 5 כוכבים בבאלי מקבל חוות דעות טובות מטיירים בעולם.</p>
-        </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה שירותים של קונסיירג' במלונות 5 כוכבים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מלון 5 כוכבים בבאלי מספק קונסיירג' שיעזור לכם להזמין רסטורנטים, כרטיסים לאטרקציות וטרנספורט. קונסיירג' במלונות 5 כוכבים בבאלי זמין 24/7.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה מלון 5 הכוכבים הכי טוב ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">The Plaza, St. Regis, Mandarin Oriental, Ritz-Carlton Central Park, ו-Four Seasons הם מהמלונות המובילים ב{site.destinationName}. כל אחד מציע חוויה שונה - בחרו לפי מיקום והעדפות.</p>
         </details>
       </div>
     </section>
 
-    <div class="mt-10 bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
-      <p class="text-white/80 mb-4">צריכים עזרה בבחירת מלון 5 כוכבים בבאלי?</p>
-      <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מחפשים מלון 5 כוכבים בבאלי 🏨')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"
-      >
-        דברו איתנו בווטסאפ
-      </a>
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">צריכים עזרה בבחירת מלון 5 כוכבים ב{site.destinationName}?</p>
+      <a href={waUrl(`היי, אנחנו מחפשים מלון 5 כוכבים ב${site.destinationName}`)} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors">דברו איתנו בווטסאפ</a>
     </div>
   </main>
 </Layout>

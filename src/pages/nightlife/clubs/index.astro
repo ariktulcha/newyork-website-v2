@@ -4,6 +4,7 @@ import SchemaOrg from '../../../components/SchemaOrg.astro'
 import Breadcrumb from '../../../components/Breadcrumb.astro'
 import NightlifeCard from '../../../components/Cards/NightlifeCard.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../../../lib/supabase'
+import { site, waUrl } from '../../../config/site'
 
 const { data } = await supabaseAdmin
   .from('nightlife')
@@ -14,20 +15,20 @@ const { data } = await supabaseAdmin
 
 const items = data || []
 
-const pageTitle = 'מועדונים בבאלי | Yalla Bali'
-const pageDescription = 'המועדונים הטובים ביותר בבאלי. מועדוני ריקודים, מסיבות ודי-ג\'יים בינלאומיים — חיי הלילה של באלי במיטבם.'
+const pageTitle = `מועדונים ב${site.destinationName} | ${site.brand}`
+const pageDescription = `המועדונים הטובים ביותר ב${site.destinationName}. מועדוני ריקודים, מסיבות ודי-ג'יים בינלאומיים — חיי הלילה של ${site.destinationName} במיטבם.`
 
 const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'מועדונים בבאלי',
+  name: `מועדונים ב${site.destinationName}`,
   description: pageDescription,
   numberOfItems: items.length,
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name_he,
-    url: new URL(`/nightlife/${item.slug}`, 'https://yalla-bali.co.il').toString(),
+    url: new URL(`/nightlife/${item.slug}`, `https://${site.domain}`).toString(),
   })),
 }
 
@@ -45,17 +46,17 @@ const breadcrumbItems = [
 
     <nav class="flex gap-2 overflow-x-auto scrollbar-hide mb-8 pb-1">
       <a href="/nightlife/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">הכל</a>
-      <a href="/nightlife/bars/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🍸 ברים</a>
-      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-teal-500 text-black whitespace-nowrap">🎵 מועדונים</span>
-      <a href="/nightlife/beach-clubs/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🏖️ ביץ׳ קלאב</a>
-      <a href="/nightlife/rooftop/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">🌇 רופטופ</a>
+      <a href="/nightlife/bars/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">ברים</a>
+      <span class="flex-none px-4 py-1.5 rounded-full text-sm font-bold bg-amber-500 text-black whitespace-nowrap">מועדונים</span>
+      <a href="/nightlife/manhattan/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">מנהטן</a>
+      <a href="/nightlife/brooklyn/" class="flex-none px-4 py-1.5 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">ברוקלין</a>
     </nav>
 
     <header class="mb-10 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מועדונים בבאלי</h1>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">מועדונים ב{site.destinationName}</h1>
       <p class="text-white/60 max-w-2xl mx-auto leading-relaxed">
-        חיי הלילה בבאלי לוהטים ומגוונים. מועדונים עם די-ג'יים בינלאומיים,
-        מערכות סאונד מתקדמות ואווירה שלא תשכחו. הנה המועדונים שחייבים להכיר.
+        חיי הלילה ב{site.destinationName} לוהטים ומגוונים. מועדונים עם די-ג'יים בינלאומיים,
+        מערכות סאונד מתקדמות ואווירה שלא תשכחו. מצ'לסי ועד ברוקלין — הנה המועדונים שחייבים להכיר.
       </p>
     </header>
 
@@ -78,52 +79,52 @@ const breadcrumbItems = [
       </div>
     )}
 
-    <section class="mt-16 bg-[#1A1208] border border-teal-500/10 rounded-2xl p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-teal-400 mb-6">שאלות נפוצות — מועדונים בבאלי</h2>
+    <section class="mt-16 bg-[#1A1208] border border-amber-500/10 rounded-2xl p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-amber-400 mb-6">שאלות נפוצות — מועדונים ב{site.destinationName}</h2>
       <div class="space-y-4">
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה שעות הפעילות של מועדונים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">רוב המועדונים פותחים בין 22:00-23:00 ונסגרים בין 3:00-4:00 בלילה. בסופי שבוע (חמישי-שישי) חלק מהמקומות פתוחים עד מאוחר יותר.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה שעות הפעילות של מועדונים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">רוב המועדונים ב{site.destinationName} פותחים בין 22:00-23:00 ונסגרים ב-4:00 בבוקר (שעת הסגירה הרשמית בניו יורק). בסופי שבוע חלק מהמקומות פתוחים עד מאוחר יותר עם after-hours.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">כמה עולה כניסה למועדון בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">כניסה למועדון בבאלי עולה בין $15-40, לפעמים כולל שתייה. בלילות מיוחדים עם די-ג'יים בינלאומיים המחיר יכול להיות גבוה יותר.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">כמה עולה כניסה למועדון ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">כניסה למועדון ב{site.destinationName} עולה בין $20-60, תלוי במועדון ובלילה. בלילות מיוחדים עם די-ג'יים בינלאומיים המחיר יכול להגיע ל-$100+. הזמנה מוקדמת אונליין חוסכת.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה קוד הלבוש במועדונים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">קוד הלבוש הוא Smart Casual עד Dressy. נעליים סגורות חובה, ללא כפכפים, שורטס או גופיות. מומלץ להתלבש אלגנטי.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה קוד הלבוש במועדונים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">קוד הלבוש במועדונים ב{site.destinationName} הוא Smart Casual עד Dressy. נעליים סגורות חובה, ללא כפכפים, שורטס או גופיות. במועדונים יוקרתיים כמו Marquee ו-1 OAK מומלץ להתלבש אלגנטי.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה המועדונים הטובים ביותר בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מועדונים מובילים בבאלי: Savaya, Palazzo, STORY. מועדונים בבאלי אלה משכנעים בדיג'יים בינלאומיים, תאורה מתקדמת ואווירה מדהימה.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה המועדונים הטובים ביותר ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מועדונים מובילים ב{site.destinationName}: Marquee, Brooklyn Mirage, Avant Gardner, Basement, Webster Hall. מועדונים אלה ב{site.destinationName} ידועים בדי-ג'יים בינלאומיים, מערכות סאונד מתקדמות ואווירה מדהימה.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">האם צריך הזמנה למועדון בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">הזמנה מראש מומלצת למועדונים בבאלי, במיוחד בחמישי-שישי. מועדונים בבאלי פופולריים מתמלאים מהר וההזמנה יכולה להבטיח מקום משובח.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">האם צריך הזמנה למועדון ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">הזמנה מראש מומלצת למועדונים ב{site.destinationName}, במיוחד בחמישי-שבת. מועדונים ב{site.destinationName} פופולריים מתמלאים מהר — רכישת כרטיסים מראש מבטיחה כניסה ולפעמים גם דילוג על התור.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה סוגי המוזיקה במועדונים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מועדונים בבאלי משדרים: House, Techno, Hip-Hop וז'אנרים בינלאומיים. מועדונים בבאלי שונים מתמחים בסגנונות מוזיקה שונים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה סוגי המוזיקה במועדונים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מועדונים ב{site.destinationName} מציעים מגוון רחב: House ו-Techno ב-Brooklyn Mirage, Hip-Hop ב-Marquee, אלקטרוני ב-Basement. כל מועדון ב{site.destinationName} מתמחה בסגנון שונה — יש לכל אחד אופי ייחודי.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה מערכות הסאונד במועדונים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מועדונים בבאלי משתמשים בציוד סאונד מתקדם מהיצרנים המובילים בתחום כמו Funktion-One. מערכות הסאונד במועדונים בבאלי מספקות חוויה אקוסטית גבוהה.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה מערכות הסאונד במועדונים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מועדונים ב{site.destinationName} משתמשים בציוד סאונד מתקדם — Funktion-One, Pioneer ו-d&b audiotechnik. Brooklyn Mirage ו-Avant Gardner ידועים במערכות הסאונד המתקדמות ביותר ב{site.destinationName}.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה דיג'יים בינלאומיים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מועדונים בבאלי מארחים דיג'יים מפורסמים מעולם כמו Mark Knight, Vini Vici וSlushii. דיג'יים בינלאומיים במועדונים בבאלי מופיעים בערבים מיוחדים וכנסי EDM.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה די-ג'יים בינלאומיים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מועדונים ב{site.destinationName} מארחים את הדי-ג'יים הגדולים בעולם: Tiesto, Calvin Harris, Fisher, Adam Beyer ועוד. {site.destinationName} היא אחת מבירות המוזיקה האלקטרונית בעולם עם אירועים כל שבוע.</p>
         </details>
-        <details class="group border-b border-teal-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-teal-400 transition-colors">מה שתייה בעלות טובה במועדונים בבאלי?</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">מועדונים בבאלי מציעים גם כניסה עם שתייה כלולה. בחלק מהמועדונים בבאלי יש Bottle Service בקבוצות גדולות בעלות טובה יותר מאשר קוקטיילים בודדים.</p>
+        <details class="group border-b border-amber-500/10 pb-4">
+          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">מה שתייה בעלות טובה במועדונים ב{site.destinationName}?</summary>
+          <p class="mt-2 text-white/60 leading-relaxed">מועדונים ב{site.destinationName} מציעים Bottle Service לקבוצות — בקבוק מ-$300 ומעלה, משתלם יותר מקוקטיילים בודדים ($15-25 כל אחד). חלק מהמועדונים ב{site.destinationName} מציעים open bar בכניסה באירועים מיוחדים.</p>
         </details>
       </div>
     </section>
 
-    <div class="mt-10 bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
-      <p class="text-white/80 mb-4">רוצים המלצה למועדון בבאלי?</p>
+    <div class="mt-10 bg-[#1A1208] border border-amber-500/20 rounded-2xl p-6 text-center">
+      <p class="text-white/80 mb-4">רוצים המלצה למועדון ב{site.destinationName}?</p>
       <a
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מחפשים מועדון בבאלי 🎶')}`}
+        href={waUrl(`היי, אנחנו מחפשים מועדון ב${site.destinationName}`)}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"

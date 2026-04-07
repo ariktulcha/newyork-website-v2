@@ -67,7 +67,7 @@ const articleSchema = {
   publisher: {
     '@type': 'Organization',
     name: site.brand,
-    url: 'https://yalla-bali.co.il',
+    url: Astro.site?.toString() || `https://${site.domain}`,
   },
   ...(datePublished ? { datePublished: new Date(datePublished).toISOString() } : {}),
   ...(guide.updated_at ? { dateModified: new Date(guide.updated_at).toISOString() } : {}),
@@ -87,15 +87,15 @@ const faqItems = [
   },
   {
     q: `האם יש מידע נוסף על הנושא של המדריך?`,
-    a: `בוודאי! אתם יכולים לבקר בדף "מדריכים" כדי לראות את כל המאמרים שלנו, או לחפש בנושאים קשורים. יש לנו מאות עמודים של תוכן על באלי. אם אתם מחפשים מידע ספציפי, שלחו לנו הודעה בווטסאפ ונוכל להמליץ עליו.`,
+    a: `בוודאי! אתם יכולים לבקר בדף "מדריכים" כדי לראות את כל המאמרים שלנו, או לחפש בנושאים קשורים. יש לנו מאות עמודים של תוכן על ${site.destinationName}. אם אתם מחפשים מידע ספציפי, שלחו לנו הודעה בווטסאפ ונוכל להמליץ עליו.`,
   },
   {
     q: `איך אוכל להעתיק/להדפיס את המדריך?`,
     a: `אתם יכולים בחופשיות להעתיק ולהדפיס את המדריך לשימוש אישי. אנחנו רק מבקשים שתזכרו את ${site.brand} בעת שיתוף. אם אתם רוצים להשתמש בתוכן שלנו לצרכים מסחריים, אנא צרו איתנו קשר.`,
   },
   {
-    q: `אהבתם את המדריך? איך אוכל לתמוך ביאללה באלי?`,
-    a: `תודה על שאהבתם! הדרך הטובה ביותר לתמוך בנו היא לשתף את המדריך עם חברים, להשאיר ביקורת חיובית, או להשתמש בליכי ההפניה שלנו כשאתם מזמינים טיולים או מלונות. זה עוזר לנו רבות!`,
+    q: `אהבתם את המדריך? איך אוכל לתמוך ב${site.brandHe}?`,
+    a: `תודה על שאהבתם! הדרך הטובה ביותר לתמוך בנו היא לשתף את המדריך עם חברים, להשאיר ביקורת חיובית, או להשתמש בלינקי ההפניה שלנו כשאתם מזמינים טיולים או מלונות. זה עוזר לנו רבות!`,
   },
 ]
 ---
@@ -103,7 +103,7 @@ const faqItems = [
 <Layout
   title={pageTitle}
   description={pageDescription}
-  canonical={`https://yalla-bali.co.il/guides/${guide.slug}`}
+  canonical={new URL(`/guides/${guide.slug}`, Astro.site).toString()}
   ogImage={guide.image}
   ogType="article"
   schema={articleSchema}
@@ -174,10 +174,10 @@ const faqItems = [
 
     <!-- WhatsApp CTA -->
     <div class="bg-[#1A1208] border border-teal-500/20 rounded-2xl p-6 text-center">
-      <p class="text-white/80 mb-4">אהבתם את המדריך? יש לכם שאלות על באלי? נשמח לעזור!</p>
+      <p class="text-white/80 mb-4">אהבתם את המדריך? יש לכם שאלות על {site.destinationName}? נשמח לעזור!</p>
       <a
         dir="rtl"
-        href={`https://wa.me/972528211665?text=${encodeURIComponent('היי, אנחנו מתכננים טיול לבאלי ויש לנו שאלות 🌴')}`}
+        href={waUrl(`היי, אנחנו מתכננים טיול ל${site.destinationName} ויש לנו שאלות`)}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-full hover:bg-[#1ebe5d] transition-colors"

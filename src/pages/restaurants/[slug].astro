@@ -66,27 +66,23 @@ const breadcrumbItems = [
 ]
 
 // Distance & pricing estimates by area
-const areaDistancePricing: Record<string, { distance: string; grabPrice: string }> = {
-  'סמינייק': { distance: '15-20 ק"מ', grabPrice: '₪60-90' },
-  'seminyak': { distance: '15-20 ק"מ', grabPrice: '₪60-90' },
-  'קאנגו': { distance: '15-18 ק"מ', grabPrice: '₪60-85' },
-  'canggu': { distance: '15-18 ק"מ', grabPrice: '₪60-85' },
-  'אובוד': { distance: '25-30 ק"מ', grabPrice: '₪90-130' },
-  'ubud': { distance: '25-30 ק"מ', grabPrice: '₪90-130' },
-  'ג\'ימברן': { distance: '10-15 ק"מ', grabPrice: '₪50-75' },
-  'jimbaran': { distance: '10-15 ק"מ', grabPrice: '₪50-75' },
-  'אולוואטו': { distance: '18-22 ק"מ', grabPrice: '₪70-100' },
-  'uluwatu': { distance: '18-22 ק"מ', grabPrice: '₪70-100' },
-  'נוסה דואה': { distance: '12-17 ק"מ', grabPrice: '₪55-80' },
-  'nusa-dua': { distance: '12-17 ק"מ', grabPrice: '₪55-80' },
-  'סנור': { distance: '30-35 ק"מ', grabPrice: '₪110-150' },
-  'sanur': { distance: '30-35 ק"מ', grabPrice: '₪110-150' },
-  'קוטה': { distance: '13-16 ק"מ', grabPrice: '₪55-75' },
-  'kuta': { distance: '13-16 ק"מ', grabPrice: '₪55-75' },
+const areaDistancePricing: Record<string, { distance: string; taxiPrice: string }> = {
+  'מנהטן': { distance: '20-30 דק׳ במטרו', taxiPrice: '$30-60' },
+  'manhattan': { distance: '20-30 דק׳ במטרו', taxiPrice: '$30-60' },
+  'ברוקלין': { distance: '30-45 דק׳ במטרו', taxiPrice: '$40-70' },
+  'brooklyn': { distance: '30-45 דק׳ במטרו', taxiPrice: '$40-70' },
+  'מידטאון': { distance: '15-25 דק׳ במטרו', taxiPrice: '$25-50' },
+  'midtown': { distance: '15-25 דק׳ במטרו', taxiPrice: '$25-50' },
+  'קווינס': { distance: '35-50 דק׳ במטרו', taxiPrice: '$45-75' },
+  'queens': { distance: '35-50 דק׳ במטרו', taxiPrice: '$45-75' },
+  'סוהו': { distance: '25-35 דק׳ במטרו', taxiPrice: '$30-55' },
+  'soho': { distance: '25-35 דק׳ במטרו', taxiPrice: '$30-55' },
+  'האדסון יארדס': { distance: '20-30 דק׳ במטרו', taxiPrice: '$30-55' },
+  'hudson-yards': { distance: '20-30 דק׳ במטרו', taxiPrice: '$30-55' },
 }
 
 const areaKey = (restaurant.area || '').toLowerCase()
-const distancePricing = areaDistancePricing[areaKey] || { distance: '20-25 ק"מ', grabPrice: '₪70-100' }
+const distancePricing = areaDistancePricing[areaKey] || { distance: '25-40 דק׳ במטרו', taxiPrice: '$35-65' }
 
 const faqItems = [
   {
@@ -103,7 +99,7 @@ const faqItems = [
   },
   {
     q: `האם ${restaurant.name_he} פתוחה בשישי בלילה?`,
-    a: `כן, רוב המסעדות בבאלי פתוחות בימי שישי. לכן אנו ממליצים להזמין שולחן מראש כי הביקוש גבוה בערב זה. בדקו את שעות הפתיחה של ${restaurant.name_he} וודאו שהמסעדה פתוחה בשעה המועדפת עליכם.`,
+    a: `כן, רוב המסעדות ב${site.destinationName} פתוחות בימי שישי. לכן אנו ממליצים להזמין שולחן מראש כי הביקוש גבוה בערב זה. בדקו את שעות הפתיחה של ${restaurant.name_he} וודאו שהמסעדה פתוחה בשעה המועדפת עליכם.`,
   },
 ]
 
@@ -123,7 +119,7 @@ const related = allRestaurants ?? []
 <Layout
   title={pageTitle}
   description={pageDescription}
-  canonical={`https://yalla-bali.co.il/restaurants/${restaurant.slug}`}
+  canonical={new URL(`/restaurants/${restaurant.slug}`, Astro.site).toString()}
   ogImage={restaurant.image}
   ogType="article"
   schema={restaurantSchema}
@@ -149,7 +145,7 @@ const related = allRestaurants ?? []
     <div class="flex flex-wrap items-center gap-4 mb-8 text-sm">
       {(restaurant.area || address) && (
         <a
-          href={`https://maps.google.com/?q=${encodeURIComponent((address || restaurant.area || restaurant.name_he) + ', Bali')}`}
+          href={`https://maps.google.com/?q=${encodeURIComponent((address || restaurant.area || restaurant.name_he) + ', New York')}`}
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 text-white/70 hover:text-teal-400 transition-colors"
@@ -200,16 +196,16 @@ const related = allRestaurants ?? []
         <div class="flex items-start gap-3">
           <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
           <div>
-            <p class="font-medium text-white">מנמל התעופה Ngurah Rai (DPS)</p>
-            <p class="text-sm">מרחק משוער: <span class="text-white">{distancePricing.distance}</span></p>
+            <p class="font-medium text-white">מטרו (Subway)</p>
+            <p class="text-sm">זמן נסיעה משוער: <span class="text-white">{distancePricing.distance}</span></p>
           </div>
         </div>
         <div class="flex items-start gap-3">
           <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <div>
-            <p class="font-medium text-white">Grab/Gojek Taxi</p>
-            <p class="text-sm">משוער: <span class="text-white">{distancePricing.grabPrice}</span> להובלה מהנמל</p>
-            <p class="text-xs text-white/50 mt-1">* המחירים הם משוער בלבד. בדקו את היישום עבור תמחור חיוני.</p>
+            <p class="font-medium text-white">מונית / Uber / Lyft</p>
+            <p class="text-sm">משוער: <span class="text-white">{distancePricing.taxiPrice}</span> ממנהטן</p>
+            <p class="text-xs text-white/50 mt-1">* המחירים משוערים בלבד. בדקו באפליקציה למחיר מדויק.</p>
           </div>
         </div>
         {(address || restaurant.area) && (
@@ -218,7 +214,7 @@ const related = allRestaurants ?? []
             <div>
               <p class="font-medium text-white">Maps</p>
               <a
-                href={`https://maps.google.com/?q=${encodeURIComponent((address || restaurant.area || restaurant.name_he) + ', Bali')}`}
+                href={`https://maps.google.com/?q=${encodeURIComponent((address || restaurant.area || restaurant.name_he) + ', New York')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-teal-400 hover:text-teal-300 text-sm transition-colors"
@@ -276,16 +272,16 @@ const related = allRestaurants ?? []
 
     <div class="bg-gradient-to-br from-teal-900/20 to-teal-800/10 border border-teal-500/30 rounded-2xl p-8 text-center mt-16">
       <h3 class="text-2xl font-black text-teal-400 mb-3">מוכנים להזמין את {restaurant.name_he}? 🍽️</h3>
-      <p class="text-white/70 mb-6">למצוא מסעדה טובה בבאלי זה קל — אנחנו כאן כדי לעזור לכם להזמין, לתכנן את הטיול, או לתת המלצות נוספות.</p>
+      <p class="text-white/70 mb-6">למצוא מסעדה טובה ב{site.destinationName} זה קל — אנחנו כאן כדי לעזור לכם להזמין, לתכנן את הטיול, או לתת המלצות נוספות.</p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
         <a
           href="/tours"
           class="inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-[#0D0D0D] font-bold px-8 py-3 rounded-full transition-colors"
         >
-          🎯 טיולים בבאלי
+          🎯 טיולים ב{site.destinationName}
         </a>
         <a
-          href={`https://wa.me/972528211665?text=${encodeURIComponent(`היי, אנחנו רוצים להזמין את ${restaurant.name_he} בבאלי 🍽️`)}`}
+          href={waUrl(`היי, אנחנו רוצים להזמין את ${restaurant.name_he} ב${site.destinationName}`)}
           target="_blank"
           rel="noopener noreferrer"
           dir="rtl"
