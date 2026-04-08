@@ -15,7 +15,7 @@ const { data } = await supabaseAdmin
 const items = (data || []).filter(a => a.is_free === true || a.price_range === 'חינם' || a.price_range === 'free')
 
 const pageTitle = `אטרקציות חינם ב${site.destinationName} | ${site.brand}`
-const pageDescription = `אטרקציות חינם ב${site.destinationName} שאפשר ליהנות מהן ללא תשלום. פארקים, מוזיאונים, גשרים, שווקים ועוד — חוויות בחינם ב${site.destinationName}.`
+const pageDescription = `אטרקציות חינם בניו יורק — סנטרל פארק, גשר בורוקלין, שווקים, מהלכים על גדות ירידות וקוים גבוהות ללא תשלום. חוויות מעולות בחינם בניו יורק.`
 
 const itemListSchema = {
   '@context': 'https://schema.org',

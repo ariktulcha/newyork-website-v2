@@ -11,7 +11,7 @@ const LUXURY_BRANDS = ['Four Seasons', 'Mandarin', 'Waldorf', 'Raffles', 'One&On
 const items = (data || []).filter(h => h.star_rating >= 5 || LUXURY_BRANDS.some(b => (h.name_he || '').includes(b) || (h.name_en || '').includes(b)))
 
 const pageTitle = `מלונות יוקרה ב${site.destinationName} | ${site.brand}`
-const pageDescription = `מלונות היוקרה המובילים ב${site.destinationName}. סוויטות מפוארות, ספא עולמי ושירות אישי במנהטן.`
+const pageDescription = `מלונות יוקרה בניו יורק עם סוויטות מפוארות, ספא עולמיים ושירות אישי מעולה. Four Seasons, Mandarin Oriental, St. Regis, Peninsula, Bulgari וברירות יוקרתיות נוספות.`
 
 const itemListSchema = { '@context': 'https://schema.org', '@type': 'ItemList', name: `מלונות יוקרה ב${site.destinationName}`, description: pageDescription, numberOfItems: items.length, itemListElement: items.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.name_he, url: new URL(`/hotels/${item.slug}`, `https://${site.domain}`).toString() })) }
 const breadcrumbItems = [{ label: 'דף הבית', href: '/' }, { label: 'מלונות', href: '/hotels' }, { label: 'מלונות יוקרה' }]
