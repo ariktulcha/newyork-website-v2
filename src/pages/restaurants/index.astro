@@ -2,37 +2,52 @@
 import Layout from '../../components/Layout.astro'
 import RestaurantCard from '../../components/Cards/RestaurantCard.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../../lib/supabase'
+import { optimizedImageUrl } from '../../lib/image'
 
-const { data: items } = await supabaseAdmin
+const { data: categoryRows } = await supabaseAdmin
+  .from('category_pages')
+  .select('slug, title, subtitle, description, hero_image_url, source_category_field, source_category_value, sort_order')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('source_table', 'restaurants')
+  .eq('published', true)
+  .order('sort_order', { ascending: true })
+
+const categories = categoryRows ?? []
+
+async function countForCategory(cat: typeof categories[number]): Promise<number> {
+  const base = supabaseAdmin
+    .from('restaurants')
+    .select('slug', { count: 'exact', head: true })
+    .eq('destination_id', DESTINATION_ID)
+    .eq('published', true)
+  if (cat.source_category_field === 'area') {
+    const values = cat.source_category_value.split('|').map(v => v.trim()).filter(Boolean)
+    const orClause = values.map(v => `area.ilike.%${v}%`).join(',')
+    const { count } = await base.or(orClause)
+    return count ?? 0
+  }
+  const { count } = await base.eq(cat.source_category_field, cat.source_category_value)
+  return count ?? 0
+}
+
+const withCounts = await Promise.all(
+  categories.map(async c => ({ ...c, count: await countForCategory(c) }))
+)
+
+const areaCategories = withCounts.filter(c => c.source_category_field === 'area')
+const cuisineCategories = withCounts.filter(c => c.source_category_field !== 'area')
+
+const { data: allRestaurants } = await supabaseAdmin
   .from('restaurants')
-  .select('name_he, name_en, slug, image, area, cuisine_types, price_range, rating, excerpt')
+  .select('name_he, name_en, slug, image, area, cuisine_types, price_range, rating')
   .eq('destination_id', DESTINATION_ID)
   .eq('published', true)
   .order('name_he')
 
-const restaurants = items || []
+const restaurants = allRestaurants ?? []
 
-const title = 'מסעדות בניו יורק — המדריך המלא | Yalla NY'
-const description = 'מדריך מסעדות בניו יורק: 90+ מסעדות כשרות, יפניות, בשרים, פיין דיינינג ועוד. המלצות אמיתיות עם כתובות, מחירים, ציוני דרך וודרוג.'
-
-// Category pages (real URLs for SEO)
-const categoryLinks = [
-  { label: '🌿 ורונג׳', href: '/restaurants/?area=all&type=warung' },
-  { label: '🐟 פירות ים', href: '/restaurants/?area=all&type=seafood' },
-  { label: '🥗 טבעוני', href: '/restaurants/?area=all&type=vegan' },
-  { label: '💎 פיין דיינינג', href: '/restaurants/fine-dining/' },
-]
-
-// Client-side filter categories (by area and cuisine type)
-const categories = [
-  { label: 'הכל', key: 'all' },
-  { label: '🗽 מנהטן', key: 'manhattan', match: ['manhattan', 'מנהטן'] },
-  { label: '🌉 ברוקלין', key: 'brooklyn', match: ['brooklyn', 'ברוקלין'] },
-  { label: '🏙️ מידטאון', key: 'midtown', match: ['midtown', 'מידטאון'] },
-  { label: '🎭 סוהו', key: 'soho', match: ['soho', 'סוהו'] },
-  { label: '🌇 צ׳לסי', key: 'chelsea', match: ['chelsea', 'צ׳לסי'] },
-  { label: '🏛️ וויליאמסבורג', key: 'williamsburg', match: ['williamsburg', 'וויליאמסבורג'] },
-]
+const title = 'מסעדות בניו יורק — עמודי קטגוריה לפי איזור וסגנון | WeNewYorker'
+const description = `${restaurants.length} מסעדות בניו יורק בעברית — לפי בורו (מנהטן, ברוקלין, קווינס, ברונקס, סטייטן איילנד) ולפי סגנון אוכל (איטלקי, פיצה, אסיאתי, כשר, סטייקים ועוד).`
 
 const schemaItemList = {
   '@context': 'https://schema.org',
@@ -56,12 +71,6 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 2, name: 'מסעדות' },
   ],
 }
-
-// Attach cuisines as data-attribute values (for JS filter)
-const restaurantsWithData = restaurants.map(r => ({
-  ...r,
-  cuisineData: JSON.stringify(r.cuisine_types || []),
-}))
 ---
 
 <Layout title={title} description={description}>
@@ -78,108 +87,122 @@ const restaurantsWithData = restaurants.map(r => ({
       </nav>
       <h1 class="text-4xl md:text-5xl font-black mb-4">מסעדות בניו יורק</h1>
       <p class="text-lg text-white/60 max-w-2xl mx-auto">
-        ניו יורק מארחת מעל 27,000 מסעדות — ממישלן עד מזון רחוב מושלם.
-        צאו למסעדת יפנית מובילה בעולם, ביסטרו צרפתי אלגנטי, או סטייק האוס אגדי בניו יורק.
-        כל מטבח בעולם בתוך העיר: יהודי כשר, איטלקי אותנטי, מזרח תיכוני מסורתי וקולינריה מתקדמת.
+        {restaurants.length} מסעדות מומלצות לישראלים בניו יורק — לפי בורו (מנהטן, ברוקלין, קווינס, ברונקס, סטייטן איילנד) ולפי סגנון אוכל. כל עמוד עם המלצות, כתובות, מחירים ושעות פתיחה.
       </p>
-      <p class="mt-3 text-teal-400 font-medium" id="restaurant-count">{restaurants.length} מסעדות</p>
     </div>
   </section>
 
-  <!-- Category Links (SEO pages) + Filter Pills -->
-  <div class="sticky top-0 z-30 bg-[#0D0D0D]/95 backdrop-blur-sm border-b border-teal-500/10">
-    <div class="max-w-6xl mx-auto px-4 py-3 overflow-x-auto scrollbar-hide">
-      <div class="flex gap-2 min-w-max" dir="rtl">
-        <span class="px-4 py-2 rounded-full text-sm font-bold bg-teal-500 text-black">הכל</span>
-        {categoryLinks.map((cat) => (
+  <!-- By Area -->
+  {areaCategories.length > 0 && (
+    <section class="max-w-6xl mx-auto px-4 py-12">
+      <header class="mb-6">
+        <h2 class="text-2xl md:text-3xl font-black text-white border-r-4 border-teal-500 pr-4">
+          מסעדות בניו יורק לפי איזור
+        </h2>
+        <p class="text-white/50 mt-2 pr-5 text-sm">בחרו את הבורו שבו אתם שוהים — כל איזור בניו יורק מציע סצנת מסעדות שונה.</p>
+      </header>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {areaCategories.map(cat => (
           <a
-            href={cat.href}
-            class="px-4 py-2 rounded-full text-sm font-medium bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap"
+            href={`/restaurants/${cat.slug}/`}
+            class="group relative block overflow-hidden rounded-2xl border border-teal-500/10 hover:border-teal-500/40 bg-[#1A1208] transition-all card-lift aspect-[16/10]"
           >
-            {cat.label}
+            {cat.hero_image_url ? (
+              <img
+                src={optimizedImageUrl(cat.hero_image_url, 600)}
+                alt={cat.title}
+                loading="lazy"
+                decoding="async"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div class="absolute inset-0 bg-gradient-to-br from-teal-500/20 to-teal-900/40"></div>
+            )}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+            <div class="relative h-full flex flex-col justify-end p-5">
+              <h3 class="text-xl md:text-2xl font-black text-white group-hover:text-teal-400 transition-colors">
+                {cat.title}
+              </h3>
+              {cat.subtitle && (
+                <p class="text-white/70 text-sm mt-1 line-clamp-2">{cat.subtitle}</p>
+              )}
+              <div class="mt-3 flex items-center gap-2 text-teal-400 text-sm font-bold">
+                <span>{cat.count} מסעדות</span>
+                <span>←</span>
+              </div>
+            </div>
           </a>
         ))}
-        {categories.filter(c => c.key !== 'all').map((cat) => (
-          <button
-            class="category-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
-            data-category={cat.key}
-            data-match={JSON.stringify(cat.match)}
-          >
-            {cat.label}
-          </button>
-        ))}
       </div>
-    </div>
-  </div>
+    </section>
+  )}
 
-  <!-- Grid -->
-  <section class="max-w-6xl mx-auto px-4 py-8 pb-20">
-    {restaurants.length > 0 ? (
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="restaurants-grid">
-        {restaurantsWithData.map((restaurant) => (
-          <div
-            class="restaurant-item"
-            data-cuisines={restaurant.cuisineData}
+  <!-- By Cuisine -->
+  {cuisineCategories.length > 0 && (
+    <section class="max-w-6xl mx-auto px-4 py-12 border-t border-white/5">
+      <header class="mb-6">
+        <h2 class="text-2xl md:text-3xl font-black text-white border-r-4 border-teal-500 pr-4">
+          מסעדות בניו יורק לפי סגנון אוכל
+        </h2>
+        <p class="text-white/50 mt-2 pr-5 text-sm">מאיטלקי אותנטי עד פיצה ניו־יורקית וסטייקים קלאסיים — בחרו את הסגנון שאתם בקטע שלו.</p>
+      </header>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {cuisineCategories.map(cat => (
+          <a
+            href={`/restaurants/${cat.slug}/`}
+            class="group relative block overflow-hidden rounded-xl border border-teal-500/10 hover:border-teal-500/40 bg-[#1A1208] transition-all card-lift aspect-square"
           >
-            <RestaurantCard {...restaurant} />
-          </div>
+            {cat.hero_image_url ? (
+              <img
+                src={optimizedImageUrl(cat.hero_image_url, 400)}
+                alt={cat.title}
+                loading="lazy"
+                decoding="async"
+                class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-80"
+              />
+            ) : (
+              <div class="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-teal-900/20"></div>
+            )}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+            <div class="relative h-full flex flex-col justify-end p-4">
+              <h3 class="text-base md:text-lg font-black text-white group-hover:text-teal-400 transition-colors line-clamp-2">
+                {cat.title}
+              </h3>
+              <div class="mt-1.5 text-teal-400 text-xs font-bold">
+                {cat.count} מסעדות ←
+              </div>
+            </div>
+          </a>
         ))}
       </div>
-      <p class="text-center text-white/30 py-8 hidden" id="no-results">לא נמצאו מסעדות בקטגוריה זו</p>
+    </section>
+  )}
+
+  <!-- Full archive list (no filters) -->
+  <section class="max-w-6xl mx-auto px-4 py-12 border-t border-white/5 pb-20">
+    <header class="mb-6">
+      <h2 class="text-2xl md:text-3xl font-black text-white border-r-4 border-teal-500 pr-4">
+        כל המסעדות ({restaurants.length})
+      </h2>
+      <p class="text-white/50 mt-2 pr-5 text-sm">לא רוצים לבחור לפי קטגוריה? הנה הרשימה המלאה בסדר אלפביתי.</p>
+    </header>
+    {restaurants.length > 0 ? (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {restaurants.map(r => (
+          <RestaurantCard
+            name_he={r.name_he}
+            name_en={r.name_en}
+            slug={r.slug}
+            image={r.image}
+            area={r.area}
+            cuisine_types={r.cuisine_types}
+            price_range={r.price_range}
+            rating={r.rating}
+          />
+        ))}
+      </div>
     ) : (
       <p class="text-center text-white/40 py-12">לא נמצאו מסעדות כרגע.</p>
     )}
   </section>
 </Layout>
-
-<style>
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-</style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const pills = document.querySelectorAll<HTMLButtonElement>('.category-pill')
-    const items = document.querySelectorAll<HTMLElement>('.restaurant-item')
-    const countEl = document.getElementById('restaurant-count')
-    const noResults = document.getElementById('no-results')
-
-    // Pre-parse data once instead of on every click
-    const itemCuisines = new Map<HTMLElement, string[]>()
-    items.forEach(item => {
-      itemCuisines.set(item, JSON.parse(item.dataset.cuisines || '[]'))
-    })
-    const pillMatches = new Map<HTMLButtonElement, string[]>()
-    pills.forEach(pill => {
-      const raw = pill.dataset.match
-      pillMatches.set(pill, raw ? JSON.parse(raw) : [])
-    })
-
-    pills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        pills.forEach(p => {
-          p.classList.remove('bg-teal-500', 'text-black')
-          p.classList.add('bg-white/5', 'text-white/60')
-        })
-        pill.classList.remove('bg-white/5', 'text-white/60')
-        pill.classList.add('bg-teal-500', 'text-black')
-
-        const category = pill.dataset.category
-        const matchTerms = pillMatches.get(pill) || []
-
-        let visible = 0
-        items.forEach(item => {
-          const cuisines = itemCuisines.get(item) || []
-          const show = category === 'all' || matchTerms.some(term =>
-            cuisines.some(c => c.toLowerCase().includes(term.toLowerCase()))
-          )
-          item.style.display = show ? '' : 'none'
-          if (show) visible++
-        })
-
-        if (countEl) countEl.textContent = `${visible} מסעדות`
-        if (noResults) noResults.classList.toggle('hidden', visible > 0)
-      })
-    })
-  })
-</script>
