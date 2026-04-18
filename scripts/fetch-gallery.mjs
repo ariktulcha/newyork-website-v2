@@ -20,7 +20,7 @@ const SUPABASE_URL   = 'https://nsfmucsdxhcywisejxxq.supabase.co'
 const SUPABASE_KEY   = process.env.SUPABASE_SERVICE_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZm11Y3NkeGhjeXdpc2VqeHhxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDMzOTAwNywiZXhwIjoyMDg5OTE1MDA3fQ.xwTYYmf4r0fd_u8q5RQpNYCnygROD8BA0vY20ehkrBc'
 const GOOGLE_KEY     = process.env.GOOGLE_PLACES_KEY
-const DESTINATION_ID = 'bali'
+const DESTINATION_ID = process.env.DESTINATION_ID || 'new-york'
 const PHOTOS_COUNT   = 4           // photos per place (+ main image = 5 total)
 const BUCKET         = 'place-photos'
 const MAX_WIDTH      = 1200        // photo width in pixels

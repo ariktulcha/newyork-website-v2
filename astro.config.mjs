@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap'
 
 export default defineConfig({
   output: 'static',
-  site: 'https://yalla-ny.co.il',
+  site: 'https://wenewyorker.com',
   trailingSlash: 'ignore',
   compressHTML: true,
   prefetch: {

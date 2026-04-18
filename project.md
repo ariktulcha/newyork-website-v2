@@ -4,7 +4,7 @@
 **Name:** יאללה ניו יורק
 **Language:** Hebrew
 **Target Audience:** Israeli travelers
-**Domain:** https://yalla-ny.co.il
+**Domain:** https://wenewyorker.com
 **Supabase Destination ID:** newyork
 
 ---

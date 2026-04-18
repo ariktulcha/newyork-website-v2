@@ -8,7 +8,7 @@ const { data: items } = await supabaseAdmin
   .select('name_he, name_en, slug, image, area, excerpt, price_range, is_free, family_friendly, category')
   .eq('destination_id', DESTINATION_ID)
   .eq('published', true)
-  .order('name_he')
+  .order('sort_order', { ascending: true })
 
 const attractions = items || []
 

@@ -32,18 +32,38 @@ const contentHtml = area.full_content ? await marked(area.full_content) : ''
 const pageTitle = `${area.name_he}${area.name_en ? ` — ${area.name_en}` : ''} | אזורים ב${site.destinationName} | ${site.brand}`
 const pageDescription = pickMetaDescription(area, `אזור ב${site.destinationName}`)
 
+const latitude = area.latitude ?? area.metadata?.latitude ?? area.metadata?.lat
+const longitude = area.longitude ?? area.metadata?.longitude ?? area.metadata?.lng
+
+const areaImageUrl = area.image
+  ? (area.image.startsWith('http') ? area.image : new URL(area.image, Astro.site).toString())
+  : undefined
+
 const placeSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Place',
+  '@type': 'TouristDestination',
   name: area.name_he,
   alternateName: area.name_en || undefined,
   description: area.description || area.excerpt,
-  image: area.image || undefined,
+  image: areaImageUrl,
   url: new URL(`/areas/${area.slug}`, Astro.site).toString(),
+  touristType: 'Hebrew speakers',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'New York',
+    addressRegion: 'NY',
     addressCountry: 'US',
+  },
+  ...(latitude && longitude ? {
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude,
+      longitude,
+    }
+  } : {}),
+  containedInPlace: {
+    '@type': 'City',
+    name: 'New York City',
   },
 }
 

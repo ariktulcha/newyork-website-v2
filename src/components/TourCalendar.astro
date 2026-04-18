@@ -39,7 +39,7 @@ const calendarTours = tours.map(t => {
   return {
     slug: t.slug,
     name: t.name_he,
-    base_price: typeof price === 'number' ? price : 0,
+    base_price: typeof price === 'number' ? price : (parseFloat(price) || null),
     schedule: {
       default_time: schedule?.default_time ?? '10:00',
       available_days: schedule?.available_days ?? [0, 1, 2, 3, 4, 5, 6],
@@ -240,10 +240,10 @@ const calendarTours = tours.map(t => {
             '</span>' +
           '</div>' +
         '</div>' +
-        '<div class="text-left">' +
+        (tour.base_price ? '<div class="text-left">' +
           '<span class="text-lg font-bold text-teal-400">$' + tour.base_price + '</span>' +
           '<span class="text-white/40 text-sm mr-1">\u05dc\u05d0\u05d3\u05dd</span>' +
-        '</div>';
+        '</div>' : '');
       selectedList.appendChild(card);
     });
   }

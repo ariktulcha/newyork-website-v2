@@ -13,8 +13,13 @@ interface Props {
 
 const { mainImage, galleryUrls = [], name } = Astro.props
 
+// Filter out invalid URLs (empty strings, just extensions like ".webp", missing slashes)
+const validUrls = galleryUrls.filter(
+  (u) => typeof u === 'string' && u.length > 5 && (u.startsWith('http') || u.startsWith('/'))
+)
+
 // Show at most 4 gallery photos beyond main
-const photos = galleryUrls.slice(0, 4)
+const photos = validUrls.slice(0, 4)
 const hasGallery = photos.length >= 2
 const totalPhotos = (mainImage ? 1 : 0) + photos.length
 ---

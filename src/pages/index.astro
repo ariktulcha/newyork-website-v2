@@ -1,30 +1,21 @@
 ---
 import Layout from '../components/Layout.astro'
+import FAQAccordion from '../components/FAQAccordion.astro'
 import SchemaOrg from '../components/SchemaOrg.astro'
-import { supabaseAdmin, DESTINATION_ID } from '../lib/supabase'
-import { site, waUrl } from '../config/site'
+import tours from '../data/tours.json'
+import neighborhoods from '../data/neighborhoods.json'
+import attractions from '../data/attractions.json'
+import broadway from '../data/broadway.json'
+import blogArticles from '../data/blog-articles.json'
+import restaurantsList from '../data/restaurants-ny-list.json'
 
-const { data: attractions } = await supabaseAdmin.from('attractions').select('name_he, slug, image, rating, price, excerpt').eq('destination_id', DESTINATION_ID).eq('published', true).limit(6)
-const { data: tours } = await supabaseAdmin.from('tours').select('name, slug, image, base_price, rating, review_count, duration_minutes, short_description, includes').eq('destination_id', DESTINATION_ID).eq('published', true).limit(3)
-const { data: hotels } = await supabaseAdmin.from('hotels').select('name_he, slug, image, rating, area').eq('destination_id', DESTINATION_ID).eq('published', true).limit(4)
-const { data: areas } = await supabaseAdmin.from('areas').select('name_he, slug, image, excerpt').eq('destination_id', DESTINATION_ID).eq('published', true).limit(6)
-const { data: restaurants } = await supabaseAdmin.from('restaurants').select('name_he, slug, image, area, cuisine_types, price_range').eq('destination_id', DESTINATION_ID).eq('published', true).limit(6)
-const { data: guides } = await supabaseAdmin.from('guides').select('name_he, slug, image, excerpt').eq('destination_id', DESTINATION_ID).eq('published', true).limit(3)
-
-const featuredAttractions = attractions ?? []
-const featuredTours = tours ?? []
-const featuredHotels = hotels ?? []
-const featuredAreas = areas ?? []
-const featuredRestaurants = restaurants ?? []
-const featuredGuides = guides ?? []
-
-const categories = [
-  { label: 'סיורים', icon: '🎒', href: '/tours', desc: 'סיורים בעברית במנהטן וברוקלין' },
-  { label: 'אטרקציות', icon: '🗽', href: '/attractions', desc: 'מרכז הכובד, סנטרל פארק ועוד' },
-  { label: 'מלונות', icon: '🏨', href: '/hotels', desc: 'בוטיק, יוקרה ומשפחתי' },
-  { label: 'מסעדות', icon: '🍽️', href: '/restaurants', desc: 'פיצה, בייגלים, סטייקים ועוד' },
-  { label: 'חיי לילה', icon: '🌙', href: '/nightlife', desc: 'ברים, מועדונים ורופטופ' },
-  { label: 'שכונות', icon: '🗺️', href: '/areas', desc: 'מנהטן, ברוקלין, קווינס ועוד' },
+const homepageFAQ = [
+  { q: 'כמה עולה סיור?', a: 'הסיורים שלנו מתחילים מ-$59 לאדם. סיור האוכל הוא $79 וכולל את כל הטעימות. יש גם מבצע חבילה של מנהטן + ברוקלין ב-$100 במקום $118.' },
+  { q: 'איפה נפגשים?', a: 'לכל סיור יש נקודת מפגש מרכזית ונגישה בתחבורה ציבורית. סיור מנהטן — טיימס סקוור. סיור ברוקלין — תחנת York Street. סיור אוכל — Lower East Side. המדריך מחכה עם שלט WeNewYorker.' },
+  { q: 'מה קורה אם יורד גשם?', a: 'הסיור מתקיים בכל מזג אוויר. במקרה של סופה חזקה, ניצור קשר להציע מועד חלופי או החזר מלא.' },
+  { q: 'מה מדיניות הביטולים?', a: 'ביטול עד 48 שעות לפני הסיור — החזר מלא. ביטול עד 24 שעות — החזר של 50%. פחות מ-24 שעות — ללא החזר.' },
+  { q: 'האם הסיור מתאים לילדים?', a: 'בהחלט! הסיורים מתאימים לכל הגילאים. ילדים עד גיל 5 נכנסים חינם, ילדים מגיל 6 עד 12 מקבלים 50% הנחה.' },
+  { q: 'אפשר להזמין סיור פרטי?', a: 'כן! אנחנו מציעים סיורים פרטיים לזוגות, משפחות וקבוצות. המחיר מותאם לגודל הקבוצה. צרו קשר לפרטים.' },
 ]
 
 const testimonials = [
@@ -33,456 +24,459 @@ const testimonials = [
     name: 'מיכל ואורי',
     city: 'תל אביב',
     tour: 'סיור מנהטן',
-    date: 'ינואר 2026',
+    date: 'ינואר 2025',
   },
   {
     text: 'סיור האוכל היה חוויה בלתי נשכחת. יצאנו שבעים ומאושרים. הבייגל ב-Russ & Daughters שינה לנו את החיים. תודה!',
     name: 'דנה כהן',
     city: 'רעננה',
     tour: 'סיור אוכל',
-    date: 'דצמבר 2025',
+    date: 'דצמבר 2024',
   },
   {
-    text: 'ברוקלין פשוט עולם אחר. הגרפיטי, האווירה, האנשים - המדריך הראה לנו את הברוקלין האמיתית. כבר רוצים לחזור!',
+    text: 'ברוקלין פשוט עולם אחר. הגרפיטי, האווירה, האנשים — המדריך הראה לנו את הברוקלין האמיתית. כבר רוצים לחזור!',
     name: 'יוסי לוי',
     city: 'ירושלים',
     tour: 'סיור ברוקלין',
-    date: 'פברואר 2026',
+    date: 'פברואר 2025',
   },
 ]
 
-const homepageFAQ = [
-  { q: 'כמה עולה סיור בעברית בניו יורק?', a: 'הסיורים שלנו מתחילים מ-$59 לאדם. סיור האוכל הוא $79 וכולל את כל הטעימות. יש גם מבצע חבילה של מנהטן + ברוקלין ב-$100 במקום $118.' },
-  { q: 'איפה נפגשים לסיור בניו יורק?', a: 'לכל סיור יש נקודת מפגש מרכזית ונגישה בתחבורה ציבורית. סיור מנהטן - טיימס סקוור. סיור ברוקלין - תחנת York Street. סיור אוכל - Lower East Side.' },
-  { q: 'מה קורה אם יורד גשם בניו יורק?', a: 'הסיור מתקיים בכל מזג אוויר. במקרה של סופה חזקה, ניצור קשר להציע מועד חלופי או החזר מלא.' },
-  { q: 'מה מדיניות הביטולים?', a: 'ביטול עד 48 שעות לפני הסיור - החזר מלא. ביטול עד 24 שעות - החזר של 50%. פחות מ-24 שעות - ללא החזר.' },
-  { q: 'האם הסיור בניו יורק מתאים לילדים?', a: 'בהחלט! הסיורים מתאימים לכל הגילאים. ילדים עד גיל 5 נכנסים חינם, ילדים מגיל 6 עד 12 מקבלים 50% הנחה.' },
-  { q: 'אפשר להזמין סיור פרטי בניו יורק?', a: 'כן! אנחנו מציעים סיורים פרטיים לזוגות, משפחות וקבוצות. המחיר מותאם לגודל הקבוצה. צרו קשר לפרטים.' },
+const activeTours = (tours as any[])
+  .filter((t) => t.status === 'active')
+  .sort((a, b) => (a.tours_orders || 0) - (b.tours_orders || 0))
+
+const totalArticles = (blogArticles as any[]).length
+const totalNeighborhoods = (neighborhoods as any[]).length
+const totalAttractions = (attractions as any[]).length
+
+const restaurantCategories = [
+  { href: '/restaurants/coffee/', emoji: '☕', label: 'בתי קפה', count: 32 },
+  { href: '/restaurants/italian/', emoji: '🍝', label: 'איטלקי', count: 14 },
+  { href: '/restaurants/asian/', emoji: '🍜', label: 'אסיאתי', count: 14 },
+  { href: '/restaurants/steaks/', emoji: '🥩', label: 'בשרים', count: 11 },
+  { href: '/restaurants/luxury/', emoji: '⭐', label: 'יוקרה', count: 10 },
 ]
 
-const websiteSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: site.brand,
-  url: `https://${site.domain}`,
-  description: site.taglineHe,
-  inLanguage: 'he',
-}
-
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: site.brand,
-  url: `https://${site.domain}`,
-  description: site.taglineHe,
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
-    availableLanguage: ['Hebrew', 'English'],
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: 'WeNewYorker', url: 'https://wenewyorker.co.il', description: 'המדריך המלא לניו יורק בעברית', inLanguage: 'he' },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'תוכן מומלץ',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'סיורים בעברית בניו יורק', url: 'https://wenewyorker.co.il/tours/' },
+      { '@type': 'ListItem', position: 2, name: 'שכונות ניו יורק', url: 'https://wenewyorker.co.il/areas/' },
+      { '@type': 'ListItem', position: 3, name: 'אטרקציות בניו יורק', url: 'https://wenewyorker.co.il/attractions/' },
+      { '@type': 'ListItem', position: 4, name: 'ברודווי ניו יורק', url: 'https://wenewyorker.co.il/broadway/' },
+      { '@type': 'ListItem', position: 5, name: 'בלוג ניו יורק', url: 'https://wenewyorker.co.il/guides/' },
+    ],
   },
-}
-
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: homepageFAQ.map(item => ({
-    '@type': 'Question',
-    name: item.q,
-    acceptedAnswer: { '@type': 'Answer', text: item.a },
-  })),
-}
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: homepageFAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+]
 ---
 
 <Layout
-  title={`${site.brandHe} - סיורים בעברית ב${site.destinationName} | המדריך המלא 2026`}
-  description={`סיורים בעברית ב${site.destinationName} עם מדריכים ישראלים. אטרקציות, מלונות, מסעדות, ברודווי, שכונות ומדריכים מפורטים. להתאהב בעיר דרך עיניים מקומיות.`}
-  canonical={`https://${site.domain}`}
+  title="WeNewYorker | המדריך המלא לניו יורק בעברית 2026"
+  description="WeNewYorker - המדריך המלא לניו יורק בעברית. סיורים בעברית, שכונות, אטרקציות, ברודווי, מסעדות ועוד. כל מה שצריך לטיול מושלם בעיר הגדולה."
+  canonical="https://wenewyorker.co.il"
+  ogImage="/images/heroes/hero-newyork.webp"
+  schema={schema}
 >
-  <SchemaOrg schema={[websiteSchema, organizationSchema, faqSchema]} />
+  <div class="home-wrapper bg-[#1A0A1F]">
 
-  <!-- HERO -->
-  <section class="relative min-h-[70vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 opacity-20">
-      <div class="absolute inset-0 bg-[url('/images/heroes/hero-newyork.webp')] bg-cover bg-center"></div>
-    </div>
-    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-[#0D0D0D]"></div>
-
-    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
-      <!-- Social proof badge -->
-      <div class="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-500/30 rounded-full px-4 py-2 mb-6">
-        <span class="text-amber-400 text-sm font-bold">למעלה מ-1,000 מטיילים טיילו איתנו</span>
+    <!-- 1. HERO -->
+    <section class="relative min-h-[70vh] md:min-h-[85vh] flex items-center justify-center bg-gradient-to-b from-[#2D1B3D] to-[#1A0A1F] overflow-hidden">
+      <div class="absolute inset-0 opacity-20">
+        <div class="absolute inset-0 bg-[url('/images/heroes/hero-newyork.webp')] bg-cover bg-center"></div>
       </div>
+      <div class="absolute inset-0 home-dots-pattern opacity-10"></div>
 
-      <h1 class="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 leading-[1.1]">
-        סיורים בעברית ב{site.destinationName}
-      </h1>
-      <p class="text-2xl md:text-3xl font-bold mb-8 leading-relaxed">
-        <span class="text-amber-400">להתאהב בעיר דרך עיניים מקומיות</span>
-      </p>
+      <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+        <h1 class="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 leading-[1.1]">
+          סיורים בעברית בניו יורק
+        </h1>
+        <p class="text-2xl md:text-3xl font-bold mb-8 leading-relaxed">
+          <span class="home-gradient-text">להתאהב בעיר דרך עיניים מקומיות</span>
+        </p>
 
-      <div class="flex flex-col items-center gap-4">
-        <a
-          href="/tours"
-          class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25"
-        >
-          בחרו סיור והצטרפו אלינו
-        </a>
-        <a
-          href="/plan"
-          class="text-amber-400 hover:text-amber-300 transition-colors text-sm font-medium"
-        >
-          או תכננו לבד עם המדריכים שלנו
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- QUICK STATS -->
-  <section class="border-y border-amber-500/10 bg-[#1A1208]/50 py-8">
-    <div class="max-w-5xl mx-auto px-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        <div>
-          <div class="text-3xl font-black text-amber-400">{featuredAttractions.length}+</div>
-          <div class="text-white/50 text-sm mt-1">אטרקציות</div>
-        </div>
-        <div>
-          <div class="text-3xl font-black text-amber-400">{featuredHotels.length}+</div>
-          <div class="text-white/50 text-sm mt-1">מלונות מומלצים</div>
-        </div>
-        <div>
-          <div class="text-3xl font-black text-amber-400">{featuredTours.length}</div>
-          <div class="text-white/50 text-sm mt-1">סיורים בעברית</div>
-        </div>
-        <div>
-          <div class="text-3xl font-black text-amber-400">{featuredAreas.length}+</div>
-          <div class="text-white/50 text-sm mt-1">שכונות לגלות</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CATEGORIES -->
-  <section class="max-w-7xl mx-auto px-4 py-16 md:py-24">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
-        מה <span class="text-amber-400">לעשות ב{site.destinationName}</span>
-      </h2>
-      <p class="text-white/40 max-w-2xl mx-auto">סיורים בעברית, אטרקציות, מסעדות, ברודווי, חיי לילה ועוד</p>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {categories.map((cat) => (
-        <a href={cat.href} class="group relative p-6 rounded-2xl bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1 text-center">
-          <span class="text-4xl mb-3 block">{cat.icon}</span>
-          <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors mb-1">{cat.label}</h3>
-          <p class="text-white/40 text-xs">{cat.desc}</p>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- TOURS -->
-  {featuredTours.length > 0 && (
-    <section class="py-16 md:py-24">
-      <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-end justify-between mb-12">
-          <div>
-            <h2 class="text-3xl md:text-4xl font-black text-white mb-2">
-              סיורים <span class="text-amber-400">בעברית ב{site.destinationName}</span>
-            </h2>
-            <p class="text-white/40">סיורים מודרכים בעברית עם מדריכים ישראלים שגרים ב{site.destinationName}</p>
-          </div>
-          <a href="/tours" class="hidden md:inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-sm transition-colors">
-            כל הסיורים
-            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        <div class="flex flex-col items-center gap-4">
+          <a
+            href="/tours"
+            class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-emerald-500/25"
+          >
+            בחרו סיור והצטרפו אלינו
           </a>
-        </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredTours.map((tour: any) => (
-            <a href={`/tours/${tour.slug}`} class="group rounded-2xl overflow-hidden bg-[#1A1208] border border-amber-500/10 hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1 flex flex-col">
-              <div class="relative h-48 overflow-hidden">
-                {tour.image ? (
-                  <img src={tour.image} alt={tour.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                ) : (
-                  <div class="w-full h-full bg-gradient-to-br from-amber-900/20 via-[#1A1208] to-[#0D0D0D] flex items-center justify-center">
-                    <span class="text-6xl opacity-30">🗽</span>
-                  </div>
-                )}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                {tour.base_price && (
-                  <div class="absolute top-3 left-3 bg-amber-500 text-black px-3 py-1 rounded-lg text-sm font-bold">
-                    ${tour.base_price}
-                  </div>
-                )}
-              </div>
-              <div class="p-6 flex flex-col flex-1">
-                <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition-colors mb-2">{tour.name}</h3>
-                <div class="flex items-center gap-3 text-sm text-white/50 mb-3">
-                  {tour.rating && (
-                    <span class="flex items-center gap-1">
-                      <svg class="w-3.5 h-3.5 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                      {tour.rating}
-                    </span>
-                  )}
-                  {tour.duration_minutes && <span>{Math.round(tour.duration_minutes / 60)} שעות</span>}
-                  {tour.review_count && <span>{tour.review_count} ביקורות</span>}
-                </div>
-                <p class="text-white/60 text-sm flex-1 line-clamp-2">{tour.short_description}</p>
-              </div>
-            </a>
-          ))}
         </div>
       </div>
     </section>
-  )}
 
-  <!-- BUNDLE DEAL -->
-  <section class="bg-gradient-to-r from-amber-500 to-amber-600 py-12">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-black text-black mb-4">
-        מנהטן + ברוקלין ביחד - $100 במקום <span class="line-through opacity-70">$118</span>
-      </h2>
-      <div class="flex flex-wrap justify-center gap-6 text-black/80 mb-8">
-        <span class="flex items-center gap-1">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-          חוסכים $18
-        </span>
-        <span class="flex items-center gap-1">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-          2 חוויות שונות לגמרי
-        </span>
-        <span class="flex items-center gap-1">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-          גמישות בתאריכים
-        </span>
+    <!-- 2. TOURS -->
+    <section class="max-w-7xl mx-auto px-4 py-12 md:py-20">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
+          הסיורים <span class="home-gradient-text">שלנו</span>
+        </h2>
+        <p class="text-white/60 max-w-2xl mx-auto">
+          סיורים מודרכים בעברית עם מדריכים ישראלים שגרים בניו יורק
+        </p>
       </div>
-      <a
-        href="/tours"
-        class="inline-flex items-center justify-center bg-black hover:bg-black/80 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors"
-      >
-        הזמינו חבילה משולבת
-      </a>
-    </div>
-  </section>
 
-  <!-- RESTAURANTS -->
-  {featuredRestaurants.length > 0 && (
-    <section class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <div class="space-y-16">
+        {activeTours.map((tour: any, index: number) => (
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class={index % 2 === 1 ? 'md:order-2' : ''}>
+              <a href={`/tours/${tour.slug}`}>
+                <div class="relative aspect-video rounded-2xl overflow-hidden group">
+                  {tour.hero_image_url ? (
+                    <img
+                      src={tour.hero_image_url}
+                      alt={tour.name}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="w-full h-full bg-gradient-to-br from-purple-600/20 to-[#3A1C4A]"></div>
+                  )}
+                  <div class="absolute inset-0 bg-gradient-to-t from-zinc-900/60 to-transparent"></div>
+
+                  <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1 rounded-lg font-bold flex items-center gap-1">
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.8 2.034c-.784.57-1.838-.197-1.54-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.564 7.82c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+                    {tour.rating}
+                  </div>
+                  <div class="absolute bottom-4 left-4 bg-emerald-500 text-white px-4 py-1.5 rounded-lg font-bold text-lg">
+                    ${tour.base_price}
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class={index % 2 === 1 ? 'md:order-1' : ''}>
+              <h3 class="text-2xl md:text-3xl font-bold text-white mb-3">
+                <a href={`/tours/${tour.slug}`} class="hover:text-emerald-400 transition-colors">
+                  {tour.name}
+                </a>
+              </h3>
+              <p class="text-emerald-400 font-medium mb-5">
+                {tour.homepage_tagline}
+              </p>
+
+              <ul class="space-y-2 mb-6">
+                {tour.visit_points.slice(0, 3).map((point: any) => (
+                  <li class="flex items-start gap-2 text-white/70">
+                    <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span><span class="text-white font-medium">{point.name}</span> — {point.description}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="flex flex-wrap gap-4 mb-6 text-sm text-white/50">
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+                  {Math.floor(tour.duration_minutes / 60)} שעות
+                </span>
+                <span class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-5a4 4 0 11-8 0 4 4 0 018 0zm6 3a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  עד {tour.group_size_max} משתתפים
+                </span>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <span class="text-3xl font-bold text-emerald-400">${tour.base_price}</span>
+                <a href={`/tours/${tour.slug}`} class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold transition-colors">
+                  פרטים והזמנה
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 3. BUNDLE DEAL -->
+    <section class="bg-gradient-to-r from-emerald-500 to-emerald-600 py-12">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-black text-zinc-900 mb-4">
+          מנהטן + ברוקלין ביחד — $100 במקום <span class="line-through opacity-70">$118</span>
+        </h2>
+        <div class="flex flex-wrap justify-center gap-6 text-zinc-800 mb-8">
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            חוסכים $18
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            2 חוויות שונות לגמרי
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            גמישות בתאריכים
+          </span>
+        </div>
+        <a href="/tours" class="inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors">
+          הזמינו חבילה משולבת
+        </a>
+      </div>
+    </section>
+
+    <!-- 4. TESTIMONIALS -->
+    <section class="max-w-7xl mx-auto px-4 py-12 md:py-20">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
+          מה אומרים <span class="home-gradient-text">המשתתפים</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {testimonials.map((t) => (
+          <div class="home-glass-card rounded-2xl p-6">
+            <div class="flex gap-1 mb-4">
+              {Array.from({ length: 5 }).map(() => (
+                <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.8 2.034c-.784.57-1.838-.197-1.54-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.564 7.82c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+              ))}
+            </div>
+            <p class="text-white/80 leading-relaxed mb-5">&ldquo;{t.text}&rdquo;</p>
+            <div class="text-sm">
+              <div class="text-white font-bold">{t.name}</div>
+              <div class="text-white/50">{t.city} • {t.tour} • {t.date}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="text-center">
+        <div class="inline-flex flex-wrap justify-center gap-y-1 items-center gap-3 bg-[#2D1B3D]/50 rounded-2xl sm:rounded-full px-4 sm:px-6 py-3 text-sm">
+          <span class="flex items-center gap-1 text-amber-400 font-bold">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.8 2.034c-.784.57-1.838-.197-1.54-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.564 7.82c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+            4.9 ממוצע
+          </span>
+          <span class="text-white/30 hidden sm:inline">|</span>
+          <span class="text-white/60">200+ משתתפים מרוצים</span>
+          <span class="text-white/30 hidden sm:inline">|</span>
+          <span class="text-white/60">אחריות שביעות רצון מלאה</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. WHY GUIDED TOURS -->
+    <section class="bg-[#2D1B3D]/30 py-12 md:py-20">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
+            למה <span class="home-gradient-text">עם מדריך</span>?
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="home-glass-card rounded-2xl p-5 md:p-8">
+            <div class="w-12 h-12 mb-4 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">מדריכים ישראלים שגרים בניו יורק</h3>
+            <p class="text-white/60">ישראלים שגרים פה, אוכלים פה, וחיים פה. לא סתם קראנו על זה — אנחנו חיים את זה כל יום.</p>
+          </div>
+
+          <div class="home-glass-card rounded-2xl p-5 md:p-8">
+            <div class="w-12 h-12 mb-4 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-5a4 4 0 11-8 0 4 4 0 018 0zm6 3a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">קבוצות קטנות עד 15</h3>
+            <p class="text-white/60">לא אוטובוס תיירים. קבוצה אינטימית שבה המדריך מכיר כל אחד, עוצר לשאלות, ומתאים את הקצב אליכם.</p>
+          </div>
+
+          <div class="home-glass-card rounded-2xl p-5 md:p-8">
+            <div class="w-12 h-12 mb-4 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">מעבר למה שכתוב במדריכים</h3>
+            <p class="text-white/60">סיפורים, פינות נסתרות, המלצות אישיות שלא תמצאו באף אתר. החלקים הכי טובים של ניו יורק הם אלה שמקומיים מגלים לכם.</p>
+          </div>
+
+          <div class="home-glass-card rounded-2xl p-5 md:p-8">
+            <div class="w-12 h-12 mb-4 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">אחריות שביעות רצון מלאה</h3>
+            <p class="text-white/60">לא נהניתם? נחזיר לכם את הכסף. בלי שאלות, בלי סיפורים. אנחנו כל כך בטוחים שתאהבו.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. EXPERTISE SHOWCASE -->
+    <section id="expertise" class="max-w-7xl mx-auto px-4 py-12 md:py-20">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
+          <span class="home-gradient-text">{totalArticles}</span> מדריכים. <span class="home-gradient-text">{totalNeighborhoods}</span> שכונות. <span class="home-gradient-text">{totalAttractions}+</span> אטרקציות.
+        </h2>
+        <p class="text-white/60 max-w-2xl mx-auto">
+          כתבנו את כל מה שצריך לדעת על ניו יורק. תכננו לבד או הצטרפו אלינו לסיור.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="/areas" class="group home-glass-card rounded-2xl p-5 md:p-8 home-card-lift">
+          <div class="text-4xl font-black text-emerald-400 mb-2">{totalNeighborhoods}</div>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">שכונות</h3>
+          <p class="text-white/60 text-sm mb-4">מדריכים מפורטים לכל שכונה — מה לעשות, איפה לאכול, ואיך להגיע.</p>
+          <span class="text-emerald-400 font-medium text-sm">גלו את השכונות ←</span>
+        </a>
+
+        <a href="/attractions" class="group home-glass-card rounded-2xl p-5 md:p-8 home-card-lift">
+          <div class="text-4xl font-black text-emerald-400 mb-2">{totalAttractions}+</div>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">אטרקציות</h3>
+          <p class="text-white/60 text-sm mb-4">כל אטרקציה עם מחירים, שעות, טיפים והמלצות ממי שמכיר.</p>
+          <span class="text-emerald-400 font-medium text-sm">כל האטרקציות ←</span>
+        </a>
+
+        <a href="/broadway" class="group home-glass-card rounded-2xl p-5 md:p-8 home-card-lift">
+          <div class="text-4xl font-black text-emerald-400 mb-2">{(broadway as any[]).length}</div>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">הצגות ברודווי</h3>
+          <p class="text-white/60 text-sm mb-4">ביקורות, מחירים, וטיפים לכרטיסים מוזלים להצגות הכי טובות.</p>
+          <span class="text-emerald-400 font-medium text-sm">כל ההצגות ←</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 7. RESTAURANTS -->
+    <section class="max-w-7xl mx-auto px-4 py-12 md:py-20">
       <div class="flex items-end justify-between mb-8">
         <div>
+          <div class="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 mb-3">
+            <span class="text-purple-300 text-sm font-medium">🍽️ אוכל בניו יורק</span>
+          </div>
           <h2 class="text-3xl md:text-4xl font-black text-white">
-            מסעדות מומלצות <span class="text-amber-400">ב{site.destinationName}</span>
+            מסעדות מומלצות <span class="home-gradient-text">בניו יורק</span>
           </h2>
-          <p class="text-white/50 mt-2">פיצה, בייגלים, סטייקים, מסעדות איטלקיות ועוד</p>
+          <p class="text-white/50 mt-2">מבתי קפה אינסטגרמיים ועד מישלן — {(restaurantsList as any[]).length} מסעדות עם טיפים</p>
         </div>
-        <a href="/restaurants/" class="hidden md:flex items-center gap-1 text-amber-400 hover:text-amber-300 font-medium text-sm transition-colors">
-          כל המסעדות
-          <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        <a href="/restaurants/" class="hidden md:flex items-center gap-1 text-purple-300 hover:text-purple-200 font-medium text-sm transition-colors">
+          כל המסעדות ←
         </a>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
-        {[
-          { href: '/restaurants/italian/', label: 'איטלקי', count: 'פסטות ופיצות' },
-          { href: '/restaurants/manhattan/', label: 'מנהטן', count: 'מרכז העיר' },
-          { href: '/restaurants/brooklyn/', label: 'ברוקלין', count: 'שכונתי ומגניב' },
-          { href: '/culinary-map', label: 'מפה קולינרית', count: 'כל המקומות' },
-          { href: '/restaurants/', label: 'הכל', count: 'כל המסעדות' },
-        ].map((cat) => (
+        {restaurantCategories.map((cat) => (
           <a
             href={cat.href}
-            class="group flex flex-col items-center gap-2 bg-white/5 border border-white/10 hover:border-amber-500/50 rounded-xl p-4 transition-all hover:-translate-y-0.5"
+            class="group flex flex-col items-center gap-2 bg-white/5 border border-white/10 hover:border-purple-500/50 rounded-xl p-4 transition-all hover:-translate-y-0.5"
           >
+            <span class="text-3xl">{cat.emoji}</span>
             <span class="text-white font-semibold text-sm">{cat.label}</span>
-            <span class="text-white/40 text-xs">{cat.count}</span>
+            <span class="text-white/40 text-xs">{cat.count} מקומות</span>
           </a>
         ))}
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        {featuredRestaurants.map((r: any) => (
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+        {(restaurantsList as any[]).slice(0, 6).map((r) => (
           <a
             href={`/restaurants/${r.slug}/`}
-            class="group relative rounded-xl overflow-hidden aspect-square bg-gradient-to-br from-amber-900/20 to-[#1A1208]"
+            class="group relative rounded-xl overflow-hidden aspect-square bg-gradient-to-br from-purple-900 to-[#2D1B3D]"
           >
-            {r.image && (
+            {r.img_url && (
               <img
-                src={r.image}
-                alt={r.name_he}
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                src={r.img_url}
+                alt={r.name}
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 loading="lazy"
               />
             )}
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
             <div class="absolute bottom-0 right-0 left-0 p-3">
-              <p class="text-white font-bold text-xs leading-tight">{r.name_he}</p>
-              {r.area && <p class="text-amber-400 text-xs">{r.area}</p>}
+              <p class="text-white font-bold text-xs leading-tight">{r.name}</p>
+              <p class="text-amber-400 text-xs">{r.price_range}</p>
             </div>
           </a>
         ))}
       </div>
-    </section>
-  )}
 
-  <!-- AREAS -->
-  {featuredAreas.length > 0 && (
-    <section class="bg-[#1A1208]/30 py-16 md:py-24">
-      <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-end justify-between mb-12">
-          <div>
-            <h2 class="text-3xl md:text-4xl font-black text-white mb-2">
-              שכונות <span class="text-amber-400">מובילות ב{site.destinationName}</span>
-            </h2>
-            <p class="text-white/40">כל שכונה ב{site.destinationName} היא עולם בפני עצמו - גלו מה מתאים לכם</p>
-          </div>
-          <a href="/areas" class="hidden md:inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold text-sm transition-colors">
-            כל השכונות
-            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </a>
-        </div>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredAreas.map((area: any) => (
-            <a href={`/areas/${area.slug}`} class="group relative rounded-2xl overflow-hidden h-52 flex items-end">
-              {area.image ? (
-                <img src={area.image} alt={area.name_he} class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-              ) : (
-                <div class="absolute inset-0 bg-gradient-to-br from-amber-900/30 to-[#0D0D0D]"></div>
-              )}
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
-              <div class="relative p-5 w-full">
-                <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition-colors">{area.name_he}</h3>
-                {area.excerpt && <p class="text-white/60 text-sm mt-1 line-clamp-1">{area.excerpt}</p>}
-              </div>
-            </a>
-          ))}
-        </div>
+      <div class="text-center md:hidden">
+        <a href="/restaurants/" class="inline-flex items-center gap-1 text-purple-300 hover:text-purple-200 font-medium transition-colors">
+          כל {(restaurantsList as any[]).length} המסעדות ←
+        </a>
       </div>
     </section>
-  )}
 
-  <!-- TESTIMONIALS -->
-  <section class="max-w-7xl mx-auto px-4 py-16 md:py-24">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
-        מה אומרים <span class="text-amber-400">המשתתפים</span>
-      </h2>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-      {testimonials.map((t) => (
-        <div class="bg-[#1A1208] rounded-2xl p-6 border border-amber-500/10">
-          <div class="flex gap-1 mb-4">
-            {[1,2,3,4,5].map(() => (
-              <svg class="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            ))}
-          </div>
-          <p class="text-white/70 mb-4 leading-relaxed">&ldquo;{t.text}&rdquo;</p>
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-white font-bold">{t.name}</p>
-              <p class="text-white/30 text-sm">{t.city}</p>
-            </div>
-            <div class="text-left">
-              <p class="text-amber-400 text-sm font-medium">{t.tour}</p>
-              <p class="text-white/20 text-xs">{t.date}</p>
-            </div>
-          </div>
+    <!-- 8. FAQ -->
+    <section class="bg-[#2D1B3D]/30 py-12 md:py-20">
+      <div class="max-w-3xl mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
+            שאלות <span class="home-gradient-text">נפוצות</span>
+          </h2>
         </div>
-      ))}
-    </div>
+        <FAQAccordion items={homepageFAQ} />
+      </div>
+    </section>
 
-    <div class="text-center">
-      <div class="inline-flex flex-wrap justify-center gap-y-1 items-center gap-3 bg-[#1A1208]/50 rounded-2xl sm:rounded-full px-4 sm:px-6 py-3 text-sm">
-        <span class="flex items-center gap-1 text-amber-400 font-bold">
-          <svg class="w-4 h-4 fill-amber-400" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          4.9 ממוצע
+    <!-- 9. FINAL CTA -->
+    <section class="max-w-4xl mx-auto px-4 py-12 md:py-20 text-center">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
+        סיורים יומיים בשעה 10:00. <span class="home-gradient-text">מקומות מוגבלים.</span>
+      </h2>
+      <p class="text-xl text-white/60 mb-8">
+        הצטרפו למאות ישראלים שכבר גילו את ניו יורק האמיתית איתנו.
+      </p>
+      <div class="flex justify-center mb-8">
+        <a
+          href="/tours"
+          class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-emerald-500/25"
+        >
+          בחרו סיור והזמינו
+        </a>
+      </div>
+      <div class="flex flex-wrap justify-center gap-6 text-white/50 text-sm">
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          ביטול חינם עד 48 שעות
         </span>
-        <span class="text-white/30 hidden sm:inline">|</span>
-        <span class="text-white/60">200+ משתתפים מרוצים</span>
-        <span class="text-white/30 hidden sm:inline">|</span>
-        <span class="text-white/60">אחריות שביעות רצון מלאה</span>
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          אחריות שביעות רצון
+        </span>
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          תשלום מאובטח
+        </span>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- WHY US -->
-  <section class="bg-[#1A1208]/30 py-16 md:py-24">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
-          למה <span class="text-amber-400">עם מדריך?</span>
-        </h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-[#1A1208] rounded-2xl p-5 md:p-8 border border-amber-500/10">
-          <h3 class="text-xl font-bold text-white mb-2">מדריכים ישראלים שגרים ב{site.destinationName}</h3>
-          <p class="text-white/60">ישראלים שגרים פה, אוכלים פה, וחיים פה. לא סתם קראנו על זה - אנחנו חיים את זה כל יום.</p>
-        </div>
-        <div class="bg-[#1A1208] rounded-2xl p-5 md:p-8 border border-amber-500/10">
-          <h3 class="text-xl font-bold text-white mb-2">קבוצות קטנות עד 15</h3>
-          <p class="text-white/60">לא אוטובוס תיירים. קבוצה אינטימית שבה המדריך מכיר כל אחד, עוצר לשאלות, ומתאים את הקצב אליכם.</p>
-        </div>
-        <div class="bg-[#1A1208] rounded-2xl p-5 md:p-8 border border-amber-500/10">
-          <h3 class="text-xl font-bold text-white mb-2">מעבר למה שכתוב במדריכים</h3>
-          <p class="text-white/60">סיפורים, פינות נסתרות, המלצות אישיות שלא תמצאו באף אתר. החלקים הכי טובים של {site.destinationName} הם אלה שמקומיים מגלים לכם.</p>
-        </div>
-        <div class="bg-[#1A1208] rounded-2xl p-5 md:p-8 border border-amber-500/10">
-          <h3 class="text-xl font-bold text-white mb-2">אחריות שביעות רצון מלאה</h3>
-          <p class="text-white/60">לא נהניתם? נחזיר לכם את הכסף. בלי שאלות, בלי סיפורים. אנחנו כל כך בטוחים שתאהבו.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="max-w-3xl mx-auto px-4 py-16 md:py-24">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
-        שאלות <span class="text-amber-400">נפוצות</span>
-      </h2>
-    </div>
-    <div class="space-y-4">
-      {homepageFAQ.map((faq) => (
-        <details class="group border-b border-amber-500/10 pb-4">
-          <summary class="cursor-pointer text-white font-medium group-open:text-amber-400 transition-colors">{faq.q}</summary>
-          <p class="mt-2 text-white/60 leading-relaxed">{faq.a}</p>
-        </details>
-      ))}
-    </div>
-  </section>
-
-  <!-- FINAL CTA -->
-  <section class="max-w-4xl mx-auto px-4 py-12 md:py-20 text-center">
-    <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4">
-      סיורים יומיים בשעה 10:00. <span class="text-amber-400">מקומות מוגבלים.</span>
-    </h2>
-    <p class="text-xl text-white/60 mb-8">
-      הצטרפו למאות ישראלים שכבר גילו את {site.destinationName} האמיתית איתנו.
-    </p>
-    <div class="flex justify-center mb-8">
-      <a
-        href="/tours"
-        class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-amber-500/25"
-      >
-        בחרו סיור והזמינו
-      </a>
-    </div>
-    <div class="flex flex-wrap justify-center gap-6 text-white/50 text-sm">
-      <span class="flex items-center gap-1">
-        <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-        ביטול חינם עד 48 שעות
-      </span>
-      <span class="flex items-center gap-1">
-        <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-        אחריות שביעות רצון
-      </span>
-      <span class="flex items-center gap-1">
-        <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-        תשלום מאובטח
-      </span>
-    </div>
-  </section>
+  </div>
 </Layout>
+
+<style is:global>
+  .home-wrapper {
+    --home-emerald: #10B981;
+    --home-emerald-light: #34D399;
+    --home-purple-dark: #1A0A1F;
+    --home-purple-card: #2D1B3D;
+  }
+  .home-wrapper .home-gradient-text {
+    background: linear-gradient(135deg, #10B981 0%, #34D399 50%, #10B981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .home-wrapper .home-glass-card {
+    background: rgba(45, 27, 61, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(16, 185, 129, 0.1);
+  }
+  .home-wrapper .home-card-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .home-wrapper .home-card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(16, 185, 129, 0.1);
+  }
+  .home-wrapper .home-dots-pattern {
+    background-image: radial-gradient(rgba(16, 185, 129, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+</style>

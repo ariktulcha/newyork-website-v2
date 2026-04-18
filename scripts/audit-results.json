@@ -1,0 +1,37 @@
+{
+  "restaurants": {
+    "total": 119,
+    "issuesCount": 0,
+    "issues": []
+  },
+  "hotels": {
+    "total": 70,
+    "issuesCount": 0,
+    "issues": []
+  },
+  "attractions": {
+    "total": 105,
+    "issuesCount": 0,
+    "issues": []
+  },
+  "tours": {
+    "total": 3,
+    "issuesCount": 0,
+    "issues": []
+  },
+  "nightlife": {
+    "total": 40,
+    "issuesCount": 0,
+    "issues": []
+  },
+  "guides": {
+    "total": 93,
+    "issuesCount": 0,
+    "issues": []
+  },
+  "areas": {
+    "total": 7,
+    "issuesCount": 0,
+    "issues": []
+  }
+}

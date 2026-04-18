@@ -1,0 +1,177 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# ===== 301 Redirects: Legacy WordPress URLs (wenewyorker.com old site) =====
+# Specific redirects first — Netlify: first match wins.
+
+# Long-form old URL
+[[redirects]]
+  from = "/top-things-to-do-in-new-york-city-bucket-list/"
+  to = "/attractions"
+  status = 301
+
+# Old content pages → new blog posts (we don't have these exact URLs anymore)
+[[redirects]]
+  from = "/kosher-restaurants/"
+  to = "/blog/kosher-restaurants-nyc"
+  status = 301
+
+[[redirects]]
+  from = "/pizza/"
+  to = "/blog/nyc-pizza-guide"
+  status = 301
+
+[[redirects]]
+  from = "/outlet/"
+  to = "/blog/outlets-nyc-complete-guide"
+  status = 301
+
+[[redirects]]
+  from = "/viewpoint/"
+  to = "/blog/best-views-nyc"
+  status = 301
+
+[[redirects]]
+  from = "/metro/"
+  to = "/blog/subway-guide"
+  status = 301
+
+[[redirects]]
+  from = "/burger/"
+  to = "/restaurants"
+  status = 301
+
+[[redirects]]
+  from = "/sushi/"
+  to = "/restaurants"
+  status = 301
+
+[[redirects]]
+  from = "/meat-restaurants/"
+  to = "/restaurants"
+  status = 301
+
+[[redirects]]
+  from = "/bakery/"
+  to = "/restaurants"
+  status = 301
+
+[[redirects]]
+  from = "/asian-foodies/"
+  to = "/restaurants/asian"
+  status = 301
+
+[[redirects]]
+  from = "/markets/"
+  to = "/blog/food-guide-nyc"
+  status = 301
+
+[[redirects]]
+  from = "/asa/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/accessibility/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/thank-you/"
+  to = "/"
+  status = 301
+
+# Old hotel-type landing pages — we now have actual hotel category pages
+[[redirects]]
+  from = "/hotel-type/*"
+  to = "/hotels"
+  status = 301
+
+# WordPress internals
+[[redirects]]
+  from = "/jet-menu/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/category/culinary/"
+  to = "/blog/food-guide-nyc"
+  status = 301
+
+[[redirects]]
+  from = "/category/*"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/tag/*"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/wp-content/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/wp-admin/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/wp-login.php"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/feed/*"
+  to = "/"
+  status = 301
+
+# Convenience alias — /guides was the old route before /blog
+[[redirects]]
+  from = "/guides"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/guides/*"
+  to = "/blog/:splat"
+  status = 301
+
+# Neighborhoods → areas (we use /areas internally)
+[[redirects]]
+  from = "/neighborhoods"
+  to = "/areas"
+  status = 301
+
+[[redirects]]
+  from = "/neighborhoods/*"
+  to = "/areas/:splat"
+  status = 301
+
+# ===== Security Headers =====
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# ===== Cache static assets =====
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

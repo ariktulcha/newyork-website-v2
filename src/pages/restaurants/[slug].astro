@@ -23,6 +23,25 @@ export async function getStaticPaths() {
 
 const { restaurant } = Astro.props
 
+// Resolve which area/cuisine category pages this restaurant belongs to (for internal linking)
+const { data: allCategoryPages } = await supabaseAdmin
+  .from('category_pages')
+  .select('slug, title, source_category_field, source_category_value')
+  .eq('destination_id', DESTINATION_ID)
+  .eq('source_table', 'restaurants')
+  .eq('published', true)
+
+const restaurantArea = (restaurant.area || '').toLowerCase()
+const areaCategory = (allCategoryPages ?? []).find(cp => {
+  if (cp.source_category_field !== 'area') return false
+  const values = cp.source_category_value.split('|').map((v: string) => v.trim().toLowerCase())
+  return values.some((v: string) => v && restaurantArea.includes(v))
+})
+
+const cuisineCategory = (allCategoryPages ?? []).find(cp =>
+  cp.source_category_field !== 'area' && cp.source_category_value === restaurant.cuisine_category
+)
+
 const cuisineTypes = restaurant.cuisine_types ?? restaurant.metadata?.cuisine_types ?? []
 const openingHours = restaurant.opening_hours ?? restaurant.metadata?.opening_hours
 const priceRange = restaurant.price_range ?? restaurant.metadata?.price_range
@@ -62,6 +81,7 @@ const restaurantSchema = {
 const breadcrumbItems = [
   { label: 'דף הבית', href: '/' },
   { label: 'מסעדות', href: '/restaurants' },
+  ...(areaCategory ? [{ label: areaCategory.title, href: `/restaurants/${areaCategory.slug}/` }] : []),
   { label: restaurant.name_he },
 ]
 
@@ -211,15 +231,17 @@ const related = allRestaurants ?? []
         {(address || restaurant.area) && (
           <div class="flex items-start gap-3">
             <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 003 16.382V5.618a1 1 0 011.447-.894L9 7.5m0 0l6.553-3.276A1 1 0 0117 5.618v10.764a1 1 0 01-1.447.894L9 7.5m0 0L3 10m6-6v6m6-6v6"/></svg>
-            <div>
-              <p class="font-medium text-white">Maps</p>
+            <div dir="rtl">
+              <p class="font-medium text-white">מיקום</p>
               <a
                 href={`https://maps.google.com/?q=${encodeURIComponent((address || restaurant.area || restaurant.name_he) + ', New York')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-teal-400 hover:text-teal-300 text-sm transition-colors"
+                dir="rtl"
+                class="text-teal-400 hover:text-teal-300 text-sm transition-colors inline-flex items-center gap-1"
               >
-                פתחו ב-Google Maps ↗
+                <span>פתחו ב-Google Maps</span>
+                <span aria-hidden="true">←</span>
               </a>
             </div>
           </div>
@@ -235,8 +257,34 @@ const related = allRestaurants ?? []
       <FAQSection items={faqItems} />
     </div>
 
-    {related.length > 0 && (
+    {(areaCategory || cuisineCategory) && (
       <section class="mt-16 pt-8 border-t border-gray-800" dir="rtl">
+        <h2 class="text-xl font-bold text-white mb-4">מעניין אתכם עוד?</h2>
+        <div class="flex flex-wrap gap-3">
+          {areaCategory && (
+            <a
+              href={`/restaurants/${areaCategory.slug}/`}
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 hover:border-teal-500/50 transition-colors font-medium"
+            >
+              <span>🗺️</span>
+              <span>כל ה{areaCategory.title}</span>
+            </a>
+          )}
+          {cuisineCategory && (
+            <a
+              href={`/restaurants/${cuisineCategory.slug}/`}
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 hover:border-teal-500/50 transition-colors font-medium"
+            >
+              <span>🍽️</span>
+              <span>עוד {cuisineCategory.title}</span>
+            </a>
+          )}
+        </div>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="mt-12 pt-8 border-t border-gray-800" dir="rtl">
         <h2 class="text-2xl font-bold text-white mb-6">🍽️ מסעדות נוספות ב{restaurant.area}</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {related.map((item: any) => (

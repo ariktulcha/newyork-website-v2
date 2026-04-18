@@ -1,0 +1,240 @@
+---
+import Layout from '../components/Layout.astro'
+import SchemaOrg from '../components/SchemaOrg.astro'
+import FAQSection from '../components/FAQSection.astro'
+import { site, waUrl } from '../config/site'
+
+const shoppingAreas = [
+  {
+    name: '5th Avenue',
+    nameHe: 'השדרה החמישית',
+    emoji: '💎',
+    area: 'Midtown Manhattan',
+    type: 'יוקרה בינלאומית',
+    desc: 'מותגי העל של העולם במרחק הליכה — Louis Vuitton, Gucci, Tiffany & Co, Bergdorf Goodman, Saks 5th Avenue. בקצה הצפוני תמצאו את Apple Store האייקוני של רחוב 59.',
+    tip: 'שעות פתיחה ארוכות (עד 20:00-21:00). בחגים מעוצב מרהיב, במיוחד ברוקפלר סנטר ובטיפאני.',
+  },
+  {
+    name: 'SoHo',
+    nameHe: 'סוהו',
+    emoji: '🛍️',
+    area: 'Lower Manhattan',
+    type: 'בוטיק + מותגים',
+    desc: 'הרחובות המרוצפים של סוהו הם מקדש הקניות הכי צילומי בניו יורק. כל המותגים הגדולים (Zara, COS, Uniqlo, Nike, Apple) + בוטיקים מעצבים ייחודיים.',
+    tip: 'הגיעו בין שני לחמישי לפני 14:00 — בסופי שבוע זה עמוס מאוד. שלבו עם ארוחה ב-Balthazar או Ground Support.',
+  },
+  {
+    name: 'Woodbury Common',
+    nameHe: 'וודבורי קומון',
+    emoji: '🏷️',
+    area: '1 שעה מצפון למנהטן',
+    type: 'אאוטלט יוקרה',
+    desc: '250 חנויות אאוטלט עם 25-65% הנחה על מותגי-על: Gucci, Prada, Burberry, Ralph Lauren, Nike, Coach, Tory Burch. הדרך הכי חכמה לקנות יוקרה בארה"ב.',
+    tip: 'אוטובוס של Gray Line יוצא מ-Port Authority ($50 הלוך-חזור). הגיעו ב-9:00 בבוקר והקדישו יום שלם. הזמינו מראש את ה-"VIP Coupon Book" של אחוזים נוספים.',
+  },
+  {
+    name: 'Brooklyn (Williamsburg + DUMBO)',
+    nameHe: 'ברוקלין',
+    emoji: '🎨',
+    area: 'Brooklyn',
+    type: 'וינטג׳ + עצמאי',
+    desc: 'וויליאמסבורג היא מכרה זהב של חנויות וינטג׳, בוטיקים עצמאיים, וחנויות ספרים. Artists & Fleas (סוף שבוע) מציג 80+ מעצבים עצמאיים. ב-DUMBO תמצאו West Elm הראשון בעולם.',
+    tip: 'השילוב הכי טוב: בוקר בגרפיטי, צהריים בקניות, ערב בסיור אוכל. האוויר שונה לגמרי ממנהטן.',
+  },
+  {
+    name: 'Chelsea Market',
+    nameHe: 'צ׳לסי מרקט',
+    emoji: '🥯',
+    area: 'Chelsea',
+    type: 'אוכל + מתנות',
+    desc: 'שוק מקורה אהוב לקניות מזון איכותי, ממתקים ייחודיים, ספרי בישול, ותכשיטים בעבודת יד. מושלם למתנות מהעיר. הבניין ההיסטורי היה פעם מאפיית Nabisco.',
+    tip: 'שלבו עם הליכה על ה-High Line שמתחילה בדיוק ליד. קנו שוקולד Li-Lac ואגוזי Ninth Street Espresso — לא תמצאו בארץ.',
+  },
+  {
+    name: 'Times Square Mega-Stores',
+    nameHe: 'מרכזי ענק בטיימס סקוור',
+    emoji: '🎡',
+    area: 'Midtown',
+    type: 'חוויה + טרנדים',
+    desc: 'M&M Store, Disney Store, Hershey\'s, Sephora הענקי. לא מקום לקניות רציניות אבל חוויה מטורפת לילדים ולאוהבי פופ-קולצ׳ר.',
+    tip: 'המחירים זהים לשאר הארץ — אל תחשבו שזה זול יותר כי זה תיירותי. הגיעו בערב לאווירה האייקונית של הפרסומות.',
+  },
+]
+
+const tips = [
+  { icon: '💵', title: 'מס מכירה', desc: 'בניו יורק יש מס של 8.875% שמתווסף על כל קנייה. בגדים עד $110 פטורים ממס במנהטן — חדשות נהדרות לשופינג!' },
+  { icon: '✈️', title: 'פטור ממכס', desc: 'ישראלים זכאים לפטור ממכס על עד $500 באישי + $200 לכל בן משפחה. מעל זה — הצהירו ושלמו את המכס הישראלי.' },
+  { icon: '🧾', title: 'Tax-free לתיירים?', desc: 'שלא כמו באירופה, בארה"ב אין החזר מס לתיירים. אבל אתם פטורים ממס על בגדים עד $110 במנהטן, וזה חיסכון משמעותי.' },
+  { icon: '💳', title: 'כרטיסי אשראי', desc: 'קבלו כרטיס בינלאומי ללא עמלת המרה (Cal Choice, Max Flex, Isracard Elite). חוסך לכם 2.5-3% על כל עסקה.' },
+  { icon: '📦', title: 'משלוח לישראל', desc: 'רוב החנויות הגדולות (Nike, Apple, Macy\'s) מציעות משלוח לישראל. חסכון: קונים ומשלוח ללא מס ישיר לבית במחיר ליניארי.' },
+  { icon: '⏰', title: 'עונות מבצע', desc: 'Black Friday (סוף נובמבר), Boxing Day (26 בדצמבר), January Sales, ו-Memorial Day (סוף מאי) — ההנחות הכי אגרסיביות של השנה.' },
+]
+
+const faqItems = [
+  { q: 'מה הזמן הכי טוב לקניות בניו יורק?', a: 'העונות הכי חמות לקניות הן Black Friday (סוף נובמבר) עם הנחות 40-70%, חופשת חנוכה/חג המולד (דצמבר) עם עיצובים חגיגיים, וחופשת הקיץ (יולי-אוגוסט) עם הנחות Back-to-School. ימי חול בבוקר הם הכי שקטים — הגיעו בין 10:00-13:00 לחוויה רגועה.' },
+  { q: 'האם משתלם לקנות יוקרה בניו יורק?', a: 'כן, במיוחד ב-Woodbury Common Outlets שם תמצאו מותגי-על ב-25-65% הנחה. גם חנויות המותגים במנהטן מוזלות משמעותית מישראל (לפעמים 30-40%), ולא משלמים מע"מ על בגדים עד $110. שיעור המס הגבוה של ישראל הופך את הפער למשמעותי.' },
+  { q: 'איפה לקנות מתנות לאנשים שנשארו בישראל?', a: 'Chelsea Market מושלם למתנות אוכל ייחודיות (שוקולד Li-Lac, עוגיות Levain, תה Harney & Sons). M&M Store ו-Hershey\'s ב-Times Square לילדים. חנויות המוזיאונים (MoMA Design Store, Met Store) למתנות בטעם טוב. ב-SoHo תמצאו בוטיקים עם מתנות יוקרה מיוחדות.' },
+  { q: 'האם יש מע"מ (sales tax) בניו יורק?', a: 'כן, 8.875% מתווסף על כל קנייה במנהטן (במקום שבו המחיר על התווית לא כולל מע"מ). החריג החשוב: בגדים ונעליים עד $110 פטורים ממס — כלומר אפשר לקנות חולצה בדולר $100 ולשלם בדיוק $100. פריטים מעל $110 חייבים במס.' },
+  { q: 'איך להגיע ל-Woodbury Common Outlets?', a: 'שתי אפשרויות: (1) אוטובוס Gray Line יוצא יומית מ-Port Authority Bus Terminal ($50 הלוך ושוב, כולל כניסה ל-VIP Coupon Book עם הנחות נוספות). (2) השכירו רכב — שעה נסיעה בסה"כ ויש חניה חינם. מומלץ להקדיש יום שלם (8 שעות) כי זה ענק.' },
+  { q: 'כמה לוקחים למזוודת קניות?', a: 'כל חברת תעופה מאפשרת מזוודה ראשית של 23 ק"ג. מומלץ לארוז שתי מזוודות ריקות בתוך אחת גדולה כשיוצאים לניו יורק, או לקנות מזוודה זולה בחנות כמו Ross / TJ Maxx ($40-80) ולחזור עם יותר. שימו לב למגבלת 32 ק"ג הכוללת — מעל זה קנס.' },
+  { q: 'האם אפשר לקבל החזר מס אחרי החזרה לישראל?', a: 'לא. בניגוד לאירופה, לארה"ב אין מערכת Tax-Free לתיירים. המס שאתם משלמים בקופה הוא סופי. החריג היחיד הוא בגדים עד $110 במנהטן שפטורים ממס מלכתחילה. זה הכלל — אל תתני לאף מוכר לשכנע אתכם אחרת.' },
+  { q: 'מה הדרך הכי טובה לקנות אלקטרוניקה בניו יורק?', a: 'Apple Store הגדולה בשדרה החמישית — פתוחה 24/7 (כן, גם בלילה!). Best Buy לכל השאר. B&H Photo ב-34th St לצלמים ומקצוענים. היזהרו מחנויות אלקטרוניקה "זולות" סביב טיימס סקוור — רובן מונות זיוף/תרגיל מחירים. מחירי iPhone/MacBook נמוכים משמעותית מישראל.' },
+]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'דף הבית', item: `https://${site.domain}/` },
+    { '@type': 'ListItem', position: 2, name: 'שופינג', item: `https://${site.domain}/shopping/` },
+  ],
+}
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `שופינג בניו יורק - המדריך המלא לישראלים`,
+  description: `איפה לקנות ומה לקנות ב${site.destinationName}: 5th Avenue, SoHo, וודבורי, צ'לסי מרקט וברוקלין. טיפים על מס, כרטיסי אשראי ומשלוחים.`,
+  author: { '@type': 'Organization', name: site.brand },
+  publisher: { '@type': 'Organization', name: site.brand, url: `https://${site.domain}` },
+  mainEntityOfPage: `https://${site.domain}/shopping`,
+  inLanguage: 'he',
+  datePublished: '2025-01-01',
+  dateModified: '2026-04-12',
+}
+---
+
+<Layout
+  title={`שופינג ב${site.destinationName} - איפה לקנות ומה לקנות | ${site.brand}`}
+  description={`המדריך המלא לשופינג ב${site.destinationName}: 5th Avenue, SoHo, וודבורי קומון, צ'לסי מרקט וברוקלין. טיפים על מס, מכס, כרטיסי אשראי ומשלוח לישראל.`}
+  canonical={`https://${site.domain}/shopping`}
+>
+  <SchemaOrg schema={[breadcrumbSchema, articleSchema]} />
+
+  <!-- Hero -->
+  <section class="relative py-20 md:py-28 bg-gradient-to-b from-[#2D1B3D] to-[#1A0A1F]">
+    <div class="absolute inset-0 opacity-10"><div class="absolute inset-0 bg-gradient-to-br from-emerald-900/20 to-transparent"></div></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+      <div class="text-6xl mb-4">🛍️</div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
+        שופינג <span class="gradient-text">ב{site.destinationName}</span>
+      </h1>
+      <p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+        מה-5th Avenue של היוקרה ועד אאוטלטי Woodbury Common — המדריך המלא לישראלים לקניות ב{site.destinationName}. כולל מס, מכס, משלוחים וטיפים מקומיים.
+      </p>
+    </div>
+  </section>
+
+  <!-- Shopping Areas -->
+  <section class="max-w-6xl mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
+        אזורי הקניות <span class="gradient-text">הכי שווים</span>
+      </h2>
+      <p class="text-white/60 max-w-2xl mx-auto">
+        6 אזורים, 6 חוויות שונות לגמרי. יוקרה, בוטיק, אאוטלטים, וינטג׳ — לכל סגנון יש מקום ב{site.destinationName}.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      {shoppingAreas.map((area) => (
+        <div class="glass-card rounded-2xl p-6 md:p-7 card-lift">
+          <div class="flex items-start gap-4 mb-4">
+            <div class="w-14 h-14 shrink-0 rounded-xl bg-emerald-500/10 flex items-center justify-center text-3xl">
+              {area.emoji}
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-white mb-1">{area.nameHe}</h3>
+              <p class="text-sm text-white/40" dir="ltr">{area.name}</p>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <span class="inline-block text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{area.area}</span>
+                <span class="inline-block text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/60">{area.type}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-white/70 leading-relaxed mb-4">{area.desc}</p>
+          <div class="border-t border-emerald-500/10 pt-3">
+            <p class="text-sm text-emerald-400">
+              <span class="font-bold">💡 טיפ:</span> <span class="text-white/70">{area.tip}</span>
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tips Grid -->
+  <section class="bg-[#2D1B3D]/30 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
+          מה שחשוב <span class="gradient-text">לדעת</span>
+        </h2>
+        <p class="text-white/60 max-w-2xl mx-auto">
+          טיפים שיחסכו לכם כסף, מכס מיותר והפתעות לא נעימות בקופה
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
+        {tips.map((tip) => (
+          <div class="glass-card rounded-2xl p-6 card-lift">
+            <div class="text-3xl mb-3">{tip.icon}</div>
+            <h3 class="text-lg font-bold text-white mb-2">{tip.title}</h3>
+            <p class="text-white/60 text-sm leading-relaxed">{tip.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WhatsApp CTA -->
+  <section class="max-w-4xl mx-auto px-4 py-16">
+    <div class="glass-card rounded-2xl p-8 md:p-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
+        רוצים סיור שופינג מותאם אישית?
+      </h2>
+      <p class="text-white/60 mb-6 max-w-xl mx-auto">
+        ספרו לנו מה אתם מחפשים (יוקרה, וינטג׳, אלקטרוניקה, ילדים) ונבנה לכם מסלול אחד-לאחד שחוסך זמן וכסף.
+      </p>
+      <a
+        href={waUrl(`היי, אנחנו רוצים סיור שופינג מותאם ב${site.destinationName}`)}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-8 py-4 rounded-xl text-lg transition-all"
+      >
+        דברו איתנו בווטסאפ
+      </a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="max-w-3xl mx-auto px-4 py-12">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 text-center">
+      שאלות ותשובות על שופינג <span class="gradient-text">ב{site.destinationName}</span>
+    </h2>
+    <FAQSection items={faqItems} />
+  </section>
+
+  <!-- Related pages -->
+  <section class="max-w-4xl mx-auto px-4 py-12">
+    <h2 class="text-xl font-bold text-white mb-6 text-center">עמודים <span class="gradient-text">שימושיים</span></h2>
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <a href="/plan" class="glass-card rounded-xl p-4 text-center card-lift">
+        <p class="text-white font-bold">תכנון טיול</p>
+        <p class="text-white/50 text-sm">מסלולים מומלצים</p>
+      </a>
+      <a href="/attractions" class="glass-card rounded-xl p-4 text-center card-lift">
+        <p class="text-white font-bold">אטרקציות</p>
+        <p class="text-white/50 text-sm">מה לעשות</p>
+      </a>
+      <a href="/restaurants" class="glass-card rounded-xl p-4 text-center card-lift">
+        <p class="text-white font-bold">מסעדות</p>
+        <p class="text-white/50 text-sm">איפה לאכול</p>
+      </a>
+      <a href="/faq" class="glass-card rounded-xl p-4 text-center card-lift">
+        <p class="text-white font-bold">שאלות נפוצות</p>
+        <p class="text-white/50 text-sm">כל השאלות</p>
+      </a>
+    </div>
+  </section>
+</Layout>

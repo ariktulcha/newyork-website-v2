@@ -1,15 +1,15 @@
 /**
- * Site configuration — Yalla New York
+ * Site configuration — WeNewYorker
  */
 
 export const site = {
-  brand: 'Yalla NY',
-  brandHe: 'יאללה ניו יורק',
-  brandAccent: 'ניו יורק',
-  brandPrefix: 'יאללה',
+  brand: 'WeNewYorker',
+  brandHe: 'WeNewYorker',
+  brandAccent: 'NewYorker',
+  brandPrefix: 'We',
   tagline: 'YOUR NEW YORK GUIDE',
   taglineHe: 'המדריך הישראלי לניו יורק',
-  domain: 'yalla-ny.co.il',
+  domain: 'wenewyorker.com',
   destinationName: 'ניו יורק',
   destinationNameEn: 'New York',
 
@@ -19,30 +19,40 @@ export const site = {
   },
 
   socials: {
-    instagram: '',
-    facebook: '',
-    tiktok: '',
+    instagram: 'https://www.instagram.com/we.newyorker/',
+    facebook: 'https://www.facebook.com/inewyorkheb/',
+    tiktok: 'https://www.tiktok.com/@wenewyorker',
   },
 
   hasTours: true,
 
   nav: [
     { label: 'סיורים', href: '/tours' },
+    { label: 'תכנון טיול', href: '/trip-planner' },
+    { label: 'שכונות', href: '/areas' },
     { label: 'אטרקציות', href: '/attractions' },
-    { label: 'מלונות', href: '/hotels' },
     { label: 'מסעדות', href: '/restaurants' },
-    { label: 'ברודווי', href: '/broadway' },
+    { label: 'מלונות', href: '/hotels' },
     { label: 'חיי לילה', href: '/nightlife' },
-    { label: 'מדריכים', href: '/guides' },
+    { label: 'ברודווי', href: '/broadway' },
+    { label: 'בלוג', href: '/blog' },
   ],
 
   mobileMenu: [
     {
-      title: 'סיורים ותכנון',
+      title: 'הסיורים שלנו',
       links: [
-        { label: 'סיורים בעברית', href: '/tours' },
-        { label: 'תכנון טיול', href: '/plan' },
-        { label: 'מדריכים', href: '/guides' },
+        { label: 'מנהטן כמו מקומי', href: '/tours/manhattan-classic' },
+        { label: 'גרפיטי בברוקלין', href: '/tours/brooklyn-graffiti' },
+        { label: 'סיור אוכל NYC', href: '/tours/food-tour-nyc' },
+        { label: 'כל הסיורים', href: '/tours' },
+      ],
+    },
+    {
+      title: 'תכנון הטיול',
+      links: [
+        { label: 'תכנון טיול', href: '/trip-planner' },
+        { label: 'בלוג', href: '/blog' },
         { label: 'שכונות', href: '/areas' },
       ],
     },
@@ -69,8 +79,8 @@ export const site = {
           { label: 'סיורים בעברית', href: '/tours' },
           { label: 'מלונות בניו יורק', href: '/hotels' },
           { label: 'מסעדות בניו יורק', href: '/restaurants' },
-          { label: 'תכנון טיול', href: '/plan' },
-          { label: 'מדריכים', href: '/guides' },
+          { label: 'תכנון טיול', href: '/trip-planner' },
+          { label: 'בלוג', href: '/blog' },
           { label: 'שכונות', href: '/areas' },
         ],
       },
@@ -90,7 +100,15 @@ export const site = {
           { label: 'שאלות נפוצות', href: '/faq' },
           { label: 'אודות', href: '/about' },
           { label: 'צור קשר', href: '/contact' },
-          { label: 'בלוג', href: '/guides' },
+          { label: 'בלוג', href: '/blog' },
+        ],
+      },
+      {
+        title: 'מידע משפטי',
+        links: [
+          { label: 'מדיניות פרטיות', href: '/privacy' },
+          { label: 'תנאי שימוש', href: '/terms' },
+          { label: 'הצהרת נגישות', href: '/accessibility' },
         ],
       },
     ],

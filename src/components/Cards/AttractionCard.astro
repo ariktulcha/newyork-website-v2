@@ -10,9 +10,10 @@ interface Props {
   price_range?: string;
   is_free?: boolean;
   rating?: number;
+  excerpt?: string;
 }
 
-const { name_he, name_en, slug, image, area, price: _price, price_range, is_free, rating } = Astro.props;
+const { name_he, name_en, slug, image, area, price: _price, price_range, is_free, rating, excerpt } = Astro.props;
 const price = is_free ? 'חינם' : (price_range ?? _price);
 ---
 
@@ -37,6 +38,7 @@ const price = is_free ? 'חינם' : (price_range ?? _price);
   <div class="p-4 space-y-2">
     <h3 class="text-lg font-bold text-white group-hover:text-teal-400 transition-colors">{name_he}</h3>
     {name_en && <p class="text-sm text-white/40">{name_en}</p>}
+    {excerpt && <p class="text-sm text-white/70 line-clamp-2 leading-relaxed">{excerpt}</p>}
     <div class="flex flex-wrap items-center gap-2 text-sm text-white/60">
       {area && (
         <span class="inline-flex items-center gap-1">

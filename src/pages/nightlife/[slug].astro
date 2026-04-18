@@ -44,16 +44,26 @@ const contentHtml = venue.full_content ? await marked(venue.full_content) : ''
 const pageTitle = `${venue.name_he}${venue.name_en ? ` — ${venue.name_en}` : ''} | חיי לילה ב${site.destinationName} | ${site.brand}`
 const pageDescription = pickMetaDescription(venue, `חיי לילה ב${site.destinationName}`)
 
+function nightlifeSchemaType(type: string | undefined | null): string {
+  const t = (type || '').toLowerCase()
+  if (t.includes('club') || t.includes('מועדון')) return 'NightClub'
+  if (t.includes('wine') || t.includes('יין')) return 'BarOrPub'
+  if (t.includes('rooftop') || t.includes('bar') || t.includes('בר') || t.includes('pub')) return 'BarOrPub'
+  return 'BarOrPub'
+}
+
 const venueSchema = {
   '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
+  '@type': nightlifeSchemaType(venueType),
   name: venue.name_he,
   alternateName: venue.name_en || undefined,
   description: venue.description || venue.excerpt,
   image: venue.image ? (venue.image.startsWith('http') ? venue.image : new URL(venue.image, Astro.site).toString()) : undefined,
   url: new URL(`/nightlife/${venue.slug}`, Astro.site).toString(),
-  ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address } } : {}),
+  ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address, addressLocality: 'New York', addressCountry: 'US' } } : {}),
   ...(priceRange ? { priceRange } : {}),
+  ...(venue.latitude && venue.longitude ? { geo: { '@type': 'GeoCoordinates', latitude: venue.latitude, longitude: venue.longitude } } : {}),
+  ...(venue.rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: venue.rating, ratingCount: venue.review_count ?? 10, bestRating: 5 } } : {}),
 }
 
 const breadcrumbItems = [
@@ -204,15 +214,17 @@ const faqItems = [
         {(address || venue.area) && (
           <div class="flex items-start gap-3">
             <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 003 16.382V5.618a1 1 0 011.447-.894L9 7.5m0 0l6.553-3.276A1 1 0 0117 5.618v10.764a1 1 0 01-1.447.894L9 7.5m0 0L3 10m6-6v6m6-6v6"/></svg>
-            <div>
-              <p class="font-medium text-white">Maps</p>
+            <div dir="rtl">
+              <p class="font-medium text-white">מיקום</p>
               <a
                 href={`https://maps.google.com/?q=${encodeURIComponent((address || venue.area || venue.name_he) + ', New York')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-teal-400 hover:text-teal-300 text-sm transition-colors"
+                dir="rtl"
+                class="text-teal-400 hover:text-teal-300 text-sm transition-colors inline-flex items-center gap-1"
               >
-                פתחו ב-Google Maps ↗
+                <span>פתחו ב-Google Maps</span>
+                <span aria-hidden="true">←</span>
               </a>
             </div>
           </div>

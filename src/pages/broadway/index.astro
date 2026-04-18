@@ -6,6 +6,9 @@ import FAQSection from '../../components/FAQSection.astro'
 import AttractionCard from '../../components/Cards/AttractionCard.astro'
 import { supabaseAdmin, DESTINATION_ID } from '../../lib/supabase'
 import { site, waUrl } from '../../config/site'
+import allBlogArticles from '../../data/blog-articles.json'
+
+const broadwayArticles = (allBlogArticles as any[]).filter(a => a.category === 'ברודווי').slice(0, 6)
 
 const { data: items } = await supabaseAdmin
   .from('attractions')
@@ -13,7 +16,7 @@ const { data: items } = await supabaseAdmin
   .eq('destination_id', DESTINATION_ID)
   .eq('published', true)
   .eq('category', 'broadway')
-  .order('name_he')
+  .order('sort_order', { ascending: true })
 
 const shows = items || []
 
@@ -115,6 +118,22 @@ const faqItems = [
     </div>
   </section>
 
+  <!-- Broadway Articles -->
+  {broadwayArticles.length > 0 && (
+    <section class="max-w-6xl mx-auto px-4 pb-16">
+      <h2 class="text-2xl font-bold text-white mb-2">כתבות שיעזרו לכם</h2>
+      <p class="text-white/50 mb-6">איך קונים כרטיסים, איפה לשבת, מה ללבוש — כל מה שצריך לדעת לפני שהולכים לברודווי</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {broadwayArticles.map((article: any) => (
+          <a href={`/blog/${article.slug}`} class="group block bg-[#1A1208] border border-teal-500/10 hover:border-teal-500/30 rounded-xl p-5 transition-all card-lift">
+            <h3 class="text-base font-bold text-white group-hover:text-teal-400 transition-colors mb-2">{article.title}</h3>
+            {article.excerpt && <p class="text-sm text-white/50 line-clamp-2">{article.excerpt}</p>}
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
   <!-- Shows Grid -->
   <section class="max-w-6xl mx-auto px-4 pb-16">
     <h2 class="text-2xl font-bold text-white mb-8">מופעי ברודווי מומלצים בניו יורק</h2>
@@ -129,6 +148,7 @@ const faqItems = [
             area={show.area}
             price={show.metadata?.price || show.price_range}
             rating={show.rating}
+            excerpt={show.excerpt}
           />
         ))}
       </div>

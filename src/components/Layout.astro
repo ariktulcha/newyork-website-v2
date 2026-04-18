@@ -11,18 +11,59 @@ interface Props {
   canonical?: string
   ogImage?: string
   ogType?: string
+  heroImage?: string
   schema?: Record<string, any> | Record<string, any>[]
 }
 
-const { title, description, canonical, ogImage, ogType, schema } = Astro.props
+const { title, description, canonical, ogImage, ogType, heroImage, schema } = Astro.props
 
 const whatsappUrl = waUrl()
+const GTM_ID = import.meta.env.GTM_ID || 'GTM-5X4FWDV8'
+
+const travelAgencySchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TravelAgency',
+  name: site.brand,
+  url: `https://${site.domain}`,
+  logo: `https://${site.domain}/favicon.svg`,
+  description: 'המדריך המלא לניו יורק בעברית — שכונות, אטרקציות, ברודווי, מסעדות וסיורים בעברית.',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Broadway & W 47th St',
+    addressLocality: 'New York',
+    addressRegion: 'NY',
+    postalCode: '10036',
+    addressCountry: 'US',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 40.758,
+    longitude: -73.9855,
+  },
+  priceRange: '$59-$100',
+  areaServed: {
+    '@type': 'City',
+    name: 'New York City',
+    addressCountry: 'US',
+  },
+  sameAs: [
+    site.socials.instagram,
+    site.socials.facebook,
+    site.socials.tiktok,
+  ].filter(Boolean),
+}
 ---
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <Head title={title} description={description} canonical={canonical} ogImage={ogImage} ogType={ogType} />
+  <Head title={title} description={description} canonical={canonical} ogImage={ogImage} ogType={ogType} heroImage={heroImage} />
+  <SchemaOrg schema={travelAgencySchema} />
   {schema && <SchemaOrg schema={schema} />}
+  {GTM_ID && (
+    <script is:inline define:vars={{ gtmId: GTM_ID }}>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',gtmId);
+    </script>
+  )}
   {import.meta.env.GA_MEASUREMENT_ID && (
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.GA_MEASUREMENT_ID}`}></script>
     <script is:inline define:vars={{ gaId: import.meta.env.GA_MEASUREMENT_ID }}>
@@ -34,32 +75,115 @@ const whatsappUrl = waUrl()
   )}
 </head>
 <body class="min-h-screen bg-[#0D0D0D] font-sans text-white antialiased">
+  {GTM_ID && (
+    <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`} height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  )}
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[100] focus:rounded-lg focus:bg-amber-400 focus:px-4 focus:py-2 focus:text-black focus:font-bold focus:shadow-lg">דלגו לתוכן הראשי</a>
+  <!-- Promo Bar -->
+  <div id="promo-bar" class="relative z-50 bg-gradient-to-r from-teal-600 via-teal-500 to-teal-600 text-center text-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-2 text-sm font-medium">
+      <svg class="h-4 w-4 shrink-0 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+      <span class="hidden sm:inline">מנהטן + ברוקלין — חבילת 2 סיורים ב-$100 בלבד</span>
+      <span class="sm:hidden">חבילת 2 סיורים ב-$100!</span>
+      <span class="hidden font-normal text-teal-200 sm:inline">— חסכו $18</span>
+      <a href="/tours" class="ms-2 font-bold underline underline-offset-2 transition-colors hover:text-teal-100">לפרטים</a>
+      <button id="promo-close" class="absolute start-3 top-1/2 -translate-y-1/2 p-1 text-white/60 transition-colors hover:text-white" aria-label="סגור">✕</button>
+    </div>
+  </div>
+
   <!-- Navigation -->
-  <header class="sticky top-0 z-40 border-b border-white/5 bg-[#0D0D0D]/80 backdrop-blur-xl backdrop-saturate-150">
+  <header class="sticky top-0 z-40 border-b border-white/5 bg-[#0D0D0D]/90 backdrop-blur-xl backdrop-saturate-150">
     <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
       <!-- Logo -->
-      <a href="/" class="group text-2xl font-black text-white transition-all duration-300 hover:text-teal-400">
-        {site.brandPrefix} <span class="text-teal-500 transition-colors duration-300 group-hover:text-teal-300">{site.brandAccent}</span>
-        <span class="block text-[10px] font-medium tracking-widest text-white/30 transition-colors group-hover:text-white/50">{site.tagline}</span>
+      <a href="/" dir="ltr" class="group flex items-baseline gap-0.5 transition-all duration-300">
+        <span class="text-2xl font-black tracking-tight text-teal-400 transition-colors group-hover:text-teal-300">{site.brandPrefix}</span>
+        <span class="text-2xl font-black tracking-tight text-white transition-colors group-hover:text-white/90">{site.brandAccent}</span>
       </a>
 
       <!-- Desktop Nav -->
       <div class="hidden items-center gap-1 md:flex">
         {site.nav.map(link => {
           const isActive = Astro.url.pathname === link.href || Astro.url.pathname.startsWith(link.href + '/')
+          const isTours = link.href === '/tours'
+          if (isTours) {
+            return (
+              <div class="relative" data-tours-dropdown>
+                <a
+                  href={link.href}
+                  class={`group relative flex items-center gap-1 px-3 py-2 text-sm font-semibold transition-all duration-300 ${isActive ? 'text-teal-400' : 'text-white/70 hover:text-white'}`}
+                >
+                  {link.label}
+                  <svg class="h-3 w-3 transition-transform duration-200" data-tours-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                  <span class={`absolute bottom-0 right-0 h-0.5 rounded-full bg-gradient-to-l from-teal-400 to-teal-600 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                </a>
+                <!-- Tours Mega-Dropdown -->
+                <div data-tours-panel class="pointer-events-none absolute end-0 top-full mt-2 w-[420px] -translate-y-2 opacity-0 transition-all duration-200">
+                  <div class="overflow-hidden rounded-2xl border border-teal-500/15 bg-[#0D0D0D] shadow-2xl shadow-black/40">
+                    <div class="border-b border-white/5 px-5 pb-3 pt-4">
+                      <p class="text-sm font-bold text-white">הסיורים שלנו בניו יורק</p>
+                      <p class="mt-0.5 text-xs text-white/40">סיורים בעברית עם מדריכים ישראלים</p>
+                    </div>
+                    <div class="space-y-1 p-3">
+                      <a href="/tours/manhattan-classic" class="group/tour flex items-center justify-between rounded-xl p-3 transition-all hover:bg-teal-500/10">
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2">
+                            <span class="text-sm font-semibold text-white transition-colors group-hover/tour:text-teal-400">מנהטן כמו מקומי</span>
+                            <span class="rounded-full bg-teal-500/20 px-1.5 py-0.5 text-[10px] font-bold text-teal-400">הכי פופולרי</span>
+                          </div>
+                          <div class="mt-1 flex items-center gap-3 text-xs text-white/40">
+                            <span class="flex items-center gap-1">★ 4.9 (87)</span>
+                            <span>3 שעות</span>
+                          </div>
+                        </div>
+                        <span class="ms-3 shrink-0 text-base font-bold text-teal-400">$59</span>
+                      </a>
+                      <a href="/tours/brooklyn-graffiti" class="group/tour flex items-center justify-between rounded-xl p-3 transition-all hover:bg-teal-500/10">
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2">
+                            <span class="text-sm font-semibold text-white transition-colors group-hover/tour:text-teal-400">גרפיטי בברוקלין</span>
+                          </div>
+                          <div class="mt-1 flex items-center gap-3 text-xs text-white/40">
+                            <span class="flex items-center gap-1">★ 4.8 (64)</span>
+                            <span>3.5 שעות</span>
+                          </div>
+                        </div>
+                        <span class="ms-3 shrink-0 text-base font-bold text-teal-400">$59</span>
+                      </a>
+                      <a href="/tours/food-tour-nyc" class="group/tour flex items-center justify-between rounded-xl p-3 transition-all hover:bg-teal-500/10">
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2">
+                            <span class="text-sm font-semibold text-white transition-colors group-hover/tour:text-teal-400">סיור אוכל NYC</span>
+                            <span class="rounded-full bg-teal-500/20 px-1.5 py-0.5 text-[10px] font-bold text-teal-400">חדש!</span>
+                          </div>
+                          <div class="mt-1 flex items-center gap-3 text-xs text-white/40">
+                            <span class="flex items-center gap-1">★ 4.9 (52)</span>
+                            <span>4 שעות</span>
+                          </div>
+                        </div>
+                        <span class="ms-3 shrink-0 text-base font-bold text-teal-400">$79</span>
+                      </a>
+                    </div>
+                    <div class="mx-3 mb-3 rounded-xl border border-teal-500/15 bg-gradient-to-r from-teal-500/10 to-teal-600/10 p-3">
+                      <a href="/tours" class="flex items-center justify-between">
+                        <div>
+                          <p class="text-xs font-bold text-white">מנהטן + ברוקלין</p>
+                          <p class="mt-0.5 text-[11px] text-teal-400/70">חסכו $18 בחבילה</p>
+                        </div>
+                        <span class="font-bold text-teal-400">$100</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
           return (
             <a
               href={link.href}
-              class={`group relative px-3 py-2 text-sm font-semibold transition-all duration-300 ${
-                isActive
-                  ? 'text-teal-400'
-                  : 'text-white/70 hover:text-white'
-              }`}
+              class={`group relative px-3 py-2 text-sm font-semibold transition-all duration-300 ${isActive ? 'text-teal-400' : 'text-white/70 hover:text-white'}`}
             >
               {link.label}
-              <span class={`absolute bottom-0 right-0 h-0.5 rounded-full bg-gradient-to-l from-teal-400 to-teal-600 transition-all duration-300 ${
-                isActive ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}></span>
+              <span class={`absolute bottom-0 right-0 h-0.5 rounded-full bg-gradient-to-l from-teal-400 to-teal-600 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
             </a>
           )
         })}
@@ -69,7 +193,7 @@ const whatsappUrl = waUrl()
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="mr-2 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-xs font-bold text-white shadow-md shadow-green-500/20 transition-all duration-300 hover:scale-105 hover:shadow-green-500/40"
+          class="ms-2 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-xs font-bold text-white shadow-md shadow-green-500/20 transition-all duration-300 hover:scale-105 hover:shadow-green-500/40"
         >
           <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           <span>שלחו הודעה</span>
@@ -124,7 +248,7 @@ const whatsappUrl = waUrl()
   </header>
 
   <!-- Main Content -->
-  <main>
+  <main id="main-content">
     <slot />
   </main>
 
@@ -156,8 +280,8 @@ const whatsappUrl = waUrl()
       <div class="grid grid-cols-2 gap-10 md:grid-cols-4">
         <!-- Brand Column -->
         <div class="col-span-2 md:col-span-1">
-          <a href="/" class="text-3xl font-black text-white transition-colors hover:text-teal-400">
-            {site.brandPrefix} <span class="text-teal-500">{site.brandAccent}</span>
+          <a href="/" dir="ltr" class="inline-flex items-baseline gap-0.5 text-3xl font-black">
+            <span class="text-teal-400">{site.brandPrefix}</span><span class="text-white">{site.brandAccent}</span>
           </a>
           <p class="mt-1 text-xs font-medium tracking-wider text-teal-500/60">{site.taglineHe}</p>
           <p class="mt-4 text-sm leading-relaxed text-white/50">{site.footer.description}</p>
@@ -214,14 +338,14 @@ const whatsappUrl = waUrl()
   <!-- WhatsApp Button -->
   <WhatsAppButton />
 
-  <!-- Mobile Menu Toggle Script -->
+  <!-- Layout interactivity: mobile menu, tours dropdown, promo bar -->
   <script is:inline>
     document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu
       var btn = document.getElementById('mobile-menu-btn');
       var menu = document.getElementById('mobile-menu');
       var iconOpen = document.getElementById('menu-icon-open');
       var iconClose = document.getElementById('menu-icon-close');
-
       if (btn && menu && iconOpen && iconClose) {
         btn.addEventListener('click', function() {
           var isOpen = menu.style.maxHeight && menu.style.maxHeight !== '0px';
@@ -236,6 +360,44 @@ const whatsappUrl = waUrl()
             iconClose.classList.remove('hidden');
             btn.setAttribute('aria-expanded', 'true');
           }
+        });
+      }
+
+      // Tours mega-dropdown (desktop hover)
+      var toursWrap = document.querySelector('[data-tours-dropdown]');
+      if (toursWrap) {
+        var panel = toursWrap.querySelector('[data-tours-panel]');
+        var chevron = toursWrap.querySelector('[data-tours-chevron]');
+        var closeTimer = null;
+        function showPanel() {
+          if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+          panel.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+          panel.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+          if (chevron) chevron.classList.add('rotate-180');
+        }
+        function hidePanel() {
+          closeTimer = setTimeout(function() {
+            panel.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            panel.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+            if (chevron) chevron.classList.remove('rotate-180');
+          }, 180);
+        }
+        toursWrap.addEventListener('mouseenter', showPanel);
+        toursWrap.addEventListener('mouseleave', hidePanel);
+        panel.addEventListener('mouseenter', showPanel);
+        panel.addEventListener('mouseleave', hidePanel);
+      }
+
+      // Promo bar dismissal (session-scoped)
+      var promo = document.getElementById('promo-bar');
+      var promoClose = document.getElementById('promo-close');
+      if (promo && promoClose) {
+        if (sessionStorage.getItem('wny_promo_dismissed') === '1') {
+          promo.style.display = 'none';
+        }
+        promoClose.addEventListener('click', function() {
+          promo.style.display = 'none';
+          try { sessionStorage.setItem('wny_promo_dismissed', '1'); } catch(e){}
         });
       }
     });
