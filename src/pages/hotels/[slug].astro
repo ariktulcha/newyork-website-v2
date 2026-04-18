@@ -1,6 +1,7 @@
 ---
 import { supabaseAdmin, DESTINATION_ID } from '../../lib/supabase'
 import { pickMetaDescription } from '../../lib/seo'
+import { ensureBookingAffiliate } from '../../lib/booking'
 import { site, waUrl } from '../../config/site'
 import Layout from '../../components/Layout.astro'
 import Breadcrumb from '../../components/Breadcrumb.astro'
@@ -29,7 +30,7 @@ const amenities = hotel.amenities ?? hotel.metadata?.amenities ?? []
 const address = hotel.address ?? hotel.metadata?.address
 const checkIn = hotel.check_in ?? hotel.metadata?.check_in
 const checkOut = hotel.check_out ?? hotel.metadata?.check_out
-const bookingUrl = hotel.booking_url ?? `https://www.booking.com/search.html?ss=${encodeURIComponent((hotel.name_en || hotel.name_he) + ' New York')}&lang=he`
+const bookingUrl = ensureBookingAffiliate(hotel.booking_url, hotel.name_en || hotel.name_he)
 
 const reviewCount = hotel.review_count ?? hotel.metadata?.review_count ?? 10
 const googleRating = hotel.rating ?? hotel.metadata?.rating
@@ -218,15 +219,17 @@ const faqItems = [
         {(address || hotel.area) && (
           <div class="flex items-start gap-3">
             <svg class="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 003 16.382V5.618a1 1 0 011.447-.894L9 7.5m0 0l6.553-3.276A1 1 0 0117 5.618v10.764a1 1 0 01-1.447.894L9 7.5m0 0L3 10m6-6v6m6-6v6"/></svg>
-            <div>
-              <p class="font-medium text-white">Maps</p>
+            <div dir="rtl">
+              <p class="font-medium text-white">מיקום</p>
               <a
                 href={`https://maps.google.com/?q=${encodeURIComponent((address || hotel.area || hotel.name_he) + ', New York')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-teal-400 hover:text-teal-300 text-sm transition-colors"
+                dir="rtl"
+                class="text-teal-400 hover:text-teal-300 text-sm transition-colors inline-flex items-center gap-1"
               >
-                פתחו ב-Google Maps ↗
+                <span>פתחו ב-Google Maps</span>
+                <span aria-hidden="true">←</span>
               </a>
             </div>
           </div>
