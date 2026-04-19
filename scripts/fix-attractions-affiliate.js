@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import 'dotenv/config'
 // Populate attractions.booking_url with the right affiliate URL:
 //   - Broadway shows       -> TodayTix (utm_source=wenewyorker)
 //   - Paid attractions     -> Tiqets (partner=wenewyorker)
@@ -7,7 +8,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
   'https://nsfmucsdxhcywisejxxq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZm11Y3NkeGhjeXdpc2VqeHhxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDMzOTAwNywiZXhwIjoyMDg5OTE1MDA3fQ.xwTYYmf4r0fd_u8q5RQpNYCnygROD8BA0vY20ehkrBc'
+  process.env.SUPABASE_SERVICE_KEY
 )
 const DESTINATION_ID = 'new-york'
 
